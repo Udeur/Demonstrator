@@ -34,7 +34,11 @@ module.exports.routes = {
 
   '/': {
     view: 'homepage'
+  },
+  'get /bootTest': {
+    view: 'boot_Test'
   }
+
 
   /***************************************************************************
   *                                                                          *
