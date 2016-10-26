@@ -30,6 +30,7 @@ var jsFilesToInject = [
 
   // Load jquery before bootstrap
   'js/vendor/jquery-3.1.1.js',
+  'js/vendor/jquery-ui.js',
 
   // Dependencies like jQuery, or Angular are brought in here
   'js/dependencies/**/*.js',

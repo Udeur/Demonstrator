@@ -37,7 +37,17 @@ module.exports.routes = {
   },
   'get /bootTest': {
     view: 'boot_Test'
+  },
+  'get /gridTest': {
+    view: 'grid_Test'
+  },
+  'get /greenTest': {
+    view: 'green_Test'
+  },
+  'get /bootTest2': {
+    view: 'bootsTrap2'
   }
+
 
 
   /***************************************************************************
