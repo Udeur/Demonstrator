@@ -41,17 +41,11 @@ module.exports.routes = {
   'get /gridTest': {
     view: 'grid_Test'
   },
-  'get /greenTest': {
-    view: 'green_Test'
+  'get /gridStackTest':{
+    view: 'gridStackTest'
   },
-  'get /bootTest2': {
-    view: 'bootsTrap2'
-  },
-  'get /bootTest3': {
-    view: 'bootsTrap3'
-  },
-  'get /draggableTest': {
-    view: 'draggableTest'
+  'get /gridStackTest2':{
+    view: 'gridStackTest2'
   }
 
 
