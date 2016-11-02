@@ -46,6 +46,12 @@ module.exports.routes = {
   },
   'get /bootTest2': {
     view: 'bootsTrap2'
+  },
+  'get /bootTest3': {
+    view: 'bootsTrap3'
+  },
+  'get /draggableTest': {
+    view: 'draggableTest'
   }
 
 
