@@ -31,6 +31,10 @@ var jsFilesToInject = [
   // Load jquery before bootstrap
   'js/vendor/jquery-3.1.1.js',
   'js/vendor/jquery-ui.js',
+  'js/vendor/bootstrap.js',
+  'js/vendor/lodash.js',
+  'js/vendor/gridstack.js',
+  'js/vendor/gridstack.jQueryUI.min.js',
 
   // Dependencies like jQuery, or Angular are brought in here
   'js/dependencies/**/*.js',

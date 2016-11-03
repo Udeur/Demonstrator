@@ -2,7 +2,6 @@
  * Created by Sven on 02.11.2016.
  */
 $(function () {
-  document.getElementById("demo").innerHTML = "sdadafad";
   var options = {
     float: true
   };
@@ -35,10 +34,6 @@ $(function () {
       return false;
     }.bind(this);
 
-   // $('#add-new-widget').click(this.addNewWidget);
-    $('#add-new-widget').click(function(){
-      alert( "Handler for .click() called." );
-  //    document.getElementById("demo").innerHTML = "scafad";
-    });
+    $('#add-new-widget').click(this.addNewWidget);
   };
 });
