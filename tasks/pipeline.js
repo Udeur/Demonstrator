@@ -35,6 +35,7 @@ var jsFilesToInject = [
   'js/vendor/lodash.js',
   'js/vendor/gridstack.js',
   'js/vendor/gridstack.jQueryUI.min.js',
+  'js/vendor/jsPlumb-2.2.3.js',
 
   // Dependencies like jQuery, or Angular are brought in here
   'js/dependencies/**/*.js',

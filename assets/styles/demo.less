@@ -1,13 +1,10 @@
-.demoBox {
-  color: red;
-  background-color: #1b6d85;
-}
 .grid-stack {
   background: lightgoldenrodyellow;
+  border-style: solid;
+  border-width: medium;
 }
-
 .grid-stack-item-content {
-   border-radius: 50%;
+   border-radius: 50%;    //Wenn das zu grid-stack-item hinzugefügt wird sieht man es als "Schatten"
    color: #000000;
    text-align: center;
    background-color: #5bc0de;
@@ -15,6 +12,18 @@
 #final.grid-stack-item-content{
   background-color: #c9302c;
 }
-//body{
-//  background-color: #001c20;
-//}
+
+#top.grid-stack{
+  background: #f0ad4e;
+  margin-bottom: 0.5cm;
+ // overflow-y: hidden;
+ // overflow-x: auto;
+ // white-space: nowrap;
+}
+#top2.grid-stack{
+  background: #f0ad4e;
+  margin-bottom: 0.5cm;
+}
+#top.grid-stack .grid-stack-item{
+  display: inline-block;
+}

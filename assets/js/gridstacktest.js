@@ -1,100 +1,149 @@
 /**
  * Created by Sven on 02.11.2016.
  */
-$(function () {
-  $('.grid-stack').gridstack({
-
+ $(function () {
+  var options = {
     // turns animation on
     animate: true,
 
-    // amount of columns
-    width: 12,
+    height: 1,
 
-    // maximum rows amount
-    height: 5,
+  //  width: 12,        //wie viele passen nebeneinander
 
-    // widget class
-    item_class: 'grid-stack-item',
-
-    // class for placeholder
-    placeholder_class: 'grid-stack-placeholder',
-
-    // text for placeholder
-    placeholderText: '',
-
-    // draggable handle selector
-    handle: '.grid-stack-item-content',
-
-    // class for handle
-    handleClass: null,
-
+    float: true,
     // one cell height
     cell_height: 100,
-
-    // if false it tells to do not initialize existing items
-    auto: true,
-
-    // minimal width.
-    min_width: 768,
-
-    // enable floating widgets
-    float: false,
-
-    // vertical gap size
-    vertical_margin: 20,
-
-    // makes grid static
-    static_grid: false,
-
-    // if true the resizing handles are shown even the user is not hovering over the widget
-    always_show_resize_handle: false,
-
-    // allows to owerride jQuery UI draggable options
-    draggable: {handle: '.grid-stack-item-content', scroll: true, appendTo: 'body'},
-
-    // allows to owerride jQuery UI resizable options
-    resizable: {autoHide: true, handles: 'se'},
-
-    // disallows dragging of widgets
-    disableDrag: false,
-
-    // disallows resizing of widgets
-    disableResize: false,
-
-    // if `true` turns grid to RTL.
-    // Possible values are `true`, `false`, `'auto'`
-    rtl: 'auto',
-
-    // if `true` widgets could be removed by dragging outside of the grid
-    removable: false,
-
-    // time in milliseconds before widget is being removed while dragging outside of the grid
-    removeTimeout: 2000
-
-  });
-
-  new function () {
-
-    this.grid = $('.grid-stack').data('gridstack');
-
-    this.addNewWidget = function () {
-      var node = {
-        x: randomIntFromInterval(1,10),
-        y: randomIntFromInterval(0,4),
-        width: 1,
-        height: 1
-      };
-      this.grid.addWidget($('<div class="grid-stack-item" data-gs-no-resize="yes"  data-gs-locked="yes">' +
-          '<div class="grid-stack-item-content"/></div>'),
-        node.x, node.y, node.width, node.height);
-      return false;
-    }.bind(this);
-    $('#add-new-widget').click(this.addNewWidget);
-
+    cell_width: 100,
+    removable: true,
+    acceptWidgets: '.grid-stack-item',
   };
+ //  $('#top').gridstack(options);
+  $('#top').gridstack(_.defaults({width: 12}, options));
+   $('#top2').gridstack(options);
+  $('#bottom').gridstack(_.defaults({height: 5}, options)); //Verwende options aber ändere Parameter für heights
+  $('.grid-stack .grid-stack-item').draggable({
+    revert: 'invalid',
+    handle: '.grid-stack-item-content',
+    scroll: false,
+    appendTo: 'body'
+  });
 });
+
+
+
+
+function runButton(){
+  this.grid = $('.grid-stack').data('gridstack');
+
+  this.addNewWidget = function () {
+    var node = {
+      x: randomIntFromInterval(1,10),
+      y: randomIntFromInterval(0,4),
+      width: 1,
+      height: 1
+    };
+    this.grid.addWidget($('<div class="grid-stack-item" data-gs-no-resize="yes"  data-gs-locked="yes">' +
+        '<div class="grid-stack-item-content"/></div>'),
+      node.x, node.y, node.width, node.height);
+    return false;
+  }.bind(this);
+
+  $('#add-new-widget').click(this.addNewWidget);
+  connection.bind("click", function(conn) {
+    this.addNewWidget;
+  });
+}
+
 function randomIntFromInterval(min,max) {
   return Math.floor(Math.random()*(max-min+1)+min);
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+function connect(source,target) {
+ //  var endpointOptions = { isSource:true, isTarget:true };
+ //  var sourceEndpoint = jsPlumb.addEndpoint($(source),{ anchor:"BottomCenter" }, endpointOptions );
+ //  var targetEndpoint = jsPlumb.addEndpoint($(target), { anchor:"BottomCenter" }, endpointOptions );
+  jsPlumb.makeSource(source, {
+    anchor:"Continuous",
+    endpoint:["Rectangle", { width:40, height:20 }],
+    maxConnections:3
+  });
+  jsPlumb.makeTarget(target, {
+    anchor:"Continuous",
+    endpoint:["Rectangle", { width:40, height:20 }],
+    maxConnections:3
+  });
+  jsPlumb.connect({
+    source: source,
+    target: target
+  });
+ // jsPlumb.draggable($("#connect1 .endpoint1"), {containment:false});
+ // jsPlumb.draggable($(".grid-stack-item-content"));
+}
+
+// $( window ).resize(function() {
+//   this.repaintEverything();
+// });
+
+function connect2(source,target) {
+  jsPlumb.connect({
+    source: source,
+    target: target,
+    anchors:["BottomCenter", "BottomCenter" ],
+    endpoint:"Dot",
+    endpointStyle:{ fill: "black" },
+  //  detachable:false
+  })
+//  jsPlumb.draggable((source), {containment:false});
+//  jsPlumb.draggable((target));
+}
+
+jsPlumb.bind("ready", function () {
+  $('.grid-stack').on('dragstop', function(event, ui) {
+    connection2 = connect2("connect1", "connect2");
+    jsPlumb.revalidate(this);
+  });
+  $.draggable({
+    drag: function (event, ui) {
+      jsPlumb.revalidate(this);
+      repaintEverything()
+    }
+  });
+  $.dragstop({
+    drag: function (event, ui) {
+      jsPlumb.revalidate(this);
+      repaintEverything()
+    }
+  });
+  connection = connect2("connect1", "connect2");
+/*  var firstInstance = jsPlumb.getInstance({
+    PaintStyle: {
+      lineWidth: 10,
+      strokeStyle: "#567567",
+      outlineColor: "black",
+      outlineWidth: 1
+    },
+    Connector: ["Bezier", { curviness: 10 }],
+    Endpoint: ["Dot", { radius: 8 }]
+  });
+ firstInstance.connect({
+    source: "connect1",
+    target: "connect2",
+    anchors: ["BottomCenter", "BottomCenter"],
+   paintStyle:{strokeWidth:15,stroke:'rgb(243,230,18)'}
+  });
+  $( window ).resize(function() {
+    firstInstance.repaintEverything();
+  });*/
+});
