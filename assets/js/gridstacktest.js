@@ -5,22 +5,16 @@
   var options = {
     // turns animation on
     animate: true,
-
     height: 1,
-
-  //  width: 12,        //wie viele passen nebeneinander
-
-    float: true,
-    // one cell height
-    cell_height: 100,
-    cell_width: 100,
+    width: 1,        //wie viele passen nebeneinander
+    float: false,
+    disableResize: true,
+    cellHeight: 100,
     removable: true,
     acceptWidgets: '.grid-stack-item',
   };
- //  $('#top').gridstack(options);
-  $('#top').gridstack(_.defaults({width: 12}, options));
-   $('#top2').gridstack(options);
-  $('#bottom').gridstack(_.defaults({height: 5}, options)); //Verwende options aber ändere Parameter für heights
+  $('.grid-stack-1').gridstack(options);
+  $('.grid-stack-12').gridstack(_.defaults({height: 5, width: 12, float:true}, options)); //Verwende options aber ändere Parameter für heights
   $('.grid-stack .grid-stack-item').draggable({
     revert: 'invalid',
     handle: '.grid-stack-item-content',
