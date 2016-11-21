@@ -1,23 +1,59 @@
-.grid-stack {
+.container-fluid{
+  background-color: #bce8f1;
+}
+#final.grid-stack-item-content{
+  background-color: #001c20;
+}
+.grid-stack-1{
+  background-color: transparent;
+}
+.row-horizon{
+  background-color: azure;
+  border-style: solid;
+  border-width: medium;
+  margin-bottom: 0.5cm;
+}
+.row.no-gutter {
+  margin-left: 0;
+  margin-right: 0;
+}
+.row.no-gutter [class*='col-']:not(:first-child),
+.row.no-gutter [class*='col-']:not(:last-child) {
+  padding-right: 0;
+  padding-left: 0;
+}
+.col-md-1 .grid-stack .grid-stack-item .grid-stack-item-content,
+.col-md-1 .grid-stack .grid-stack-item .placeholder-content {
+  left: 1px;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+}
+#bottom2.grid-stack {
   background: lightgoldenrodyellow;
   border-style: solid;
   border-width: medium;
 }
-.grid-stack-item-content {
-   border-radius: 50%;    //Wenn das zu grid-stack-item hinzugefügt wird sieht man es als "Schatten"
-   color: #000000;
-   text-align: center;
-   background-color: #5bc0de;
- }
-#final.grid-stack-item-content{
-  background-color: #c9302c;
+#bottom.grid-stack {
+   background: lightgoldenrodyellow;
+   border-style: solid;
+   border-width: medium;
 }
-
-.grid-stack-1{
-  background: #f0ad4e;
-  margin-bottom: 0.5cm;
-}
-
-#top.grid-stack .grid-stack-item{
+.grid-stack-item{
   display: inline-block;
+}
+.grid-stack-item-content {
+  border-radius: 50%;    //Wenn das zu grid-stack-item hinzugefügt wird sieht man es als "Schatten"
+  color: #000000;
+  text-align: center;
+  background-color: #bce8f1;
+}
+#top{
+  height: 100px;
+}
+#top .grid-stack-item {
+  height: 100px;
+}
+#test.grid-stack-item .grid-stack-item-content{
+  background-color: #c9302c;
 }

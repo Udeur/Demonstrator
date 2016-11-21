@@ -43,8 +43,10 @@ module.exports.routes = {
   },
   'get /gridStackTest2':{
     view: 'gridStackTest2'
+  },
+  'get /two':{
+    view: 'two'
   }
-
 
 
   /***************************************************************************

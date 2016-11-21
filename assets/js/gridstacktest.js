@@ -1,6 +1,9 @@
 /**
  * Created by Sven on 02.11.2016.
  */
+//Items behave like if they always belong to the last gridstack
+//They use its cellheight in order to decide their size
+//They dont trigger add/remove events
  $(function () {
   var options = {
     // turns animation on
@@ -10,20 +13,34 @@
     float: false,
     disableResize: true,
     cellHeight: 100,
-    removable: true,
-    acceptWidgets: '.grid-stack-item',
+    removable: false,
+    removeTimeout: 100,
+    acceptWidgets: false,
   };
   $('.grid-stack-1').gridstack(options);
-  $('.grid-stack-12').gridstack(_.defaults({height: 5, width: 12, float:true}, options)); //Verwende options aber ändere Parameter für heights
-  $('.grid-stack .grid-stack-item').draggable({
-    revert: 'invalid',
-    handle: '.grid-stack-item-content',
-    scroll: false,
-    appendTo: 'body'
-  });
+  $('#bottom.grid-stack').gridstack(_.defaults({height: 1, width: 5, cellHeight: 300, acceptWidgets: '.grid-stack-item', float:false}, options)); //Verwende options aber ändere Parameter für heights
+   $('#bottom2.grid-stack').gridstack(_.defaults({height: 1, width: 5, cellHeight: 100, acceptWidgets: '.grid-stack-item', float:false}, options)); //Verwende options aber ändere Parameter für heights
+
+   $('.grid-stack-1 .grid-stack-item').draggable({
+     revert: 'invalid',
+     handle: '.grid-stack-item-content',
+     scroll: false,
+     appendTo: 'body'
+   });
+   // $('.grid-stack').on('dragstop', function(event, ui) {
+   //   var grid = this;
+   //   var element = event.target;
+   //   if (grid.willItFit(element.x, element.y, element.width, element.height, true)) {
+   //     grid.addWidget(element.el, element.x, element.y, element.width, element.height, true);
+   //   }
+   //   else {
+   //     alert('Not enough free space to place the widget');
+   //   }
+   // });
+   $('.grid-stack').on('change', function(event, items) {
+     prompt("change");
+   });
 });
-
-
 
 
 function runButton(){

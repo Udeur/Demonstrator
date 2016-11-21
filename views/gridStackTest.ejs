@@ -1,131 +1,148 @@
-<!--Problem: Wenn ich Elemente von oben nach unten hinzufüge und umgekeht dann passt alles - können nur an "richtigen" Orten hinzugefügt werden.-->
-<!--Wenn oben-oben dann verschiebt sich alles.-->
-<!--Außerdem: Platzhalter bleiben oben(bzw. unten) und verfälschen Anpassung-->
-<div class="draggable-fluid">
-  <h1>Two grids test</h1>
-  <div class="row row-horizon" >
+<div class="container-fluid">
+  <div class="row no-horizon row-horizon" >        <!--  nogutter: Keine Abstände, row-horizon: Scroll-->
    <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes" >
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
    </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-x="0" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
     <div class="col-md-1">
-      <div class="grid-stack grid-stack-1" data-gs-height="1">
-        <div class="grid-stack-item" data-gs-locked="no">
+      <div class="grid-stack grid-stack-1" id="top">
+        <div class="grid-stack-item" data-gs-locked="yes">
           <div class="grid-stack-item-content">Drag</div>
         </div>
       </div>
     </div>
   </div>
-
   <div class="row">
-    <div class="col-md-12">
-      <div class="grid-stack grid-stack-12">
-        <div class="grid-stack-item" data-gs-x="0" data-gs-y="2" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-no-move="yes" data-gs-locked="yes">
+    <div class="col-md-6">
+      <div class="grid-stack grid-stack-5" id="bottom">
+        <div class="grid-stack-item" data-gs-x="4" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-no-move="yes" data-gs-locked="yes">
           <div class="grid-stack-item-content" id="final"></div>
         </div>
-        <div class="grid-stack-item" data-gs-x="11" data-gs-y="2" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-no-move="yes" data-gs-locked="yes">
+        <div class="grid-stack-item" data-gs-x="3" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-locked="yes">
+          <div class="grid-stack-item-content"></div>
+        </div>
+        <div class="grid-stack-item" data-gs-x="2" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-locked="yes">
+          <div class="grid-stack-item-content"></div>
+        </div>
+        <div class="grid-stack-item" data-gs-x="1" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-locked="yes">
+          <div class="grid-stack-item-content"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="grid-stack grid-stack-5" id="bottom2">
+        <div class="grid-stack-item" data-gs-x="4" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-no-move="yes" data-gs-locked="yes">
           <div class="grid-stack-item-content" id="final"></div>
+        </div>
+        <div class="grid-stack-item" data-gs-x="3" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-locked="yes">
+          <div class="grid-stack-item-content"></div>
+        </div>
+        <div class="grid-stack-item" data-gs-x="2" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-locked="yes">
+          <div class="grid-stack-item-content"></div>
+        </div>
+        <div class="grid-stack-item" data-gs-x="1" data-gs-y="0" data-gs-width="1" data-gs-height="1" data-gs-no-resize="yes" data-gs-locked="yes">
+          <div class="grid-stack-item-content"></div>
         </div>
       </div>
     </div>
