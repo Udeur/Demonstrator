@@ -1,6 +1,3 @@
-// /**
-//  * Created by Sven on 21.11.2016.
-//  */
 // $(function () {
 //   var options = {
 //     width: 6,
@@ -9,27 +6,24 @@
 //     removeTimeout: 100,
 //     acceptWidgets: '.grid-stack-item'
 //   };
-//   $('#grid1').gridstack(_.defaults({
-//     cellHeight: 100
-//   },options));
+//   $('#grid1').gridstack(options);
 //   $('#grid2').gridstack(_.defaults({
-//     cellHeight: 200,
 //     float: true
 //   }, options));
-//   // var items = [
-//     // {x: 0, y: 0, width: 2, height: 2},
-//     // {x: 3, y: 1, width: 1, height: 2},
-//     // {x: 4, y: 1, width: 1, height: 1},
-//     // {x: 2, y: 3, width: 3, height: 1},
-//     // {x: 2, y: 5, width: 1, height: 1}
-//   // ];
-//   // $('.grid-stack').each(function () {
-//   //   var grid = $(this).data('gridstack');
-//   //   _.each(items, function (node) {
-//   //     grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
-//   //       node.x, node.y, node.width, node.height);
-//   //   }, this);
-//   // });
+//   var items = [
+//     {x: 0, y: 0, width: 2, height: 2},
+//     {x: 3, y: 1, width: 1, height: 2},
+//     {x: 4, y: 1, width: 1, height: 1},
+//     {x: 2, y: 3, width: 3, height: 1},
+//     {x: 2, y: 5, width: 1, height: 1}
+//   ];
+//   $('.grid-stack').each(function () {
+//     var grid = $(this).data('gridstack');
+//     _.each(items, function (node) {
+//       grid.addWidget($('<div><div class="grid-stack-item-content" /><div/>'),
+//         node.x, node.y, node.width, node.height);
+//     }, this);
+//   });
 //   $('.sidebar .grid-stack-item').draggable({
 //     revert: 'invalid',
 //     handle: '.grid-stack-item-content',

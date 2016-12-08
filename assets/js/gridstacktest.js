@@ -2,44 +2,61 @@
  * Created by Sven on 02.11.2016.
  */
 //Items dont trigger add/remove events
- $(function () {
-  $('.grid-stack-1').gridstack({  //Hier führt Aufruf mit options zu Fehler?! Gleiche Zellhöhe wie letzter Grid
-    animate: false,
-    height: 1,
-    width: 1,        //wie viele passen nebeneinander
-    float: false,
-    disableResize: true,
-    cellHeight: 85,
-    removable: true,
-    removeTimeout: 100,
-  });
-  $('.grid-stack-5').gridstack({
-    animate: false,
-    height: 5,
-    width: 5,
-    float: true,
-    disableResize: true,
-    cellHeight: 200,
-    acceptWidgets:'.grid-stack-item',
-    removable: true,
-    removeTimeout: 100,
-  });
+$(document).ready(function() {
+   window.addEventListener("resize", function (event) {          //Zeichnet die Endpoints neu wenn sich Fenstergröße verändert
+     jsPlumb.repaintEverything();                               //TODO: JETZT FUNKTIONIERT drag Handle nicht mehr
+   }, false);
+
+   $('.grid-stack-1').gridstack({  //Hier führt Aufruf mit options zu Fehler?! Gleiche Zellhöhe wie letzter Grid
+     animate: false,
+     height: 1,
+     width: 1,        //wie viele passen nebeneinander
+     float: false,
+     disableResize: true,
+     cellHeight: 85,
+     removable: false,
+     removeTimeout: 100,
+   });
+   $('.grid-stack-5').gridstack({
+     animate: false,
+     height: 5,
+     width: 5,
+     float: true,
+     disableResize: true,
+     cellHeight: 200,
+     acceptWidgets: '.grid-stack-item',
+     removable: false,
+     removeTimeout: 100,
+   });
 //  $('#bottom2.grid-stack').gridstack(_.defaults({height: 5}, options)); //Verwende options aber ändere Parameter für heights
+
    var items = [
-    {x: 0, y: 0, width: 1, height: 1},
-  ];
-  $('.grid-stack-1').each(function () {
-    var grid = $(this).data('gridstack');
-    _.each(items, function (node) {
-      grid.addWidget($('<div><div class="grid-stack-item-content">Drag<div/><div/>'),
-        node.x, node.y, node.width, node.height);
-    }, this);
-  });
+     {x: 0, y: 0, width: 1, height: 1},
+   ];
+   $('.grid-stack-1').each(function () {                                                   //Scrollbar wird initialisiert
+     var grid = $(this).data('gridstack');
+     _.each(items, function (node) {
+       grid.addWidget($('<div><div class="grid-stack-item-content">Drag<div/><div/>'),
+         node.x, node.y, node.width, node.height);
+     }, this);
+   });
+
+
    var itemOrigin = [
-     {x: 0, y: 1, width: 1, height: 1},
+     {x: 0, y: 2, width: 1, height: 1},
    ];
    var itemEnd = [
-    {x: 4, y: 1, width: 1, height: 1},
+     {x: 4, y: 2, width: 1, height: 1},
+   ];
+   var itemBlock = [
+     {x: 0, y: 0, width: 1, height: 1},
+     {x: 0, y: 1, width: 1, height: 1},
+     {x: 0, y: 3, width: 1, height: 1},
+     {x: 0, y: 4, width: 1, height: 1},
+     {x: 4, y: 0, width: 1, height: 1},
+     {x: 4, y: 1, width: 1, height: 1},
+     {x: 4, y: 3, width: 1, height: 1},
+     {x: 4, y: 4, width: 1, height: 1},
    ];
    var itemsVar = [
      {x: 1, y: 2, width: 1, height: 1},
@@ -47,7 +64,7 @@
      {x: 2, y: 1, width: 1, height: 1},
      {x: 3, y: 1, width: 1, height: 1},
    ];
-   $('.grid-stack-5').each(function () {
+   $('.grid-stack-5').each(function () {                                              //unterer Gridstack wird initialisiert
      var grid = $(this).data('gridstack');
      _.each(itemOrigin, function (node) {
        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin"><div class="grid-stack-item-content"><div/><div/>'),
@@ -57,35 +74,69 @@
        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end"><div class="grid-stack-item-content"><div/><div/>'),
          node.x, node.y, node.width, node.height);
      }, this);
+     var grid = $(this).data('gridstack');
+     _.each(itemBlock, function (node) {
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block"><div class="grid-stack-item-content"><div/><div/>'),
+         node.x, node.y, node.width, node.height);
+     }, this);
      _.each(itemsVar, function (node) {
        grid.addWidget($('<div><div class="grid-stack-item-content"><div/><div/>'),
          node.x, node.y, node.width, node.height);
      }, this);
    });
- //  $('.grid-stack-item').each(function () {
-  //  jsPlumb.addEndpoint(this,{ anchor:"BottomCenter", isSource:true, isTarget:true});
-  //  });
-   jsPlumb.registerEndpointTypes({
+
+   jsPlumb.registerEndpointTypes({                                                  //Standard Endpointtyp
      "source": {
-       paintStyle: {fill:"green"}
+       paintStyle: {fill: "green"}
      },
      "target": {
-       paintStyle: {fill:"blue"}
+       paintStyle: {fill: "blue"}
      }
    });
 
-   jsPlumb.addEndpoint($('.grid-stack-5 #origin'),{ anchor:[ 0.75, 0.5, 1, 0], type:"source", isSource:true,connectorStyle:{ stroke:"red", strokeWidth:5  }});  //right
-   jsPlumb.addEndpoint($('.grid-stack-5 #end'),{ anchor:[ 0.25, 0.5, -1, 0], type:"target", isTarget:true}); //left
-   jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end'),{ anchor:[ 0.75, 0.5, 1, 0], maxConnections: -1, type:"source", isSource:true, connectorStyle:{ stroke:"red", strokeWidth:5  }});
-   jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end'),{ anchor:[ 0.25, 0.5, -1, 0], maxConnections: -1, type:"target", isTarget:true});
+   jsPlumb.addEndpoint($('.grid-stack-5 #origin'), {
+     anchor: [0.75, 0.5, 1, 0],
+     maxConnections: -1,
+     type: "source",
+     isSource: true,
+     connectorStyle: {stroke: "red", strokeWidth: 5}
+   });  //right
+   jsPlumb.addEndpoint($('.grid-stack-5 #end'), {
+     anchor: [0.25, 0.5, -1, 0],
+     maxConnections: -1,
+     type: "target",
+     isTarget: true
+   }); //left
+   jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
+     anchor: [0.75, 0.5, 1, 0],
+     maxConnections: -1,
+     type: "source",
+     isSource: true,
+     connectorStyle: {stroke: "red", strokeWidth: 5}
+   });
+   jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
+     anchor: [0.25, 0.5, -1, 0],
+     maxConnections: -1,
+     type: "target",
+     isTarget: true
+   });
 
-   jsPlumb.draggable($('.grid-stack-5 .grid-stack-item').not('#origin, #end'));   //Zeigt den endpoints dass das Element draggable ist. Noch nicht überschrieben - zwei mal Draggable implementiert pro widget
+   jsPlumb.draggable($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'));   //Zeigt den endpoints dass das Element draggable ist. Noch nicht überschrieben - zwei mal Draggable implementiert pro widget
 
 
+   var isGrid;
    $('.grid-stack').on('change', function(event, items) {
+   //  console.log(event);
+    // console.log($(event.target).data('gridstack'));
+     if(isGrid==$(event.target).data('gridstack')){
+       console.log("nothingChanged")
+     }
+     else{
+       console.log("Changed");
+     }
      _.each(items, function (node) {
        console.log(node.el);
-       console.log(jsPlumb.selectEndpoints({element: node.el}));
+    //   console.log(jsPlumb.selectEndpoints({element: node.el}));
        if (jsPlumb.selectEndpoints({element: node.el}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
          jsPlumb.addEndpoint(node.el, {
            anchor: [0.75, 0.5, 1, 0],
@@ -102,10 +153,67 @@
          });
          jsPlumb.draggable(node.el);                                        //Macht neues Element draggable
        }
-       console.log(jsPlumb.selectEndpoints({element: node.el}));
+   //    console.log(jsPlumb.selectEndpoints({element: node.el}));
      });
-     jsPlumb.repaint(items);                                                //Aktualisiert Endpointpositionen nach stop des draggens
+    // jsPlumb.repaint(items);                                                //Aktualisiert Endpointpositionen nach stop des draggens
+     jsPlumb.repaintEverything();
+  //  $('.grid-stack-5').removeAll();
    });
+   $('.grid-stack').on('dragstop', function(event, ui) {
+   //  console.log($(this).data('gridstack'));
+     if(isGrid == $(this).data('gridstack')){
+     //  console.log("nothingChanged");
+     }
+     else{
+   //    console.log("Changed");
+     }
+     var element = event.target;
+  //   grid.removeWidget(element);
+   //  console.log(this);
+   //  console.log(element);
+   //  console.log(event);
+    //  if (grid.willItFit(element.x, element.y, element.width, element.height, true)) {
+    // //   grid.addWidget(element.el, element.x, element.y, element.width, element.height, false);
+    // }
+    //  // if(grid.isAreaEmpty(element.x, element.y, element.width, element.height)==true){
+    //  //   console.log("ok");
+    //  // }
+    //  else {
+    //    alert('Not enough free space to place the widget');
+    //  }
+   });
+
+
+
+   $('.grid-stack').on('change', function(event, items) {
+     console.log("change");
+   });
+   $('.grid-stack').on('dragstart', function(event, ui) {
+   //  console.log(this);             //entspricht console.log(event.currentTarget);
+     isGrid=$(this).data('gridstack');
+    // console.log(isGrid);
+    // grid.removeWidget(event.target);
+  //   console.log(event);
+  //   console.log(event.currentTarget);
+   //  console.log(event.target);
+     console.log("dragstart");
+   });
+   $('.grid-stack').on('removed', function(event, items) {
+     console.log("removed");
+   });
+   $('.grid-stack').on('added', function(event, items) {
+     console.log("added");
+   });
+   $('.grid-stack').on('disable', function(event) {
+     console.log("disabled");
+   });
+   $('.grid-stack').on('enable', function(event) {
+     console.log("enabled");
+   });
+    $('.grid-stack').on('dragstop', function(event, ui) {
+      console.log("dragstop");
+    });
+});
    /*
    $('.grid-stack-5 .grid-stack-item').draggable(
      {
@@ -145,7 +253,7 @@
    // $('.grid-stack').on('added', function(event, items) {
    //    prompt("added");
    // });
-});
+
 
 //
 // function runButton(){
