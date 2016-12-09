@@ -1,46 +1,55 @@
 .container-fluid{
   background-color: #bce8f1;
 }
+.row-horizon,
+.grid-stack-5{
+  background-color: lightgoldenrodyellow;    // //azure
+  border:solid black medium ;
+}
 .row-horizon{
-  background-color: azure;
-  border-style: solid;
-  border-width: medium;
+  margin-top: 0.5cm;
   margin-bottom: 0.5cm;
 }
-.col-md-1 .grid-stack .grid-stack-item .grid-stack-item-content,
-.col-md-1 .grid-stack .grid-stack-item .placeholder-content {
+.grid-stack-1{
+  width:100px;
+}
+.col-xs-1 .grid-stack .grid-stack-item .grid-stack-item-content,
+.col-xs-1 .grid-stack .grid-stack-item .placeholder-content{
+ // left: 7.5%;
+  right: 10%;
+  top: 10%;
+  bottom: 10%;
+}
+.col-xs-12 .grid-stack .grid-stack-item{
+  min-width: 160px;
+  min-height: 160px;
+}
+.col-xs-12 .grid-stack .grid-stack-item .grid-stack-item-content,
+.col-xs-12 .grid-stack .grid-stack-item .placeholder-content {
   left: 25%;
   right: 25%;
   top: 25%;
   bottom: 25%;
-}
-.col-md-12 .grid-stack .grid-stack-item .grid-stack-item-content,
-.col-md-12 .grid-stack .grid-stack-item .placeholder-content {
-  left: 25%;
-  right: 25%;
-  top: 25%;
-  bottom: 25%;
-}
-
-.grid-stack-5{
-  background: lightgoldenrodyellow;
-  border-style: solid;
-  border-width: medium;
 }
 .grid-stack-item{
   display: inline-block;
 }
-.grid-stack-item-content {
-  //border-radius: 50%;    //Wenn das zu grid-stack-item hinzugefügt wird sieht man es als "Schatten"
-  color: #000000;
-  text-align: center;
-  background-color: #bce8f1;
+.grid-stack-item-content,
+.placeholder-content {
+  border-radius: 15%;
 }
-#origin .grid-stack-item-content, #end .grid-stack-item-content{
-  background-color: #001c20;
+.grid-stack-item-content{
+  background-color: white;
+  border:solid black thin;
+  text-align: center;
+}
+#origin .grid-stack-item-content,
+#end .grid-stack-item-content{
+  background-color: #5e5e5e;
 }
 #block .grid-stack-item-content{
   background-color: transparent;
+  border:none;
 }
 .row.no-gutter {
   margin-left: 0;
@@ -48,13 +57,9 @@
 }
 .row.no-gutter [class*='col-']:not(:first-child),
 .row.no-gutter [class*='col-']:not(:last-child) {
-  padding-right: 0;
-  padding-left: 0;
+ // padding-right: 0;
+ // padding-left: 0;
 }
-
-//.grid-stack-1{
-//  background-color: transparent;
-//}
 
 
 

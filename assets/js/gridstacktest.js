@@ -13,9 +13,11 @@ $(document).ready(function() {
      width: 1,        //wie viele passen nebeneinander
      float: false,
      disableResize: true,
-     cellHeight: 85,
+     cellHeight: 100,
+   //  cellWidth: 100,
      removable: false,
      removeTimeout: 100,
+     minWidth:0,
    });
    $('.grid-stack-5').gridstack({
      animate: false,
@@ -23,10 +25,12 @@ $(document).ready(function() {
      width: 5,
      float: true,
      disableResize: true,
-     cellHeight: 200,
+     cellHeight: 'auto',
+  //   cellWidth: 200,
      acceptWidgets: '.grid-stack-item',
      removable: false,
      removeTimeout: 100,
+     minWidth:0,
    });
 //  $('#bottom2.grid-stack').gridstack(_.defaults({height: 5}, options)); //Verwende options aber ändere Parameter für heights
 
@@ -36,7 +40,7 @@ $(document).ready(function() {
    $('.grid-stack-1').each(function () {                                                   //Scrollbar wird initialisiert
      var grid = $(this).data('gridstack');
      _.each(items, function (node) {
-       grid.addWidget($('<div><div class="grid-stack-item-content">Drag<div/><div/>'),
+       grid.addWidget($('<div><div class="grid-stack-item-content"><div/><div/>'),
          node.x, node.y, node.width, node.height);
      }, this);
    });
@@ -131,30 +135,30 @@ $(document).ready(function() {
      if(isGrid==$(event.target).data('gridstack')){
        console.log("nothingChanged")
      }
-     else{
+     else {
        console.log("Changed");
+       _.each(items, function (node) {
+         console.log(node.el);
+         //   console.log(jsPlumb.selectEndpoints({element: node.el}));
+         if (jsPlumb.selectEndpoints({element: node.el}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
+           jsPlumb.addEndpoint(node.el, {
+             anchor: [0.75, 0.5, 1, 0],
+             maxConnections: -1,
+             type: "source",
+             isSource: true,
+             connectorStyle: {stroke: "red", strokeWidth: 5}
+           });
+           jsPlumb.addEndpoint(node.el, {
+             anchor: [0.25, 0.5, -1, 0],
+             maxConnections: -1,
+             type: "target",
+             isTarget: true
+           });
+           jsPlumb.draggable(node.el);                                        //Macht neues Element draggable
+         }
+         //    console.log(jsPlumb.selectEndpoints({element: node.el}));
+       });
      }
-     _.each(items, function (node) {
-       console.log(node.el);
-    //   console.log(jsPlumb.selectEndpoints({element: node.el}));
-       if (jsPlumb.selectEndpoints({element: node.el}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
-         jsPlumb.addEndpoint(node.el, {
-           anchor: [0.75, 0.5, 1, 0],
-           maxConnections: -1,
-           type: "source",
-           isSource: true,
-           connectorStyle: {stroke: "red", strokeWidth: 5}
-         });
-         jsPlumb.addEndpoint(node.el, {
-           anchor: [0.25, 0.5, -1, 0],
-           maxConnections: -1,
-           type: "target",
-           isTarget: true
-         });
-         jsPlumb.draggable(node.el);                                        //Macht neues Element draggable
-       }
-   //    console.log(jsPlumb.selectEndpoints({element: node.el}));
-     });
     // jsPlumb.repaint(items);                                                //Aktualisiert Endpointpositionen nach stop des draggens
      jsPlumb.repaintEverything();
   //  $('.grid-stack-5').removeAll();
