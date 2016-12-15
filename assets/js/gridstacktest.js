@@ -2,22 +2,34 @@
  * Created by Sven on 02.11.2016.
  */
 //Items dont trigger add/remove events
+var w_height;
 $(document).ready(function() {
    window.addEventListener("resize", function (event) {          //Zeichnet die Endpoints neu wenn sich Fenstergröße verändert
+    /* w_height=$(window).height();
+     $('.grid-stack-1').each(function () {
+       var grid = $(this).data('gridstack');
+       grid.cellHeight(w_height / 6 / 2);
+     });
+     $('.grid-stack-1').each(function () {
+       var grid = $(this).data('gridstack');
+       grid.cellHeight(w_height/6);
+       grid.update();
+     });*/
      jsPlumb.repaintEverything();                               //TODO: JETZT FUNKTIONIERT drag Handle nicht mehr
    }, false);
-
+  w_height=$(window).height();
    $('.grid-stack-1').gridstack({  //Hier führt Aufruf mit options zu Fehler?! Gleiche Zellhöhe wie letzter Grid
      animate: false,
      height: 1,
      width: 1,        //wie viele passen nebeneinander
      float: false,
      disableResize: true,
-     cellHeight: 100,
+     cellHeight: w_height/6/2,
    //  cellWidth: 100,
      removable: false,
      removeTimeout: 100,
      minWidth:0,
+     verticalMargin: 0, //kein Abstand nach oben
    });
    $('.grid-stack-5').gridstack({
      animate: false,
@@ -25,12 +37,13 @@ $(document).ready(function() {
      width: 5,
      float: true,
      disableResize: true,
-     cellHeight: 'auto',
+     cellHeight: w_height/6,
   //   cellWidth: 200,
      acceptWidgets: '.grid-stack-item',
      removable: false,
      removeTimeout: 100,
      minWidth:0,
+     verticalMargin: 0, //kein Abstand nach oben
    });
 //  $('#bottom2.grid-stack').gridstack(_.defaults({height: 5}, options)); //Verwende options aber ändere Parameter für heights
 
@@ -71,11 +84,11 @@ $(document).ready(function() {
    $('.grid-stack-5').each(function () {                                              //unterer Gridstack wird initialisiert
      var grid = $(this).data('gridstack');
      _.each(itemOrigin, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin"><div class="grid-stack-item-content"><div/><div/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin"><div class="grid-stack-item-content" id="originChild"><div/><div/>'),
          node.x, node.y, node.width, node.height);
      }, this);
      _.each(itemEnd, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end"><div class="grid-stack-item-content"><div/><div/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end"><div class="grid-stack-item-content" id="endChild"><div/><div/>'),
          node.x, node.y, node.width, node.height);
      }, this);
      var grid = $(this).data('gridstack');
@@ -91,43 +104,48 @@ $(document).ready(function() {
 
    jsPlumb.registerEndpointTypes({                                                  //Standard Endpointtyp
      "source": {
-       paintStyle: {fill: "green"}
+       paintStyle: {fill: "transparent"},
+       hoverPaintStyle: {fill: "green"},
+       connectorStyle: {stroke: "black", strokeWidth: 5}
      },
      "target": {
-       paintStyle: {fill: "blue"}
+       paintStyle: {fill: "transparent"},
+       hoverPaintStyle: {fill: "blue"}
      }
    });
 
-   jsPlumb.addEndpoint($('.grid-stack-5 #origin'), {
-     anchor: [0.75, 0.5, 1, 0],
+ //  jsPlumb.addEndpoint($('.grid-stack-5 #origin.grid-stack-item #originChild.grid-stack-item-content'), {
+  jsPlumb.addEndpoint("originChild", {
+     anchor: [0.6, 0.5, 1, 0],
      maxConnections: -1,
      type: "source",
      isSource: true,
-     connectorStyle: {stroke: "red", strokeWidth: 5}
+    container: "bottomGrid",
    });  //right
-   jsPlumb.addEndpoint($('.grid-stack-5 #end'), {
-     anchor: [0.25, 0.5, -1, 0],
+ //  jsPlumb.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {
+     jsPlumb.addEndpoint("endChild", {
+     anchor: [0.4, 0.5, -1, 0],
      maxConnections: -1,
      type: "target",
-     isTarget: true
+     isTarget: true,
+       container: "bottomGrid",
    }); //left
-   jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
-     anchor: [0.75, 0.5, 1, 0],
+   /*jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
+     anchor: [0.6, 0.5, 1, 0],
      maxConnections: -1,
      type: "source",
      isSource: true,
-     connectorStyle: {stroke: "red", strokeWidth: 5}
    });
    jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
-     anchor: [0.25, 0.5, -1, 0],
+     anchor: [0.4, 0.5, -1, 0],
      maxConnections: -1,
      type: "target",
      isTarget: true
-   });
+   });*/
 
    jsPlumb.draggable($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'));   //Zeigt den endpoints dass das Element draggable ist. Noch nicht überschrieben - zwei mal Draggable implementiert pro widget
 
-
+  jsPlumb.repaintEverything();
    var isGrid;
    $('.grid-stack').on('change', function(event, items) {
    //  console.log(event);
@@ -142,14 +160,13 @@ $(document).ready(function() {
          //   console.log(jsPlumb.selectEndpoints({element: node.el}));
          if (jsPlumb.selectEndpoints({element: node.el}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
            jsPlumb.addEndpoint(node.el, {
-             anchor: [0.75, 0.5, 1, 0],
+             anchor: [0.6, 0.5, 1, 0],
              maxConnections: -1,
              type: "source",
              isSource: true,
-             connectorStyle: {stroke: "red", strokeWidth: 5}
            });
            jsPlumb.addEndpoint(node.el, {
-             anchor: [0.25, 0.5, -1, 0],
+             anchor: [0.4, 0.5, -1, 0],
              maxConnections: -1,
              type: "target",
              isTarget: true

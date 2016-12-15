@@ -1,5 +1,9 @@
-.container-fluid{
+body{
   background-color: #bce8f1;
+}
+.container-fluid{
+  height: 100%;
+  width: 100%;
 }
 .row-horizon,
 .grid-stack-5{
@@ -7,30 +11,33 @@
   border:solid black medium ;
 }
 .row-horizon{
-  margin-top: 0.5cm;
-  margin-bottom: 0.5cm;
-}
-.grid-stack-1{
-  width:100px;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
 }
 .col-xs-1 .grid-stack .grid-stack-item .grid-stack-item-content,
 .col-xs-1 .grid-stack .grid-stack-item .placeholder-content{
- // left: 7.5%;
-  right: 10%;
-  top: 10%;
-  bottom: 10%;
+  width: 6.25vh;        //entspricht w_height/6/3*2
+  // left: 7.5%;
+  top: 12.5%;           //reduziert Größe um die Hälfte von 2/3
+  bottom: 12.5%;        //reduziert Größe um die Hälfte von 2/3
 }
 .col-xs-12 .grid-stack .grid-stack-item{
-  min-width: 160px;
-  min-height: 160px;
+//  min-width: 160px;
+//  min-height: 160px
 }
 .col-xs-12 .grid-stack .grid-stack-item .grid-stack-item-content,
 .col-xs-12 .grid-stack .grid-stack-item .placeholder-content {
-  left: 25%;
-  right: 25%;
-  top: 25%;
-  bottom: 25%;
+ // width: 16.6666666667vh;       //entspricht w_height/6
+  width: 8.3333333333vh;          //entspricht 50% von w_height/6
+  left: calc(~"(100% - 8.3333333333vh) / 2");  //rückt es nach rechts ein
+  top: 25%;                     //reduziert Größe um ein viertel
+  bottom: 25%;                  //reduziert Größe um ein viertel
 }
+// --> Länge: 0.5
+// --> Höhe: 0.5
+// --> Mittelpunkt bei: 0.5
+// --> Linke Grenze bei:
+// --> Rechhte Grenze bei:
 .grid-stack-item{
   display: inline-block;
 }
