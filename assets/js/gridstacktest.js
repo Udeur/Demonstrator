@@ -60,13 +60,13 @@ $(document).ready(function() {
 
 
    var itemOrigin = [
-     {x: 0, y: 2, width: 1, height: 1},
+     {x: 0, y: 2, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 0},
    ];
    var itemEnd = [
-     {x: 4, y: 2, width: 1, height: 1},
+     {x: 4, y: 2, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 10},
    ];
    var itemBlock = [
-     {x: 0, y: 0, width: 1, height: 1},
+     {x: 0, y: 0, width: 1, height: 1 },
      {x: 0, y: 1, width: 1, height: 1},
      {x: 0, y: 3, width: 1, height: 1},
      {x: 0, y: 4, width: 1, height: 1},
@@ -76,76 +76,88 @@ $(document).ready(function() {
      {x: 4, y: 4, width: 1, height: 1},
    ];
    var itemsVar = [
-     {x: 1, y: 2, width: 1, height: 1},
-     {x: 3, y: 0, width: 1, height: 1},
-     {x: 2, y: 1, width: 1, height: 1},
-     {x: 3, y: 1, width: 1, height: 1},
+     {x: 1, y: 2, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 1},
+     {x: 3, y: 0, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 4},
+     {x: 2, y: 1, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 2},
+     {x: 3, y: 1, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 7},
    ];
    $('.grid-stack-5').each(function () {                                              //unterer Gridstack wird initialisiert
      var grid = $(this).data('gridstack');
      _.each(itemOrigin, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin"><div class="grid-stack-item-content" id="originChild"><div/><div/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin"><div class="grid-stack-item-content">' +
+           '<img src=' + node.image + '  style="margin:auto; display:block" /><div/>' +
+           '<span class="value"> value: ' + node.value +'<span/>'),
          node.x, node.y, node.width, node.height);
      }, this);
      _.each(itemEnd, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end"><div class="grid-stack-item-content" id="endChild"><div/><div/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end"><div class="grid-stack-item-content">' +
+         '<img src=' + node.image + '  style="margin:auto; display:block" /><div/>' +
+       '<span class="value"> value: ' + node.value +'<span/>'),
          node.x, node.y, node.width, node.height);
      }, this);
      var grid = $(this).data('gridstack');
      _.each(itemBlock, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block"><div class="grid-stack-item-content"><div/><div/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block"><div class="grid-stack-item-content"/><div/>'),
          node.x, node.y, node.width, node.height);
      }, this);
      _.each(itemsVar, function (node) {
-       grid.addWidget($('<div><div class="grid-stack-item-content"><div/><div/>'),
+       grid.addWidget($('<div data-gs-locked="yes"><div class="grid-stack-item-content">' +
+         '<img src=' + node.image + '  style="margin:auto; display:block" /><div/>' +
+       '<span class="value"> value: ' + node.value +'<span/>'),
          node.x, node.y, node.width, node.height);
      }, this);
    });
+  jsPlumb.setContainer("bottomGrid");
 
-   jsPlumb.registerEndpointTypes({                                                  //Standard Endpointtyp
+    jsPlumb.registerEndpointTypes({                                                  //Standard Endpointtyp
      "source": {
-       paintStyle: {fill: "transparent"},
+      // paintStyle: {fill: "transparent"},
+     //  paintStyle: {fill: "green"},
+       paintStyle: {fill: "white", outlineStroke:"black", outlineWidth:1},
        hoverPaintStyle: {fill: "green"},
        connectorStyle: {stroke: "black", strokeWidth: 5}
      },
      "target": {
-       paintStyle: {fill: "transparent"},
+    //   paintStyle: {fill: "transparent"},
+     //  paintStyle: {fill: "blue"},
+      paintStyle: {fill: "white", outlineStroke:"black", outlineWidth:1},
        hoverPaintStyle: {fill: "blue"}
      }
    });
 
- //  jsPlumb.addEndpoint($('.grid-stack-5 #origin.grid-stack-item #originChild.grid-stack-item-content'), {
-  jsPlumb.addEndpoint("originChild", {
-     anchor: [0.6, 0.5, 1, 0],
+ jsPlumb.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {
+ // jsPlumb.addEndpoint("originChild", {
+     anchor: [1, 0.5, 1, 0],
      maxConnections: -1,
      type: "source",
      isSource: true,
-    container: "bottomGrid",
    });  //right
- //  jsPlumb.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {
-     jsPlumb.addEndpoint("endChild", {
-     anchor: [0.4, 0.5, -1, 0],
+ jsPlumb.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {
+     anchor: [0, 0.5, -1, 0],
      maxConnections: -1,
      type: "target",
      isTarget: true,
-       container: "bottomGrid",
    }); //left
-   /*jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
-     anchor: [0.6, 0.5, 1, 0],
+  // jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item .grid-stack-item-content').parent(:not($('#origin.grid-stack-item, #end.grid-stack-item, #block.grid-stack-item .grid-stack-item-content ')), {
+    jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'),{
+     anchor: [1, 0.5, 1, 0],
      maxConnections: -1,
      type: "source",
      isSource: true,
    });
-   jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
-     anchor: [0.4, 0.5, -1, 0],
+  // jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
+ // jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item .grid-stack-item-content').not($('#origin.grid-stack-item, #end.grid-stack-item, #block.grid-stack-item .grid-stack-item-content ')), {
+  jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'),{
+     anchor: [0, 0.5, -1, 0],
      maxConnections: -1,
      type: "target",
      isTarget: true
-   });*/
+   });
 
    jsPlumb.draggable($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'));   //Zeigt den endpoints dass das Element draggable ist. Noch nicht überschrieben - zwei mal Draggable implementiert pro widget
-
+//  jsPlumb.draggable($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'));
   jsPlumb.repaintEverything();
+
    var isGrid;
    $('.grid-stack').on('change', function(event, items) {
    //  console.log(event);
@@ -156,17 +168,18 @@ $(document).ready(function() {
      else {
        console.log("Changed");
        _.each(items, function (node) {
-         console.log(node.el);
-         //   console.log(jsPlumb.selectEndpoints({element: node.el}));
-         if (jsPlumb.selectEndpoints({element: node.el}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
-           jsPlumb.addEndpoint(node.el, {
-             anchor: [0.6, 0.5, 1, 0],
+         var selectedItemContent=node.el.children(":first");
+     //    console.log(selectedItemContent);
+     //    console.log(jsPlumb.selectEndpoints({element:selectedItemContent}).length);
+         if (jsPlumb.selectEndpoints({element:selectedItemContent}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
+           jsPlumb.addEndpoint((selectedItemContent), {
+             anchor: [1, 0.5, 1, 0],
              maxConnections: -1,
              type: "source",
              isSource: true,
            });
-           jsPlumb.addEndpoint(node.el, {
-             anchor: [0.4, 0.5, -1, 0],
+           jsPlumb.addEndpoint((selectedItemContent), {
+             anchor: [0, 0.5, -1, 0],
              maxConnections: -1,
              type: "target",
              isTarget: true
@@ -178,7 +191,7 @@ $(document).ready(function() {
      }
     // jsPlumb.repaint(items);                                                //Aktualisiert Endpointpositionen nach stop des draggens
      jsPlumb.repaintEverything();
-  //  $('.grid-stack-5').removeAll();
+
    });
    $('.grid-stack').on('dragstop', function(event, ui) {
    //  console.log($(this).data('gridstack'));
