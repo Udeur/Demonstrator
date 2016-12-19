@@ -154,7 +154,7 @@ $(document).ready(function() {
      isTarget: true
    });
 
-   jsPlumb.draggable($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'));   //Zeigt den endpoints dass das Element draggable ist. Noch nicht überschrieben - zwei mal Draggable implementiert pro widget
+ //  jsPlumb.draggable($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'));   //Zeigt den endpoints dass das Element draggable ist. Noch nicht überschrieben - zwei mal Draggable implementiert pro widget
 //  jsPlumb.draggable($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'));
   jsPlumb.repaintEverything();
 
@@ -184,7 +184,7 @@ $(document).ready(function() {
              type: "target",
              isTarget: true
            });
-           jsPlumb.draggable(node.el);                                        //Macht neues Element draggable
+    //       jsPlumb.draggable(node.el);                                        //Macht neues Element draggable
          }
          //    console.log(jsPlumb.selectEndpoints({element: node.el}));
        });
@@ -193,6 +193,25 @@ $(document).ready(function() {
      jsPlumb.repaintEverything();
 
    });
+  $('.grid-stack .grid-stack-item').draggable(
+  {
+    drag2: function() {
+      var offset = $(this).offset();
+      var xPos = offset.left;
+      var yPos = offset.top;
+      console.log($(this));
+      console.log('x: ' + xPos);
+      console.log('y: ' + yPos);
+    }
+  });
+/*
+  var offset = $(this).offset();
+  var xPos = offset.left;
+  var yPos = offset.top;
+  console.log($(this));
+  console.log('x: ' + xPos);
+  console.log('y: ' + yPos);
+  */
    $('.grid-stack').on('dragstop', function(event, ui) {
    //  console.log($(this).data('gridstack'));
      if(isGrid == $(this).data('gridstack')){
@@ -245,8 +264,27 @@ $(document).ready(function() {
      console.log("enabled");
    });
     $('.grid-stack').on('dragstop', function(event, ui) {
+      jsPlumb.repaintEverything();        //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
+      var element = event.target;
+      console.log(element);
       console.log("dragstop");
+      console.log(event);
     });
+
+  $(self.container).droppable({
+    out: function (event, ui) {
+      var el = $(ui.draggable);
+      var node = el.data('_gridstack_node'); //eagooqi
+      if (node && node._grid != self && node._added) { //eagooqi if not self and is _added by drag accept el
+        el.unbind('drag', onDrag);
+        node.el = null;
+        self.grid.removeNode(node);
+        self.placeholder.detach();
+        self._updateContainerHeight();
+        el.data('_gridstack_node', el.data('_gridstack_node_orig'));
+      }
+    }
+  });
 });
    /*
    $('.grid-stack-5 .grid-stack-item').draggable(
