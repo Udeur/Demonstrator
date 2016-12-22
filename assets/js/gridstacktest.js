@@ -5,17 +5,17 @@
 var w_height;
 $(document).ready(function() {
    window.addEventListener("resize", function (event) {          //Zeichnet die Endpoints neu wenn sich Fenstergröße verändert
-    /* w_height=$(window).height();
+    w_height=$(window).height();
      $('.grid-stack-1').each(function () {
        var grid = $(this).data('gridstack');
        grid.cellHeight(w_height / 6 / 2);
      });
-     $('.grid-stack-1').each(function () {
+     $('.grid-stack-5').each(function () {
        var grid = $(this).data('gridstack');
        grid.cellHeight(w_height/6);
        grid.update();
-     });*/
-     jsPlumb.repaintEverything();                               //TODO: JETZT FUNKTIONIERT drag Handle nicht mehr
+     });
+     jsPlumb.repaintEverything();
    }, false);
   w_height=$(window).height();
    $('.grid-stack-1').gridstack({  //Hier führt Aufruf mit options zu Fehler?! Gleiche Zellhöhe wie letzter Grid
@@ -48,12 +48,14 @@ $(document).ready(function() {
 //  $('#bottom2.grid-stack').gridstack(_.defaults({height: 5}, options)); //Verwende options aber ändere Parameter für heights
 
    var items = [
-     {x: 0, y: 0, width: 1, height: 1},
+     {x: 0, y: 0, width: 1, height:1,  image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 10},
    ];
    $('.grid-stack-1').each(function () {                                                   //Scrollbar wird initialisiert
      var grid = $(this).data('gridstack');
      _.each(items, function (node) {
-       grid.addWidget($('<div><div class="grid-stack-item-content"><div/><div/>'),
+       grid.addWidget($('<div><div class="grid-stack-item-content">' +
+           '<img src=' + node.image +' />' +
+           '<span class="value"> value: ' + node.value +'</span></div></div>'),
          node.x, node.y, node.width, node.height);
      }, this);
    });
@@ -75,7 +77,7 @@ $(document).ready(function() {
      {x: 4, y: 3, width: 1, height: 1},
      {x: 4, y: 4, width: 1, height: 1},
    ];
-   var itemsVar = [
+   var itemVar = [
      {x: 1, y: 2, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 1},
      {x: 3, y: 0, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 4},
      {x: 2, y: 1, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 2},
@@ -84,26 +86,29 @@ $(document).ready(function() {
    $('.grid-stack-5').each(function () {                                              //unterer Gridstack wird initialisiert
      var grid = $(this).data('gridstack');
      _.each(itemOrigin, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin"><div class="grid-stack-item-content">' +
-           '<img src=' + node.image + '  style="margin:auto; display:block" /><div/>' +
-           '<span class="value"> value: ' + node.value +'<span/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +
+           '<div class="grid-stack-item-content">' +
+           '<img src=' + node.image +' />' +
+           '<span class="value"> value: ' + node.value +'</span></div></div>'),
          node.x, node.y, node.width, node.height);
      }, this);
      _.each(itemEnd, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end"><div class="grid-stack-item-content">' +
-         '<img src=' + node.image + '  style="margin:auto; display:block" /><div/>' +
-       '<span class="value"> value: ' + node.value +'<span/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +
+           '<div class="grid-stack-item-content">' +
+           '<img src=' + node.image +' />' +
+           '<span class="value"> value: ' + node.value +'</span></div></div>'),
          node.x, node.y, node.width, node.height);
      }, this);
-     var grid = $(this).data('gridstack');
      _.each(itemBlock, function (node) {
-       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block"><div class="grid-stack-item-content"/><div/>'),
+       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block">' +
+           '<div class="grid-stack-item-content"/></div>'),
          node.x, node.y, node.width, node.height);
      }, this);
-     _.each(itemsVar, function (node) {
-       grid.addWidget($('<div data-gs-locked="yes"><div class="grid-stack-item-content">' +
-         '<img src=' + node.image + '  style="margin:auto; display:block" /><div/>' +
-       '<span class="value"> value: ' + node.value +'<span/>'),
+     _.each(itemVar, function (node) {
+       grid.addWidget($('<div>' +
+           '<div class="grid-stack-item-content">' +
+           '<img src=' + node.image +' />' +
+           '<span class="value"> value: ' + node.value +'</span></div></div>'),
          node.x, node.y, node.width, node.height);
      }, this);
    });
@@ -115,7 +120,7 @@ $(document).ready(function() {
      //  paintStyle: {fill: "green"},
        paintStyle: {fill: "white", outlineStroke:"black", outlineWidth:1},
        hoverPaintStyle: {fill: "green"},
-       connectorStyle: {stroke: "black", strokeWidth: 5}
+       connectorStyle: {stroke: "black", strokeWidth: 3}
      },
      "target": {
     //   paintStyle: {fill: "transparent"},
@@ -127,10 +132,12 @@ $(document).ready(function() {
 
  jsPlumb.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {
  // jsPlumb.addEndpoint("originChild", {
-     anchor: [1, 0.5, 1, 0],
-     maxConnections: -1,
-     type: "source",
-     isSource: true,
+   anchor: [1, 0.5, 1, 0],
+   maxConnections: -1,
+   type: "source",
+   isSource: true,
+  // connector:["Bezier", { curviness: 30 }],
+   connector:[ "Flowchart", { stub:10, cornerRadius:5 }, ],
    });  //right
  jsPlumb.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {
      anchor: [0, 0.5, -1, 0],
@@ -144,6 +151,8 @@ $(document).ready(function() {
      maxConnections: -1,
      type: "source",
      isSource: true,
+    //  connector:["Bezier", { curviness: 30 }],
+      connector:[ "Flowchart", { stub:10, cornerRadius:5} ],
    });
   // jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item').not('#origin, #end, #block'), {
  // jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item .grid-stack-item-content').not($('#origin.grid-stack-item, #end.grid-stack-item, #block.grid-stack-item .grid-stack-item-content ')), {
@@ -203,7 +212,8 @@ $(document).ready(function() {
       console.log('x: ' + xPos);
       console.log('y: ' + yPos);
     }
-  });
+  })
+
 /*
   var offset = $(this).offset();
   var xPos = offset.left;
@@ -286,6 +296,10 @@ $(document).ready(function() {
     }
   });
 });
+//$($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block)').each(function () {
+
+//}
+  var grid = $(this).data('gridstack');
    /*
    $('.grid-stack-5 .grid-stack-item').draggable(
      {
