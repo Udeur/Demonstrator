@@ -2,11 +2,22 @@
  * Created by Sven on 02.11.2016.
  */
 //Items dont trigger add/remove events
-var w_height;
-$(document).ready(function() {
+
+jsPlumb.bind("ready", function() {
+//$(document).ready(function() {
+  var w_height=$(window).height();;
   var allGrids=$('.grid-stack');
   var topGrids=$('.grid-stack-1');
   var bottomGrids=$('.grid-stack-5');
+
+  var options = {
+    animate: true,
+    disableResize: true,
+    removable: false,
+    removeTimeout: 100,
+    minWidth:0,
+    verticalMargin: 0 //kein Abstand nach oben
+  }
 
   window.addEventListener("resize", function (event) {          //Zeichnet die Endpoints neu wenn sich Fenstergröße verändert
     w_height=$(window).height();
@@ -21,35 +32,8 @@ $(document).ready(function() {
     jsPlumb.repaintEverything();
   }, false);
 
-  w_height=$(window).height();
-  topGrids.gridstack({  //Hier führt Aufruf mit options zu Fehler?! Gleiche Zellhöhe wie letzter Grid
-    animate: false,
-    height: 1,
-    width: 1,        //wie viele passen nebeneinander
-    float: false,
-    disableResize: true,
-    cellHeight: w_height/6/2,
-   // cellWidth: 100,
-    removable: false,
-    removeTimeout: 100,
-    minWidth:0,
-    verticalMargin: 0 //kein Abstand nach oben
-  });
-  bottomGrids.gridstack({
-    animate: false,
-    height: 5,
-    width: 5,
-    float: true,
-    disableResize: true,
-    cellHeight: w_height/6,
-  //  cellWidth: 200,
-    acceptWidgets: '.grid-stack-item',
-    removable: false,
-    removeTimeout: 100,
-    minWidth:0,
-    verticalMargin: 0 //kein Abstand nach oben
-  });
-//  $('#bottom2.grid-stack').gridstack(_.defaults({height: 5}, options)); //Verwende options aber ändere Parameter für heights
+  topGrids.gridstack(_.defaults({height: 1, width: 1, float: false, cellHeight: w_height/6/2},  options));
+  bottomGrids.gridstack(_.defaults({height: 5, width: 5, float: true,  cellHeight: w_height/6, acceptWidgets: '.grid-stack-item'}, options));
 
   var itemTop = [
     {x: 0, y: 0, width: 1, height:1,  image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 10}
@@ -59,9 +43,9 @@ $(document).ready(function() {
     var grid = $(this).data('gridstack');
     _.each(itemTop, function (node) {
       grid.addWidget($('<div><div class="grid-stack-item-content">' +
-          '<img src=' + node.image +' />' +
-          '<span class="value"> value: ' + node.value +'</span></div></div>'),
-        node.x, node.y, node.width, node.height);
+          '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" +' />' +
+          '<span class="value">' + Math.floor(Math.random() * 10) +'</span></div></div>'),
+        0, 0, 1, 1);
     }, this);
   });
 
@@ -81,12 +65,6 @@ $(document).ready(function() {
     {x: 4, y: 3, width: 1, height: 1},
     {x: 4, y: 4, width: 1, height: 1}
   ];
-  var itemBottom = [
-    {x: 1, y: 2, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 1},
-    {x: 3, y: 0, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 4},
-    {x: 2, y: 1, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 2},
-    {x: 3, y: 1, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 7}
-  ];
 
   bottomGrids.each(function () {                                              //unterer Gridstack wird initialisiert
     var grid = $(this).data('gridstack');
@@ -94,14 +72,14 @@ $(document).ready(function() {
       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +
           '<div class="grid-stack-item-content">' +
           '<img src=' + node.image +' />' +
-          '<span class="value"> value: ' + node.value +'</span></div></div>'),
+          '<span class="value">' + node.value +'</span></div></div>'),
         node.x, node.y, node.width, node.height);
     }, this);
     _.each(itemBottomEnd, function (node) {
       grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +
           '<div class="grid-stack-item-content">' +
           '<img src=' + node.image +' />' +
-          '<span class="value"> value: ' + node.value +'</span></div></div>'),
+          '<span class="value">' + node.value +'</span></div></div>'),
         node.x, node.y, node.width, node.height);
     }, this);
     _.each(itemBottomBlock, function (node) {
@@ -109,13 +87,62 @@ $(document).ready(function() {
           '<div class="grid-stack-item-content"/></div>'),
         node.x, node.y, node.width, node.height);
     }, this);
-    _.each(itemBottom, function (node) {
+    for(var i=0;i<7;i++){
       grid.addWidget($('<div>' +
           '<div class="grid-stack-item-content">' +
-          '<img src=' + node.image +' />' +
-          '<span class="value"> value: ' + node.value +'</span></div></div>'),
-        node.x, node.y, node.width, node.height);
-    }, this);
+          '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" +' />' +
+          '<span class="value">' + Math.floor(Math.random() * 10) +'</span></div></div>'),
+        Math.floor(Math.random() * 3) + 1  , Math.floor(Math.random() * 4), 1, 1);
+    }
+  });
+
+  $('.grid-stack- .grid-stack-item').draggable({
+    drag2: function() {
+      var offset = $(this).offset();
+      var xPos = offset.left;
+      var yPos = offset.top;
+      console.log($(this));
+      console.log('x: ' + xPos);
+      console.log('y: ' + yPos);
+    }
+  })
+
+  allGrids.on('change', function(event, items) {
+    console.log("change");
+  });
+  allGrids.on('dragstart', function(event, ui) {
+    console.log("dragstart");
+  });
+  allGrids.on('removed', function(event, items) {
+    console.log("removed");
+  });
+  allGrids.on('added', function(event, items) {
+    console.log("added");
+  });
+  allGrids.on('disable', function(event) {
+    console.log("disabled");
+  });
+  allGrids.on('enable', function(event) {
+    console.log("enabled");
+  });
+  allGrids.on('dragstop', function(event, ui) {
+    jsPlumb.repaintEverything();        //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
+    console.log("dragstop");
+   });
+
+  $(self.container).droppable({     //funktioniert nicht
+    out: function (event, ui) {
+      var el = $(ui.draggable);
+      var node = el.data('_gridstack_node'); //eagooqi
+      if (node && node._grid != self && node._added) { //eagooqi if not self and is _added by drag accept el
+        el.unbind('drag', onDrag);
+        node.el = null;
+        self.grid.removeNode(node);
+        self.placeholder.detach();
+        self._updateContainerHeight();
+        el.data('_gridstack_node', el.data('_gridstack_node_orig'));
+      }
+    }
   });
 
   jsPlumb.setContainer("bottomGrid");
@@ -159,13 +186,44 @@ $(document).ready(function() {
   });
   jsPlumb.repaintEverything();
 
-  var isGrid
+  $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content').each(function () {                                              //unterer Gridstack wird initialisiert
+    var $items = $('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block)');
+    function checkFirst(item) {
+      var node = $(item).data('_gridstack_node');
+      return node.x==1;
+    }
+    function checkSecond(item) {
+      var node = $(item).data('_gridstack_node');
+      return node.x==2;
+    }
+    function checkThird(item) {
+      var node = $(item).data('_gridstack_node');
+      return node.x==3;
+    }
+    var firstItems=jQuery.grep($items,checkFirst);
+    var secondItems=jQuery.grep($items,checkSecond);
+    var thirdItems=jQuery.grep($items,checkThird);
+    console.log($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'));
+    $(firstItems).each(function () {
+      console.log(this.firstChild);
+      console.log(jsPlumb.selectEndpoints({target: this.firstChild}));
+      jsPlumb.connect({
+        source: jsPlumb.selectEndpoints({source: $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')}).get(0),
+        target: jsPlumb.selectEndpoints({target: this.firstChild}).get(0)
+      });
+    });
+    console.log(firstItems);
+    console.log(secondItems.length);
+    console.log(thirdItems.length);
+  });
+
+  var isGrid;
 
   allGrids.on('dragstart', function(event, ui) {
     isGrid=$(event.target).data('gridstack');
   });
 
-  var newEndpoints = allGrids.on('change', function(event, items) {
+  allGrids.on('change', function(event, items) {
     if(isGrid==$(event.target).data('gridstack')){
       console.log("nothingChanged")
     }
@@ -192,62 +250,4 @@ $(document).ready(function() {
     }
     jsPlumb.repaintEverything();
   });
-
-  $('.grid-stack- .grid-stack-item').draggable({
-    drag2: function() {
-      var offset = $(this).offset();
-      var xPos = offset.left;
-      var yPos = offset.top;
-      console.log($(this));
-      console.log('x: ' + xPos);
-      console.log('y: ' + yPos);
-    }
-  })
-  allGrids.on('change', function(event, items) {
-    console.log("change");
-  });
-  allGrids.on('dragstart', function(event, ui) {
-    console.log("dragstart");
-  });
-  allGrids.on('removed', function(event, items) {
-    console.log("removed");
-  });
-  allGrids.on('added', function(event, items) {
-    console.log("added");
-  });
-  allGrids.on('disable', function(event) {
-    console.log("disabled");
-  });
-  allGrids.on('enable', function(event) {
-    console.log("enabled");
-  });
-  allGrids.on('dragstop', function(event, ui) {
-    jsPlumb.repaintEverything();        //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
-    console.log("dragstop");
-   });
-
-  $(self.container).droppable({     //funktioniert nicht
-    out: function (event, ui) {
-      var el = $(ui.draggable);
-      var node = el.data('_gridstack_node'); //eagooqi
-      if (node && node._grid != self && node._added) { //eagooqi if not self and is _added by drag accept el
-        el.unbind('drag', onDrag);
-        node.el = null;
-        self.grid.removeNode(node);
-        self.placeholder.detach();
-        self._updateContainerHeight();
-        el.data('_gridstack_node', el.data('_gridstack_node_orig'));
-      }
-    }
-  });
 });
-
-//jsPlumb.bind("ready", function () {
-//  $('.grid-stack').on('dragstop', function (event, ui) {
-//    var element = $(event.target);
-//    var node = element.data('_gridstack_node');
-//    console.log(node);
-//    connection2 = connect(element.children(),$('#final .grid-stack-item-content'));
-//    jsPlumb.revalidate(this);
-//  });
-//});
