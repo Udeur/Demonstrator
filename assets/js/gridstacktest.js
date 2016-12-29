@@ -148,7 +148,7 @@ $(document).ready(function() {
       "source": {
         paintStyle: {fill: "white", outlineStroke:"black", outlineWidth:1},
         hoverPaintStyle: {fill: "green"},
-        connectorStyle: {stroke: "black", strokeWidth: 3}
+        connectorStyle: {stroke: "black", strokeWidth: 2}
       },
       "target": {
         paintStyle: {fill: "white", outlineStroke:"black", outlineWidth:1},
@@ -284,7 +284,41 @@ $(document).ready(function() {
       connectFirst();
       connectSecond();
       connectThird();
-    });
+
+      var sourceItemContentOutside=$('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content');
+      var endReached=false;
+      while(!endReached) {
+        colorConnection(sourceItemContentOutside);
+      }
+    //  }
+      function colorConnection(sourceItemContent) {
+        var connections = jsPlumb.getConnections({source: sourceItemContent});
+        if(connections.length==0){
+          endReached=true;
+        }
+        else {
+          var maxValue = 0;
+          for (var i = 0; i < connections.length; i++) {
+            var endpointElement = connections[i].endpoints[1].getElement();
+            if ($(endpointElement.lastChild).text() > maxValue) {
+              maxValue = ($(endpointElement.lastChild).text());
+            }
+          }
+          for (var i = 0; i < connections.length; i++) {
+            var endpointElement = connections[i].endpoints[1].getElement();
+            if ($(endpointElement.lastChild).text() == maxValue) {
+              connections[i].setPaintStyle({
+                stroke: "red",
+                strokeWidth: 2
+              });
+         //     $(connections[i]).css("zIndex", 6);
+              i = connections.length - 1;
+              sourceItemContentOutside = endpointElement
+            }
+          }
+        }
+      }
+   });
 
     var isGrid;
 
