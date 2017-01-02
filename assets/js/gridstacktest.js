@@ -146,13 +146,13 @@ $(document).ready(function() {
     jsPlumb.setContainer("bottomGrid");
     jsPlumb.registerEndpointTypes({
       "source": {
-        paintStyle: {fill: "white", outlineStroke:"black", outlineWidth:1},
-        hoverPaintStyle: {fill: "green"},
-        connectorStyle: {stroke: "black", strokeWidth: 2}
+        paintStyle: {fill: "transparent", outlineStroke:"transparent", outlineWidth:1},
+        hoverPaintStyle: {fill: "black"},
+        connectorStyle: {stroke: "#123456", strokeWidth: 3}
       },
       "target": {
-        paintStyle: {fill: "white", outlineStroke:"black", outlineWidth:1},
-        hoverPaintStyle: {fill: "blue"}
+        paintStyle: {fill: "transparent", outlineStroke:"transparent", outlineWidth:1},
+        hoverPaintStyle: {fill: "black"}
       }
     });
 
@@ -167,20 +167,20 @@ $(document).ready(function() {
       anchor: [0, 0.5, -1, 0],
       maxConnections: -1,
       type: "target",
-      isTarget: true
+      isTarget: true,
     });
     jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'),{
       anchor: [1, 0.5, 1, 0],
       maxConnections: -1,
       type: "source",
       isSource: true,
-      connector:[ "Flowchart", { stub:10, cornerRadius:5} ]
+      connector:[ "Flowchart", { stub:10, cornerRadius:5 } ],
     });
     jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'),{
       anchor: [0, 0.5, -1, 0],
       maxConnections: -1,
       type: "target",
-      isTarget: true
+      isTarget: true,
     });
 
     $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content').each(function () {                                              //unterer Gridstack wird initialisiert
@@ -307,17 +307,31 @@ $(document).ready(function() {
           for (var i = 0; i < connections.length; i++) {
             var endpointElement = connections[i].endpoints[1].getElement();
             if ($(endpointElement.lastChild).text() == maxValue) {
+              console.log(connections[i]);
+              $(connections[i].canvas).addClass("bestPath");        //Fügt CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
               connections[i].setPaintStyle({
                 stroke: "red",
-                strokeWidth: 2
+                strokeWidth: 3
               });
-         //     $(connections[i]).css("zIndex", 6);
               i = connections.length - 1;
               sourceItemContentOutside = endpointElement
             }
           }
         }
       }
+      /*
+      endReached=false;
+      function checkOverlaps(sourceItemContent) {
+        var connections = jsPlumb.getConnections({source: sourceItemContent});
+        if(connections.length==0){
+          endReached=true;
+        }
+        else {
+          for (var i = 0; i < connections.length; i++) {
+            var endpointElement = connections[i].endpoints[1].getElement();
+
+      }
+      */
    });
 
     var isGrid;

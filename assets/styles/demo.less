@@ -7,7 +7,7 @@ body{
 }
 .row-horizon,
 .grid-stack-5{
-  background-color: lightgoldenrodyellow;    // //azure
+  background-color: white;    // //azure
   border:solid black medium ;
   border-radius: 15px
 }
@@ -46,14 +46,24 @@ body{
 .placeholder-content {
   border-radius: 15%;
 }
-.grid-stack-item-content{
+:not(#block) > .grid-stack-item-content{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
   background-color: white;
-  border:solid black thin;
+  border: 1px solid #346789;
+  border-radius: 0.5em;
   text-align: center;
+  box-shadow: 2px 2px 19px #aaa;
+  font-family: helvetica, sans-serif;
+  cursor: pointer;
+}
+:not(#block) > .grid-stack-item-content:hover{
+  border: 1px solid #123456;
+  box-shadow: 2px 2px 19px #444;
+  opacity: 0.9;
 }
 #origin .grid-stack-item-content,
 #end .grid-stack-item-content{
   background-color: #5e5e5e;
+  border-color: #5e5e5e;
 }
 #block .grid-stack-item-content{
   background-color: transparent;
@@ -81,6 +91,12 @@ img {
  bottom:0;
  left:10%;
 }
-// .jtk-connector { z-index:5; }
+ .jtk-connector {
+ //  z-index:5;
+ }
+.bestPath {
+    z-index:6;
+}
+
 
 
