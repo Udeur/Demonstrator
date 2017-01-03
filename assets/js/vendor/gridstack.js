@@ -786,27 +786,32 @@
         var x = Math.max(0, pos.x);
         var y = Math.max(0, pos.y);
         if (!node._added) {
-          node._added = true;
+          var nodeCheck = {x: x, y: y, width: 1, height: 1, autoPosition: false}; //SELBST HINZUGEFÜGT
+          if( self.grid.canBePlacedWithRespectToHeight(nodeCheck)) {              //SELBST HINZUGEFÜGT
+            node._added = true;
+            node.el = el;
+            node.x = x;
+            node.y = y;
+            self.grid.cleanNodes();
+            self.grid.beginUpdate(node);
+            self.grid.addNode(node);
 
-          node.el = el;
-          node.x = x;
-          node.y = y;
-          self.grid.cleanNodes();
-          self.grid.beginUpdate(node);
-          self.grid.addNode(node);
+            self.container.append(self.placeholder);
+            self.placeholder
+              .attr('data-gs-x', node.x)
+              .attr('data-gs-y', node.y)
+              .attr('data-gs-width', node.width)
+              .attr('data-gs-height', node.height)
+              .show();
+            node.el = self.placeholder;
+            node._beforeDragX = node.x;
+            node._beforeDragY = node.y;
 
-          self.container.append(self.placeholder);
-          self.placeholder
-            .attr('data-gs-x', node.x)
-            .attr('data-gs-y', node.y)
-            .attr('data-gs-width', node.width)
-            .attr('data-gs-height', node.height)
-            .show();
-          node.el = self.placeholder;
-          node._beforeDragX = node.x;
-          node._beforeDragY = node.y;
-
-          self._updateContainerHeight();
+            self._updateContainerHeight();
+          }                                                                         //SELBST HINZUGEFÜGT
+          else{                                                                     //SELBST HINZUGEFÜGT
+            console.log("wontfit");                                                 //SELBST HINZUGEFÜGT
+          }                                                                         //SELBST HINZUGEFÜGT
         } else {
           if (!self.grid.canMoveNode(node, x, y)) {
             return;
@@ -855,33 +860,35 @@
           self._updateContainerHeight();
           el.data('_gridstack_node', el.data('_gridstack_node_orig'));
         })
-        .on(self.container, 'drop', function(event, ui) {
-          self.placeholder.detach();
+        .on(self.container, 'drop', function(event, ui) {             //Hier Methode, wenn Item durch draggen geadded wird
+          if($(ui.draggable).data('_gridstack_node')._added) {          //SELBST HINZUGEFÜGT
+            self.placeholder.detach();
+            console.log("drop");                                         //SELBST HINZUGEFÜGT
+            var node = $(ui.draggable).data('_gridstack_node');
+            node._grid = self;
+            var el = $(ui.draggable).clone(false);
+            el.data('_gridstack_node', node);
+            $(ui.draggable).remove();
+            node.el = el;
+            self.placeholder.hide();
+            el
+              .attr('data-gs-x', node.x)
+              .attr('data-gs-y', node.y)
+              .attr('data-gs-width', node.width)
+              .attr('data-gs-height', node.height)
+              .addClass(self.opts.itemClass)
+              .removeAttr('style')
+              .enableSelection()
+              .removeData('draggable')
+              .removeClass('ui-draggable ui-draggable-dragging ui-draggable-disabled')
+              .unbind('drag', onDrag);
+            self.container.append(el);
+            self._prepareElementsByNode(el, node);
+            self._updateContainerHeight();
+            self._triggerChangeEvent();
 
-          var node = $(ui.draggable).data('_gridstack_node');
-          node._grid = self;
-          var el = $(ui.draggable).clone(false);
-          el.data('_gridstack_node', node);
-          $(ui.draggable).remove();
-          node.el = el;
-          self.placeholder.hide();
-          el
-            .attr('data-gs-x', node.x)
-            .attr('data-gs-y', node.y)
-            .attr('data-gs-width', node.width)
-            .attr('data-gs-height', node.height)
-            .addClass(self.opts.itemClass)
-            .removeAttr('style')
-            .enableSelection()
-            .removeData('draggable')
-            .removeClass('ui-draggable ui-draggable-dragging ui-draggable-disabled')
-            .unbind('drag', onDrag);
-          self.container.append(el);
-          self._prepareElementsByNode(el, node);
-          self._updateContainerHeight();
-          self._triggerChangeEvent();
-
-          self.grid.endUpdate();
+            self.grid.endUpdate();
+          }                                                                       //SELBST HINZUGEFÜGT
         });
     }
   };
@@ -1056,9 +1063,9 @@
     var dragOrResize = function(event, ui) {
 
       jsPlumb.repaintEverything();        //SELBST HINZUGEFÜGT
-
       var x = Math.round(ui.position.left / cellWidth);
       var y = Math.floor((ui.position.top + cellHeight / 2) / cellHeight);
+  //    console.log(x+" "+y);
       var width;
       var height;
 
@@ -1068,7 +1075,7 @@
       }
 
       if (event.type == 'drag') {
-        if (x < 0 || x >= self.grid.width || y < 0) {
+        if (x < 0 || x >= self.grid.width || y < 0 || y >= self.grid.width){      //SELBST MODIFIZIERT //Original:    if (x < 0 || x >= self.grid.width || y < 0
           if (self.opts.removable === true) {
             self._setupRemovingTimeout(el);
           }
