@@ -1,6 +1,8 @@
 /**
  * Created by Sven on 02.11.2016.
  */
+
+// not extendable? http://stackoverflow.com/questions/18142792/how-to-extend-an-object-inside-an-anonymous-function
 (function () {
   jsPlumb.bind("ready", function () {
 
@@ -21,7 +23,6 @@
     var allGrids = $('.grid-stack');
     var topGrids = $('.grid-stack-1');
     var bottomGrids = $('.grid-stack-5');
-    var isGrid;
 
     jsPlumb.setContainer("bottomGrid");
     jsPlumb.registerEndpointTypes({
@@ -46,8 +47,10 @@
       jsPlumb.repaintEverything();        //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
     });
 
+    var isGrid;
+
     allGrids.on('dragstart', function (event, ui) {
-      isGrid = $(event.target).data('gridstack');
+      isGrid=$(this).data('gridstack');
     });
 
     allGrids.on('change', function (event, items) {
@@ -56,24 +59,39 @@
       }
       else {
         console.log("sthChanged");
-        _.each(items, function (node) {
-          var selectedItemContent = node.el.children(":first");
-          if (jsPlumb.selectEndpoints({element: selectedItemContent}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
-            jsPlumb.addEndpoint((selectedItemContent), {
-              anchor: [1, 0.5, 1, 0],
-              maxConnections: -1,
-              type: "source",
-              isSource: true,
-              connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
-            });
-            jsPlumb.addEndpoint((selectedItemContent), {
-              anchor: [0, 0.5, -1, 0],
-              maxConnections: -1,
-              type: "target",
-              isTarget: true
-            });
-          }
-        });
+        if(isGrid!=bottomGrids.data('gridstack')) {
+          console.log("addedToBottomGrid");
+          _.each(items, function (node) {
+            var selectedItemContent = node.el.children(":first");
+            if (jsPlumb.selectEndpoints({element: selectedItemContent}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
+              jsPlumb.addEndpoint((selectedItemContent), {
+                anchor: [1, 0.5, 1, 0],
+                maxConnections: -1,
+                type: "source",
+                isSource: true,
+                connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
+              });
+              jsPlumb.addEndpoint((selectedItemContent), {
+                anchor: [0, 0.5, -1, 0],
+                maxConnections: -1,
+                type: "target",
+                isTarget: true
+              });
+            }
+          });
+        }
+        else {
+          console.log("addedToTopGrid");
+          _.each(items, function (node) {
+            var selectedItemContent = node.el.children(":first");
+            jsPlumb.detachAllConnections(selectedItemContent);
+            var selectedEndpointSource = jsPlumb.selectEndpoints({source: $(selectedItemContent)}).get(0);
+            var selectedEndpointsTarget = jsPlumb.selectEndpoints({target: $(selectedItemContent)}).get(0);
+            jsPlumb.deleteEndpoint(selectedEndpointSource);
+            jsPlumb.deleteEndpoint(selectedEndpointsTarget);
+            //ELEMENTE SIND WEITERHIN jtk.endpoint.anchor
+          });
+        }
       }
       jsPlumb.repaintEverything();
     });
@@ -109,7 +127,13 @@
         minWidth: 0,
         verticalMargin: 0 //kein Abstand nach oben
       };
-      topGrids.gridstack(_.defaults({height: 1, width: 1, float: false, cellHeight: w_height / 6 / 2}, options));
+      topGrids.gridstack(_.defaults({
+        height: 1,
+        width: 1,
+        float: false,
+        cellHeight: w_height / 6 / 2,
+        acceptWidgets: '.grid-stack-item'
+      }, options));
       bottomGrids.gridstack(_.defaults({
         height: 5,
         width: 5,

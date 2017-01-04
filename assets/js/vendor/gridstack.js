@@ -786,6 +786,7 @@
         var x = Math.max(0, pos.x);
         var y = Math.max(0, pos.y);
         if (!node._added) {
+          console.log("notadded");
           var nodeCheck = {x: x, y: y, width: 1, height: 1, autoPosition: false}; //SELBST HINZUGEFÜGT
           if( self.grid.canBePlacedWithRespectToHeight(nodeCheck)) {              //SELBST HINZUGEFÜGT
             node._added = true;
@@ -813,6 +814,7 @@
             console.log("wontfit");                                                 //SELBST HINZUGEFÜGT
           }                                                                         //SELBST HINZUGEFÜGT
         } else {
+          console.log("added");
           if (!self.grid.canMoveNode(node, x, y)) {
             return;
           }
@@ -857,7 +859,7 @@
           node.el = null;
           self.grid.removeNode(node);
           self.placeholder.detach();
-          self._updateContainerHeight();
+      //    self._updateContainerHeight();                                //SELBST AUSKOMMENTIERT -- SONST KLAPPEN TOP GRIDS EIN WENN DRÜBERGEZOGEN UND WIEDER ENTFERNT WIRD
           el.data('_gridstack_node', el.data('_gridstack_node_orig'));
         })
         .on(self.container, 'drop', function(event, ui) {             //Hier Methode, wenn Item durch draggen geadded wird
@@ -1086,8 +1088,7 @@
           self.placeholder.detach();
           self.placeholder.hide();
           self.grid.removeNode(node);
-          self._updateContainerHeight();
-
+       //   self._updateContainerHeight();                                      //SELBST AUSKOMMENTIERT -- SONST KLAPPEN TOP GRIDS EIN WENN ITEM HERAUSGENOMMEN WIRD
           node._temporaryRemoved = true;
         } else {
           self._clearRemovingTimeout(el);
@@ -1280,7 +1281,7 @@
     this.container.append(el);
     this._prepareElement(el, true);
     this._triggerAddEvent();
-    this._updateContainerHeight();
+    this._updateContainerHeight();      //WICHTIG HIER
     this._triggerChangeEvent(true);
 
     return el;
