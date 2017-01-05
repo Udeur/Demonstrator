@@ -84,12 +84,14 @@
           console.log("addedToTopGrid");
           _.each(items, function (node) {
             var selectedItemContent = node.el.children(":first");
+            console.log(selectedItemContent);
             jsPlumb.detachAllConnections(selectedItemContent);
             var selectedEndpointSource = jsPlumb.selectEndpoints({source: $(selectedItemContent)}).get(0);
             var selectedEndpointsTarget = jsPlumb.selectEndpoints({target: $(selectedItemContent)}).get(0);
             jsPlumb.deleteEndpoint(selectedEndpointSource);
-            jsPlumb.deleteEndpoint(selectedEndpointsTarget);
-            //ELEMENTE SIND WEITERHIN jtk.endpoint.anchor
+            jsPlumb.deleteEndpoint(selectedEndpointsTarget)
+            selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");
+            selectedItemContent.removeAttr('id');
           });
         }
       }
@@ -149,6 +151,7 @@
     }
 
     function fillTopGrids() {
+      var counter = 0;
       var itemTop = [
         {
           x: 0,
@@ -166,7 +169,11 @@
               '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
               '<span class="value">' + Math.floor(Math.random() * 10) + '</span></div></div>'),
             0, 0, 1, 1);
-        }, this);
+          if(counter>7){
+            grid.removeAll();
+          }
+          counter++;
+      }, this);
       });
     }
 
