@@ -165,13 +165,15 @@
       topGrids.each(function () {                                                   //Scrollbar wird initialisiert
         var grid = $(this).data('gridstack');
         _.each(itemTop, function (node) {
+          if(counter<7){
           grid.addWidget($('<div><div class="grid-stack-item-content">' +
               '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
-              '<span class="value">' + Math.floor(Math.random() * 10) + '</span></div></div>'),
+              '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +
+             '<span class="startTime"></span></div></div>'),
             0, 0, 1, 1);
-          if(counter>7){
-            grid.removeAll();
           }
+         //   grid.removeAll();
+
           counter++;
       }, this);
       });
@@ -179,7 +181,14 @@
 
     function fillBottomGrids() {
       var itemBottomOrigin = [
-        {x: 0, y: 2, width: 1, height: 1, image: "https://appharbor.com/assets/images/stackoverflow-logo.png", value: 0}
+        {
+          x: 0,
+          y: 2,
+          width: 1,
+          height: 1,
+          image: "https://appharbor.com/assets/images/stackoverflow-logo.png",
+          value: 0
+        }
       ];
       var itemBottomEnd = [
         {
@@ -188,7 +197,7 @@
           width: 1,
           height: 1,
           image: "https://appharbor.com/assets/images/stackoverflow-logo.png",
-          value: 10
+          value: 0
         }
       ];
       var itemBottomBlock = [
@@ -208,14 +217,16 @@
           grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +
               '<div class="grid-stack-item-content">' +
               '<img src=' + node.image + ' />' +
-              '<span class="value">' + node.value + '</span></div></div>'),
+              '<span class="value">' + node.value + '</span>' +
+              '<span class="startTime">' + node.value + '</span></div></div>'),
             node.x, node.y, node.width, node.height);
         }, this);
         _.each(itemBottomEnd, function (node) {
           grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +
               '<div class="grid-stack-item-content">' +
               '<img src=' + node.image + ' />' +
-              '<span class="value">' + node.value + '</span></div></div>'),
+              '<span class="value">' + node.value + '</span>' +
+              '<span class="startTime">99</span></div></div>'),
             node.x, node.y, node.width, node.height);
         }, this);
         _.each(itemBottomBlock, function (node) {
@@ -230,7 +241,8 @@
             grid.addWidget($('<div>' +
                 '<div class="grid-stack-item-content">' +
                 '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
-                '<span class="value">' + Math.floor(Math.random() * 10) + '</span></div></div>'),
+                '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +
+                '<span class="startTime">99</span></div></div>'),
               x, y, 1, 1);
           }
         }
@@ -365,9 +377,42 @@
       });
       $(this).data('isConnected', true);
     }
+    function onlyUnique(value, index, self) {
+      return self.indexOf(value) === index;
+    }
+    dijkstra();
+    function dijkstra(){
+      var arr = [];
+      arr.push($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')[0]);
+      var connections = jsPlumb.getConnections();
+      for (var i = 0; i < connections.length; i++) {
+        arr.push(connections[i].endpoints[1].getElement());
+      }
+      arr = arr.filter( onlyUnique );
+      console.log(arr);
+      var connectionsSingle = jsPlumb.getConnections({source: arr[0]});
+      arr[0].shortestFound=true;
+      var arrSingle = [];
+      for (var i = 0; i < connectionsSingle.length; i++) {
+        connectionsSingle[i].endpoints[1].getElement().predecessor=arr[0];
+        arrSingle.push(connectionsSingle[i].endpoints[1].getElement());
+      }
+      var minValue = Number.POSITIVE_INFINITY;
+      for (var i = 0; i < arrSingle.length; i++) {
+        if (parseInt($(arr[0].childNodes[2]).text())+parseInt($(arrSingle[i].childNodes[1]).text())<minValue){
+          minValue = parseInt($(arr[0].childNodes[2]).text())+parseInt($(arrSingle[i].childNodes[1]).text());
+        }
+      }
+      for (var i = 0; i < arrSingle.length; i++) {
+        if (parseInt($(arr[0].childNodes[2]).text())+parseInt($(arrSingle[i].childNodes[1]).text())==minValue){
+          $(arrSingle[i].childNodes[2]).text(minValue);
+          arrSingle[i].shortestFound=true;
+        }
+      }
+    }
 
     function highlightBestPath() {
-      var sourceItemContent = $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content');
+      var sourceItemContent = $('.grid-stack-5 #oriin.grid-stack-item .grid-stack-item-content');
       var endReached = false;
 
       while (!endReached) {
@@ -376,16 +421,16 @@
           endReached = true;
         }
         else {
-          var maxValue = 0;
+          var minValue = Number.POSITIVE_INFINITY;
           for (var i = 0; i < connections.length; i++) {
             var endpointElement = connections[i].endpoints[1].getElement();
-            if ($(endpointElement.lastChild).text() > maxValue) {
-              maxValue = ($(endpointElement.lastChild).text());
+            if ($(endpointElement.lastChild).text() < minValue) {
+              minValue = ($(endpointElement.lastChild).text());
             }
           }
           for (var i = 0; i < connections.length; i++) {
             var endpointElement = connections[i].endpoints[1].getElement();
-            if ($(endpointElement.lastChild).text() == maxValue) {
+            if ($(endpointElement.lastChild).text() == minValue) {
           //  console.log(connections[i]);
               $(connections[i].canvas).addClass("bestPath");        //Fügt CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
               connections[i].setPaintStyle({

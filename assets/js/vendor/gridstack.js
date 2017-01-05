@@ -498,7 +498,7 @@
   };
 
   GridStackEngine.prototype.getGridHeight = function() {
-    return _.reduce(this.nodes, function(memo, n) { return Math.max(memo, n.y + n.height); }, 0);
+    return Math.max(_.reduce(this.nodes, function(memo, n) { return Math.max(memo, n.y + n.height); }, 0),1);   //SELBST MODIFIZIERT: URSPR: _.reduce(this.nodes, function(memo, n) { return Math.max(memo, n.y + n.height); }, 0)
   };
 
   GridStackEngine.prototype.beginUpdate = function(node) {
@@ -859,7 +859,7 @@
           node.el = null;
           self.grid.removeNode(node);
           self.placeholder.detach();
-      //    self._updateContainerHeight();                                //SELBST AUSKOMMENTIERT -- SONST KLAPPEN TOP GRIDS EIN WENN DRÜBERGEZOGEN UND WIEDER ENTFERNT WIRD
+          self._updateContainerHeight();                                //SELBST AUSKOMMENTIERT -- SONST KLAPPEN TOP GRIDS EIN WENN DRÜBERGEZOGEN UND WIEDER ENTFERNT WIRD
           el.data('_gridstack_node', el.data('_gridstack_node_orig'));
         })
         .on(self.container, 'drop', function(event, ui) {             //Hier Methode, wenn Item durch draggen geadded wird
@@ -1088,7 +1088,7 @@
           self.placeholder.detach();
           self.placeholder.hide();
           self.grid.removeNode(node);
-       //   self._updateContainerHeight();                                      //SELBST AUSKOMMENTIERT -- SONST KLAPPEN TOP GRIDS EIN WENN ITEM HERAUSGENOMMEN WIRD
+          self._updateContainerHeight();                                      //SELBST AUSKOMMENTIERT -- SONST KLAPPEN TOP GRIDS EIN WENN ITEM HERAUSGENOMMEN WIRD
           node._temporaryRemoved = true;
         } else {
           self._clearRemovingTimeout(el);
