@@ -43,6 +43,7 @@
     connectEndpoints();
     highlightBestPath();
     dijkstra();
+    paintPath();
 
     allGrids.on('dragstop', function (event, ui) {
       jsPlumb.repaintEverything();        //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
@@ -93,6 +94,8 @@
             jsPlumb.deleteEndpoint(selectedEndpointsTarget)
             selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");
             selectedItemContent.removeAttr('id');
+            console.log(selectedItemContent);
+            $(selectedItemContent[0].childNodes[2]).text("");
           });
         }
       }
@@ -100,9 +103,11 @@
     });
     jsPlumb.bind("connection", function(info) {
       dijkstra();
+      paintPath();
     });
     jsPlumb.bind("connectionDetached", function(info) {
       dijkstra();
+      paintPath();
     });
     allGrids.on('change', function (event, items) {
       console.log("change");
@@ -230,7 +235,7 @@
               '<div class="grid-stack-item-content">' +
               '<img src=' + node.image + ' />' +
               '<span class="value">' + node.value + '</span>' +
-              '<span class="startTime">99</span></div></div>'),
+              '<span class="startTime"></span></div></div>'),
             node.x, node.y, node.width, node.height);
         }, this);
         _.each(itemBottomBlock, function (node) {
@@ -246,7 +251,7 @@
                 '<div class="grid-stack-item-content">' +
                 '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
                 '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +
-                '<span class="startTime">99</span></div></div>'),
+                '<span class="startTime"></span></div></div>'),
               x, y, 1, 1);
           }
         }
@@ -385,25 +390,23 @@
       return self.indexOf(value) === index;
     }
     function resetValues(){
-      var allContents = [];
-      var AllConnections = jsPlumb.getConnections();
-      for (var i = 0; i < AllConnections.length; i++) {
-        allContents.push(AllConnections[i].endpoints[1].getElement());
-      }
-      allContents = allContents.filter( onlyUnique );
-      for(var i = 0; i < allContents.length; i++){
-        allContents[i].isInQueue=false;
-        allContents[i].hasBeenVisited=false;
-        allContents[i].predecessor="none";
-        $(allContents[i].childNodes[2]).text(0);
-      }
+      $('.grid-stack-5 .grid-stack-item .grid-stack-item-content').each(function () {
+        console.log(this);
+        console.log($(this));
+        this.isInQueue=false;
+        this.hasBeenVisited=false;
+        this.predecessor="none";
+        $(this.childNodes[2]).text("");
+      });
     }
 
     function dijkstra(){
       console.log("dijkstra");
+      resetValues();
       var arrQueue = [];
       arrQueue.push($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')[0]);
-      resetValues();
+      $(arrQueue[0].childNodes[2]).text($(arrQueue[0].childNodes[1]).text());
+      arrQueue[0].predecessor="none";
       while(arrQueue.length>0){
         arrQueue[0].hasBeenVisited=true;
         var arrNeighbours=[];
@@ -413,8 +416,15 @@
         }
         arrNeighbours = arrNeighbours.filter( onlyUnique );
         for (var i = 0; i < arrNeighbours.length; i++) {
+          var currentDistance;
+          if($(arrNeighbours[i].childNodes[2]).text()==""){
+            currentDistance = Number.POSITIVE_INFINITY;
+          }
+          else{
+            currentDistance=parseInt($(arrNeighbours[i].childNodes[2]).text());
+          }
           if(arrNeighbours[i].isInQueue==true) {
-            if (parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()) < parseInt($(arrNeighbours[i].childNodes[2]).text())) {
+            if (parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()) < currentDistance) {
               $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()));
               arrNeighbours[i].predecessor=arrQueue[0];
             }
@@ -429,6 +439,37 @@
           }
         }
         arrQueue.splice(0,1);
+      }
+    }
+    function resetPaint(){
+      var allConnections = jsPlumb.getConnections();
+      for(var i = 0; i < allConnections.length; i++) {
+        allConnections[i].setPaintStyle({
+          stroke: "#123456",
+          strokeWidth: 3
+        });
+        $(allConnections[i].canvas).removeClass("bestPath");
+      }
+    }
+    function paintPath(){
+      console.log("paintPath");
+      resetPaint();
+      var lastContent = $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')[0];
+      while(lastContent.predecessor!="none"){
+        var preContent = lastContent.predecessor;
+        var lastConnections = jsPlumb.getConnections({target: lastContent});
+        for (var i = 0; i < lastConnections.length; i++) {
+          var endpointElement = lastConnections[i].endpoints[0].getElement();
+          if (endpointElement==preContent) {
+            $(lastConnections[i].canvas).addClass("bestPath");        //Fügt CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
+            lastConnections[i].setPaintStyle({
+              stroke: "red",
+              strokeWidth: 3
+            });
+            i = lastConnections.length - 1;
+          }
+        }
+        lastContent=preContent;
       }
     }
 
@@ -452,7 +493,6 @@
           for (var i = 0; i < connections.length; i++) {
             var endpointElement = connections[i].endpoints[1].getElement();
             if ($(endpointElement.lastChild).text() == minValue) {
-          //  console.log(connections[i]);
               $(connections[i].canvas).addClass("bestPath");        //Fügt CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
               connections[i].setPaintStyle({
                 stroke: "red",
