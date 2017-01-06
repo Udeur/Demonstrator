@@ -42,6 +42,7 @@
     addEndpoints();
     connectEndpoints();
     highlightBestPath();
+    dijkstra();
 
     allGrids.on('dragstop', function (event, ui) {
       jsPlumb.repaintEverything();        //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
@@ -97,7 +98,12 @@
       }
       jsPlumb.repaintEverything();
     });
-
+    jsPlumb.bind("connection", function(info) {
+      dijkstra();
+    });
+    jsPlumb.bind("connectionDetached", function(info) {
+      dijkstra();
+    });
     allGrids.on('change', function (event, items) {
       console.log("change");
     });
@@ -172,8 +178,6 @@
              '<span class="startTime"></span></div></div>'),
             0, 0, 1, 1);
           }
-         //   grid.removeAll();
-
           counter++;
       }, this);
       });
@@ -235,8 +239,8 @@
             node.x, node.y, node.width, node.height);
         }, this);
         for (var i = 0; i < 7; i++) {
-          var x = Math.floor(Math.random() * 3);
-          var y = Math.floor(Math.random() * 4);
+          var x = Math.floor(Math.random() * 3)+1;
+          var y = Math.floor(Math.random() * 5);
           if (grid.willItFit(x, y, 1, 1, false)) {
             grid.addWidget($('<div>' +
                 '<div class="grid-stack-item-content">' +
@@ -380,34 +384,51 @@
     function onlyUnique(value, index, self) {
       return self.indexOf(value) === index;
     }
-    dijkstra();
+    function resetValues(){
+      var allContents = [];
+      var AllConnections = jsPlumb.getConnections();
+      for (var i = 0; i < AllConnections.length; i++) {
+        allContents.push(AllConnections[i].endpoints[1].getElement());
+      }
+      allContents = allContents.filter( onlyUnique );
+      for(var i = 0; i < allContents.length; i++){
+        allContents[i].isInQueue=false;
+        allContents[i].hasBeenVisited=false;
+        allContents[i].predecessor="none";
+        $(allContents[i].childNodes[2]).text(0);
+      }
+    }
+
     function dijkstra(){
-      var arr = [];
-      arr.push($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')[0]);
-      var connections = jsPlumb.getConnections();
-      for (var i = 0; i < connections.length; i++) {
-        arr.push(connections[i].endpoints[1].getElement());
-      }
-      arr = arr.filter( onlyUnique );
-      console.log(arr);
-      var connectionsSingle = jsPlumb.getConnections({source: arr[0]});
-      arr[0].shortestFound=true;
-      var arrSingle = [];
-      for (var i = 0; i < connectionsSingle.length; i++) {
-        connectionsSingle[i].endpoints[1].getElement().predecessor=arr[0];
-        arrSingle.push(connectionsSingle[i].endpoints[1].getElement());
-      }
-      var minValue = Number.POSITIVE_INFINITY;
-      for (var i = 0; i < arrSingle.length; i++) {
-        if (parseInt($(arr[0].childNodes[2]).text())+parseInt($(arrSingle[i].childNodes[1]).text())<minValue){
-          minValue = parseInt($(arr[0].childNodes[2]).text())+parseInt($(arrSingle[i].childNodes[1]).text());
+      console.log("dijkstra");
+      var arrQueue = [];
+      arrQueue.push($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')[0]);
+      resetValues();
+      while(arrQueue.length>0){
+        arrQueue[0].hasBeenVisited=true;
+        var arrNeighbours=[];
+        var connections = jsPlumb.getConnections({source: arrQueue[0]});
+        for (var i = 0; i < connections.length; i++) {
+          arrNeighbours.push(connections[i].endpoints[1].getElement());
         }
-      }
-      for (var i = 0; i < arrSingle.length; i++) {
-        if (parseInt($(arr[0].childNodes[2]).text())+parseInt($(arrSingle[i].childNodes[1]).text())==minValue){
-          $(arrSingle[i].childNodes[2]).text(minValue);
-          arrSingle[i].shortestFound=true;
+        arrNeighbours = arrNeighbours.filter( onlyUnique );
+        for (var i = 0; i < arrNeighbours.length; i++) {
+          if(arrNeighbours[i].isInQueue==true) {
+            if (parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()) < parseInt($(arrNeighbours[i].childNodes[2]).text())) {
+              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()));
+              arrNeighbours[i].predecessor=arrQueue[0];
+            }
+          }
+          else{
+            if(arrNeighbours[i].hasBeenVisited!=true){
+              arrQueue.push(arrNeighbours[i]);
+              arrNeighbours[i].isInQueue=true;
+              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()));
+              arrNeighbours[i].predecessor=arrQueue[0];
+            }
+          }
         }
+        arrQueue.splice(0,1);
       }
     }
 
