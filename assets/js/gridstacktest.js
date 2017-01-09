@@ -6,7 +6,7 @@
 (function () {
   jsPlumb.bind("ready", function () {
 
-    window.addEventListener("resize", function (event) {          //Zeichnet die Endpoints neu wenn sich Fenstergröße verändert
+    window.addEventListener("resize", function () {          //Zeichnet die Endpoints und connections neu wenn sich Fenstergröße verändert
       w_height = $(window).height();
       $('.grid-stack-1').each(function () {
         var grid = $(this).data('gridstack');
@@ -25,15 +25,15 @@
     var bottomGrids = $('.grid-stack-5');
 
     jsPlumb.setContainer("bottomGrid");
-    jsPlumb.registerEndpointTypes({
-      "source": {
+    jsPlumb.registerEndpointTypes({                               //Standard Endpoint Typen
+      "source": {                                                 //Quelle
         paintStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
         hoverPaintStyle: {fill: "white", outlineStroke: "#346789", outlineWidth: 1},
-        connectorStyle: {stroke: "#123456", strokeWidth: 3}
+        connectorStyle: {stroke: "#123456", strokeWidth: 3}       //Verbindung
       },
-      "target": {
+      "target": {                                                 //Ziel
         paintStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
-        hoverPaintStyle: {fill: "white", outlineStroke: "#346789", outlineWidth: 1},
+        hoverPaintStyle: {fill: "white", outlineStroke: "#346789", outlineWidth: 1}
       }
     });
 
@@ -41,39 +41,43 @@
     fillGrids();
     addEndpoints();
     connectEndpoints();
-    highlightBestPath();
     dijkstra();
     paintPath();
 
+    window.setTimeout(function(){                                                           //Zeichne alles nach 10 Millisekunden nochmal
+      jsPlumb.repaintEverything()},
+        10
+    );
+
     allGrids.on('dragstop', function (event, ui) {
-      jsPlumb.repaintEverything();        //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
+      jsPlumb.repaintEverything();                                                          //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
     });
 
-    var isGrid;
+    var isGrid;                                                                             //Welches Grid einem Event zu Grunde liegt
 
     allGrids.on('dragstart', function (event, ui) {
-      isGrid=$(this).data('gridstack');
+      isGrid=$(this).data('gridstack');                                                     //Speichere Grid, in dem dragstart Event ausgelöst wurde in isGrid ab
     });
 
     allGrids.on('change', function (event, items) {
-      if (isGrid == $(event.target).data('gridstack')) {
+      if (isGrid == $(event.target).data('gridstack')) {                                     //Überprüfe ob das Grid auf dem Change Event endet das selbe ist wie isGrid
         console.log("nothingChanged")
       }
-      else {
+      else {                                                                                 //Wenn es von isGrid abweicht
         console.log("sthChanged");
-        if(isGrid!=bottomGrids.data('gridstack')) {
+        if(isGrid!=bottomGrids.data('gridstack')) {                                         //Wenn isGrid nicht das untere Grid ist --> zu unterem Grid hinzugefügt
           console.log("addedToBottomGrid");
-          _.each(items, function (node) {
-            var selectedItemContent = node.el.children(":first");
-            if (jsPlumb.selectEndpoints({element: selectedItemContent}).length == 0) {     //geht in Schlaufe falls Element aus Scrollbar hinzugefügt wurde
-              jsPlumb.addEndpoint((selectedItemContent), {
+          _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
+            var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
+            if (jsPlumb.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
+              jsPlumb.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
                 anchor: [1, 0.5, 1, 0],
                 maxConnections: -1,
                 type: "source",
                 isSource: true,
                 connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
               });
-              jsPlumb.addEndpoint((selectedItemContent), {
+              jsPlumb.addEndpoint((selectedItemContent), {                                    //Fügt neuen Target Endpoint hinzu
                 anchor: [0, 0.5, -1, 0],
                 maxConnections: -1,
                 type: "target",
@@ -82,77 +86,80 @@
             }
           });
         }
-        else {
+        else {                                                                                //Wenn isGrid das untere Grid ist --> zu oberem Grid hinzugefügt
           console.log("addedToTopGrid");
-          _.each(items, function (node) {
-            var selectedItemContent = node.el.children(":first");
-            console.log(selectedItemContent);
-            jsPlumb.detachAllConnections(selectedItemContent);
-            var selectedEndpointSource = jsPlumb.selectEndpoints({source: $(selectedItemContent)}).get(0);
-            var selectedEndpointsTarget = jsPlumb.selectEndpoints({target: $(selectedItemContent)}).get(0);
-            jsPlumb.deleteEndpoint(selectedEndpointSource);
-            jsPlumb.deleteEndpoint(selectedEndpointsTarget)
-            selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");
-            selectedItemContent.removeAttr('id');
-            console.log(selectedItemContent);
-            $(selectedItemContent[0].childNodes[2]).text("");
+          _.each(items, function (node) {                                                      //Für jedes hinzugefügte Widget (nur eines im Normalfall)
+            var selectedItemContent = node.el.children(":first");                               //Wählt itemContent aus
+             jsPlumb.detachAllConnections(selectedItemContent);                                  //Entfernt alle Connections des itemContents
+            var selectedEndpointSource = jsPlumb.selectEndpoints({source: $(selectedItemContent)}).get(0);  //Wählt Source Endpoint aus
+            var selectedEndpointsTarget = jsPlumb.selectEndpoints({target: $(selectedItemContent)}).get(0);  //Wählt Target Endpoint aus
+            jsPlumb.deleteEndpoint(selectedEndpointSource);                                       //entfernt Source Endpoint
+            jsPlumb.deleteEndpoint(selectedEndpointsTarget);                                      //Entfernt Target Endpoint
+            selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");      //Entfernt jsPlumb Attribute
+            selectedItemContent.removeAttr('id');                                                 //Entfernt jsPlumb id
+            $(selectedItemContent[0].childNodes[2]).text("");                                     //Entfernt Distanz
           });
         }
       }
-      jsPlumb.repaintEverything();
     });
-    jsPlumb.bind("connection", function(info) {
-      dijkstra();
-      paintPath();
+
+    jsPlumb.bind("connection", function(info) {                                                     //Wenn Verbindung erstellt wurde
+      var con=info.connection;
+      var arr=jsPlumb.select({source:con.sourceId,target:con.targetId});
+      if(arr.length>1){
+        jsPlumb.detach(con);                                                                        //Verhindert doppelte Verbindungen. Problem: Hover funktioniert noch nicht direkt wieder
+      }
+      dijkstra();                                                                                   //berechne Distanzen
+      paintPath();                                                                                   //Zeichne kürzesten Web
     });
-    jsPlumb.bind("connectionDetached", function(info) {
-      dijkstra();
-      paintPath();
+    jsPlumb.bind("connectionDetached", function(info) {                                             //Wenn Verbindung erstellt wurde
+      dijkstra();                                                                                   //berechne Distanzen
+      paintPath();                                                                                  //Zeichne kürzesten Web
     });
-    allGrids.on('change', function (event, items) {
+    allGrids.on('change', function (event, items) {                                                  //Zeigt Change Events an
       console.log("change");
     });
-    allGrids.on('dragstart', function (event, ui) {
+    allGrids.on('dragstart', function (event, ui) {                                                     //Zeigt dragstart Events an
       console.log("dragstart");
     });
-    allGrids.on('removed', function (event, items) {
+    allGrids.on('removed', function (event, items) {                                                  //zeigt Removed Events an
       console.log("removed");
     });
-    allGrids.on('added', function (event, items) {
+    allGrids.on('added', function (event, items) {                                                    //Zeigt added Events an
       console.log("added");
     });
-    allGrids.on('disable', function (event) {
+    allGrids.on('disable', function (event) {                                                          //Zeigt disabled Events an
       console.log("disabled");
     });
-    allGrids.on('enable', function (event) {
+    allGrids.on('enable', function (event) {                                                            //Zeigt enable Events an
       console.log("enabled");
     });
-    allGrids.on('dragstop', function (event, ui) {
+    allGrids.on('dragstop', function (event, ui) {                                                      //Zeigt dragstop Events an
       console.log("dragstop");
     });
 
     function initializeGrids() {
-      var options = {
+      var options = {                                                                                    //Parameter die für obere und untere Grids gelten
         animate: true,
         disableResize: true,
         removable: false,
         removeTimeout: 100,
-        minWidth: 0,
-        verticalMargin: 0 //kein Abstand nach oben
+        verticalMargin: 0,                                                                                //kein Abstand nach oben
+        acceptWidgets: '.grid-stack-item',
+        minWidth:0
       };
-      topGrids.gridstack(_.defaults({
+      topGrids.gridstack(_.defaults({                                                                    //Oberes Grid
         height: 1,
         width: 1,
         float: false,
-        cellHeight: w_height / 6 / 2,
-        acceptWidgets: '.grid-stack-item'
+        cellHeight: w_height / 6 / 2
+
       }, options));
-      bottomGrids.gridstack(_.defaults({
+      bottomGrids.gridstack(_.defaults({                                                                  //unteres Grid
         height: 5,
         width: 5,
         float: true,
-        cellHeight: w_height / 6,
-        acceptWidgets: '.grid-stack-item'
+        cellHeight: w_height / 6
       }, options));
     }
 
@@ -173,10 +180,10 @@
           value: 10
         }
       ];
-      topGrids.each(function () {                                                   //Scrollbar wird initialisiert
+      topGrids.each(function () {                                                                         //Für jedes Grid in Scrollbar
         var grid = $(this).data('gridstack');
         _.each(itemTop, function (node) {
-          if(counter<7){
+          if(counter<7){                                                                                   //Füge für die ersten 7 Grids ein Widget hinzu
           grid.addWidget($('<div><div class="grid-stack-item-content">' +
               '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
               '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +
@@ -189,7 +196,7 @@
     }
 
     function fillBottomGrids() {
-      var itemBottomOrigin = [
+      var itemBottomOrigin = [                                                                               //Origin Element
         {
           x: 0,
           y: 2,
@@ -199,7 +206,7 @@
           value: 0
         }
       ];
-      var itemBottomEnd = [
+      var itemBottomEnd = [                                                                                   //End Element
         {
           x: 4,
           y: 2,
@@ -209,7 +216,7 @@
           value: 0
         }
       ];
-      var itemBottomBlock = [
+      var itemBottomBlock = [                                                                                  //leere Elemente in erster und letzter Spalte
         {x: 0, y: 0, width: 1, height: 1},
         {x: 0, y: 1, width: 1, height: 1},
         {x: 0, y: 3, width: 1, height: 1},
@@ -220,37 +227,37 @@
         {x: 4, y: 4, width: 1, height: 1}
       ];
 
-      bottomGrids.each(function () {                                              //unterer Gridstack wird initialisiert
+      bottomGrids.each(function () {                                                                             //unterer Gridstack wird initialisiert
         var grid = $(this).data('gridstack');
-        _.each(itemBottomOrigin, function (node) {
-          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +
+        _.each(itemBottomOrigin, function (node) {                                                               //Fügt Origin Element hinzu
+          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +                       //Nicht beweglich
               '<div class="grid-stack-item-content">' +
               '<img src=' + node.image + ' />' +
               '<span class="value">' + node.value + '</span>' +
               '<span class="startTime">' + node.value + '</span></div></div>'),
             node.x, node.y, node.width, node.height);
         }, this);
-        _.each(itemBottomEnd, function (node) {
-          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +
+        _.each(itemBottomEnd, function (node) {                                                                   //Fügt End Element hinzu
+          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +                          //Nicht beweglich
               '<div class="grid-stack-item-content">' +
               '<img src=' + node.image + ' />' +
               '<span class="value">' + node.value + '</span>' +
               '<span class="startTime"></span></div></div>'),
             node.x, node.y, node.width, node.height);
         }, this);
-        _.each(itemBottomBlock, function (node) {
-          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block">' +
+        _.each(itemBottomBlock, function (node) {                                                                  //Fügt Block Elemente hinzu
+          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block">' +                          //Nicht beweglich
               '<div class="grid-stack-item-content"/></div>'),
             node.x, node.y, node.width, node.height);
         }, this);
-        for (var i = 0; i < 7; i++) {
-          var x = Math.floor(Math.random() * 3)+1;
-          var y = Math.floor(Math.random() * 5);
-          if (grid.willItFit(x, y, 1, 1, false)) {
+        for (var i = 0; i < 7; i++) {                                                                               //Fügt bis zu 7 zufällige Widgets hinzu
+          var x = Math.floor(Math.random() * 3)+1;                                                                  //Wert aus [1,3]
+          var y = Math.floor(Math.random() * 5);                                                                    //Wert aus [0,4]
+          if (grid.willItFit(x, y, 1, 1, false)) {                                                                  //Nur wenn es an dieser x,y Position hinzugefügt werden kann
             grid.addWidget($('<div>' +
                 '<div class="grid-stack-item-content">' +
                 '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
-                '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +
+                '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +                               //Wert aus [0,9]
                 '<span class="startTime"></span></div></div>'),
               x, y, 1, 1);
           }
@@ -259,96 +266,55 @@
     }
 
     function addEndpoints() {
-      jsPlumb.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {
+      jsPlumb.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {                     //Source Endpoint Für Origin Element
+        anchor: [1, 0.5, 1, 0],
+        maxConnections: -1,                                                                                          //Unendlich Verbindungen möglich
+        type: "source",
+        isSource: true,
+        connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
+      });
+      jsPlumb.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {                         //Target Endpoint Für End Element
+        anchor: [0, 0.5, -1, 0],
+        maxConnections: -1,
+        type: "target",
+        isTarget: true
+      });
+      jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Source Endpoint Für alle normalen Widgets
         anchor: [1, 0.5, 1, 0],
         maxConnections: -1,
         type: "source",
         isSource: true,
         connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
       });
-      jsPlumb.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {
+      jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Target Endpoint Für alle normalen Widgets
         anchor: [0, 0.5, -1, 0],
         maxConnections: -1,
         type: "target",
-        isTarget: true,
-      });
-      jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {
-        anchor: [1, 0.5, 1, 0],
-        maxConnections: -1,
-        type: "source",
-        isSource: true,
-        connector: ["Flowchart", {stub: 10, cornerRadius: 5}],
-      });
-      jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {
-        anchor: [0, 0.5, -1, 0],
-        maxConnections: -1,
-        type: "target",
-        isTarget: true,
+        isTarget: true
       });
     }
 
     function connectEndpoints() {
-      $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content').each(function () {                                              //unterer Gridstack wird initialisiert
-        var $items = $('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block)');
+      var sourceEndpoint = jsPlumb.selectEndpoints({source: $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')}).get(0);   //Wählt den Source Endpoint von origin aus
+      var $items = $('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block)');                                        //Alle normalen Widgets
 
-        var firstItems = jQuery.grep($items, checkFirst);
-        var secondItems = jQuery.grep($items, checkSecond);
-        var thirdItems = jQuery.grep($items, checkThird);
+      var firstItems = jQuery.grep($items, checkFirst);                                                                   //Widgets mit x=1
+      var secondItems = jQuery.grep($items, checkSecond);                                                                 //Widgets mit x=2
+      var thirdItems = jQuery.grep($items, checkThird);                                                                   //Widgets mit x=3
 
-        var sourceEndpoint = jsPlumb.selectEndpoints({source: $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')}).get(0);
-        if (firstItems.length > 0) {
-          connectEndpointsMiddle(sourceEndpoint, firstItems);
-        }
-        else {
-          if (secondItems.length > 0) {
-            connectEndpointsMiddle(sourceEndpoint, secondItems);
-          }
-          else {
-            if (thirdItems.length > 0) {
-              connectEndpointsMiddle(sourceEndpoint, thirdItems);
-            }
-            else {
-              connectEndpointsEnd(sourceEndpoint);
-            }
-          }
-        }
+      removeOneIfGreater2(firstItems);
+      removeOneIfGreater2(secondItems);
+      removeOneIfGreater2(thirdItems);
 
-        $(firstItems).each(function () {
-          if ($(this).data('isConnected') == true) {
-            sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
-            if (secondItems.length > 0) {
-              connectEndpointsMiddle(sourceEndpoint, secondItems);
-            }
-            else {
-              if (thirdItems.length > 0) {
-                connectEndpointsMiddle(sourceEndpoint, thirdItems);
-              }
-              else {
-                connectEndpointsEnd(sourceEndpoint);
-              }
-            }
-          }
-        });
+      console.log(firstItems);
+      console.log(secondItems);
+      console.log(thirdItems);
 
-        $(secondItems).each(function () {
-          if ($(this).data('isConnected') == true) {
-            sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
-            if (thirdItems.length > 0) {
-              connectEndpointsMiddle(sourceEndpoint, thirdItems);
-            }
-            else {
-              connectEndpointsEnd(sourceEndpoint);
-            }
-          }
-        });
+      connectOrigin(sourceEndpoint,firstItems,secondItems,thirdItems);
+      connectFirstItems(firstItems,secondItems,thirdItems);
+      connectSecondItems(secondItems,thirdItems);
+      connectThirdItems(thirdItems);
 
-        $(thirdItems).each(function () {
-          if ($(this).data('isConnected') == true) {
-            sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
-            connectEndpointsEnd(sourceEndpoint);
-          }
-        });
-      });
     }
 
     function checkFirst(item) {
@@ -365,34 +331,90 @@
       var node = $(item).data('_gridstack_node');
       return node.x == 3;
     }
+    function removeOneIfGreater2(items){
+      if (items.length > 2) {                                                                       //Wenn es mehr als zwei Elemente auf der nächsten Stufe gibt verbinde ein zufällig ausgewähltes nicht
+        items.splice((Math.random() * items.length), 1);
+      }
+    }
+
+    function connectOrigin(sourceEndpoint,firstItems,secondItems,thirdItems) {
+    if (firstItems.length > 0) {
+        connectEndpointsMiddle(sourceEndpoint, firstItems);
+      }
+      else {
+        if (secondItems.length > 0) {
+          connectEndpointsMiddle(sourceEndpoint, secondItems);
+        }
+        else {
+          if (thirdItems.length > 0) {
+            connectEndpointsMiddle(sourceEndpoint, thirdItems);
+          }
+          else {
+            connectEndpointsEnd(sourceEndpoint);                                                                            //Wenn es keine weiteren Elemente gibt verbinde mit Target Endpoint des end Elements
+          }
+        }
+      }
+    }
+
+    function connectFirstItems(firstItems,secondItems,thirdItems) {
+      $(firstItems).each(function () {
+        var sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
+        if (secondItems.length > 0) {
+          connectEndpointsMiddle(sourceEndpoint, secondItems);
+        }
+        else {
+          if (thirdItems.length > 0) {
+            connectEndpointsMiddle(sourceEndpoint, thirdItems);
+          }
+          else {
+            connectEndpointsEnd(sourceEndpoint);
+          }
+        }
+      });
+    }
+
+    function connectSecondItems(secondItems,thirdItems) {
+      $(secondItems).each(function () {
+        var sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
+        if (thirdItems.length > 0) {
+          connectEndpointsMiddle(sourceEndpoint, thirdItems);
+        }
+        else {
+          connectEndpointsEnd(sourceEndpoint);
+        }
+      });
+    }
+
+    function connectThirdItems(thirdItems) {
+      $(thirdItems).each(function () {
+        var sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
+        connectEndpointsEnd(sourceEndpoint);
+      });
+    }
 
     function connectEndpointsMiddle(sourceEndpoint, targetLevel) {
-      if (targetLevel.length > 2) {
-        targetLevel.splice((Math.random() * targetLevel.length), 1);
-      }
       $(targetLevel).each(function () {
         jsPlumb.connect({
           source: sourceEndpoint,
-          target: jsPlumb.selectEndpoints({target: this.firstChild}).get(0),
+          target: jsPlumb.selectEndpoints({target: this.firstChild}).get(0)
         });
-        $(this).data('isConnected', true);
       });
     }
 
     function connectEndpointsEnd(sourceEndpoint) {
       jsPlumb.connect({
         source: sourceEndpoint,
-        target: jsPlumb.selectEndpoints({target: $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')}).get(0),
+        target: jsPlumb.selectEndpoints({target: $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')}).get(0)   //Verbinde mit Target Endpoint des end Elements
       });
-      $(this).data('isConnected', true);
+      console.log(sourceEndpoint);
     }
+
     function onlyUnique(value, index, self) {
       return self.indexOf(value) === index;
     }
+
     function resetValues(){
-      $('.grid-stack-5 .grid-stack-item .grid-stack-item-content').each(function () {
-        console.log(this);
-        console.log($(this));
+      $('.grid-stack-5 .grid-stack-item .grid-stack-item-content').each(function () {                    //Setzte für jedes Element im unteren Grid Werte zurück
         this.isInQueue=false;
         this.hasBeenVisited=false;
         this.predecessor="none";
@@ -401,108 +423,78 @@
     }
 
     function dijkstra(){
+      var i;
       console.log("dijkstra");
-      resetValues();
-      var arrQueue = [];
-      arrQueue.push($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')[0]);
-      $(arrQueue[0].childNodes[2]).text($(arrQueue[0].childNodes[1]).text());
-      arrQueue[0].predecessor="none";
-      while(arrQueue.length>0){
-        arrQueue[0].hasBeenVisited=true;
-        var arrNeighbours=[];
-        var connections = jsPlumb.getConnections({source: arrQueue[0]});
-        for (var i = 0; i < connections.length; i++) {
+      resetValues();                                                                                       //Setze Werte zurück
+      var arrQueue = [];                                                                                    //Kandidatenliste
+      arrQueue.push($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')[0]);                 //Füge Origin Element zu Kandidatenliste hinzu
+      $(arrQueue[0].childNodes[2]).text($(arrQueue[0].childNodes[1]).text());                                //Seine Gesamtdistanz entspricht seiner Distanz
+      arrQueue[0].predecessor="none";                                                                         //kein Vorgängerknoten
+      while(arrQueue.length>0){                                                                               //Solange es Elemente in Kandidatenliste gibt
+        arrQueue[0].hasBeenVisited=true;                                                                      //Markiere das erste als besucht und wähle es aus
+        var arrNeighbours=[];                                                                                 //Elemente die mit ausgewähltem verbunden sind
+        var connections = jsPlumb.getConnections({source: arrQueue[0]});                                      //Connections des ausgewählten
+        for (i = 0; i < connections.length; i++) {
           arrNeighbours.push(connections[i].endpoints[1].getElement());
         }
-        arrNeighbours = arrNeighbours.filter( onlyUnique );
-        for (var i = 0; i < arrNeighbours.length; i++) {
+        arrNeighbours = arrNeighbours.filter( onlyUnique );                                                   //Nur eindeutige Werte (falls doppelte Verbindungen)
+        for (i = 0; i < arrNeighbours.length; i++) {
           var currentDistance;
-          if($(arrNeighbours[i].childNodes[2]).text()==""){
+          if($(arrNeighbours[i].childNodes[2]).text()==""){                                                   //Wenn noch keine Gesamtdistanz setze sie auf unendlich
             currentDistance = Number.POSITIVE_INFINITY;
           }
           else{
-            currentDistance=parseInt($(arrNeighbours[i].childNodes[2]).text());
+            currentDistance=parseInt($(arrNeighbours[i].childNodes[2]).text());                                //jeweilige Gesamtdistanz
           }
-          if(arrNeighbours[i].isInQueue==true) {
-            if (parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()) < currentDistance) {
-              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()));
-              arrNeighbours[i].predecessor=arrQueue[0];
+          if(arrNeighbours[i].isInQueue==true) {                                                                //Wenn sich untersuchter Nachbarknoten auf Kandidatenliste befindet
+            if (parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()) < currentDistance) {   //Wenn Gesamtdistanz über derzeit untersuchten Knoten kürzer
+              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text())); //aktualisiere Gesamtdistanz
+              arrNeighbours[i].predecessor=arrQueue[0];                                                         //Setzte derzeit untersuchten Knoten als Vorgänger
             }
           }
-          else{
-            if(arrNeighbours[i].hasBeenVisited!=true){
-              arrQueue.push(arrNeighbours[i]);
+          else{                                                                                                 //Wenn sich untersuchter Nachbarknoten nicht in Kandidatenliste befindet
+            if(arrNeighbours[i].hasBeenVisited!=true){                                                          //Wenn untersuchter Nachbarknoten noch nicht untersucht wurde
+              arrQueue.push(arrNeighbours[i]);                                                                  //Füge ihn zu Warteliste hinzu
               arrNeighbours[i].isInQueue=true;
-              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()));
-              arrNeighbours[i].predecessor=arrQueue[0];
+              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text())); //aktualisiere Gesamtdistanz
+              arrNeighbours[i].predecessor=arrQueue[0];                                                         //Setzte derzeit untersuchten Knoten als Vorgänger
             }
           }
         }
-        arrQueue.splice(0,1);
+        arrQueue.splice(0,1);                                                                                   //Entferne derzeit untersuchten Knoten aus Warteschlange (erstes Element)
       }
     }
+
     function resetPaint(){
-      var allConnections = jsPlumb.getConnections();
+      var allConnections = jsPlumb.getConnections();                                                            //Wähle alle Verbindungen aus
       for(var i = 0; i < allConnections.length; i++) {
-        allConnections[i].setPaintStyle({
+        allConnections[i].setPaintStyle({                                                                       //Setzte Farbe zurück
           stroke: "#123456",
           strokeWidth: 3
         });
-        $(allConnections[i].canvas).removeClass("bestPath");
+        $(allConnections[i].canvas).removeClass("bestPath");                                                    //Setzte besten Pfad zurück
       }
     }
+
     function paintPath(){
       console.log("paintPath");
       resetPaint();
-      var lastContent = $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')[0];
-      while(lastContent.predecessor!="none"){
+      var lastContent = $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')[0];                     //Wähle End Element aus
+      while(lastContent.predecessor!="none"){                                                                     //Bis das erste Element ausgewählt wurde
         var preContent = lastContent.predecessor;
         var lastConnections = jsPlumb.getConnections({target: lastContent});
         for (var i = 0; i < lastConnections.length; i++) {
           var endpointElement = lastConnections[i].endpoints[0].getElement();
-          if (endpointElement==preContent) {
-            $(lastConnections[i].canvas).addClass("bestPath");        //Fügt CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
-            lastConnections[i].setPaintStyle({
+          if (endpointElement==preContent) {                                                                        //Wähle Vorgänger aus
+            $(lastConnections[i].canvas).addClass("bestPath");                                                     //Füge CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
+            lastConnections[i].setPaintStyle({                                                                      //Passe Farbe an
               stroke: "red",
               strokeWidth: 3
             });
             i = lastConnections.length - 1;
           }
         }
-        lastContent=preContent;
-      }
-    }
-
-    function highlightBestPath() {
-      var sourceItemContent = $('.grid-stack-5 #oriin.grid-stack-item .grid-stack-item-content');
-      var endReached = false;
-
-      while (!endReached) {
-        var connections = jsPlumb.getConnections({source: sourceItemContent});
-        if (connections.length == 0) {
-          endReached = true;
-        }
-        else {
-          var minValue = Number.POSITIVE_INFINITY;
-          for (var i = 0; i < connections.length; i++) {
-            var endpointElement = connections[i].endpoints[1].getElement();
-            if ($(endpointElement.lastChild).text() < minValue) {
-              minValue = ($(endpointElement.lastChild).text());
-            }
-          }
-          for (var i = 0; i < connections.length; i++) {
-            var endpointElement = connections[i].endpoints[1].getElement();
-            if ($(endpointElement.lastChild).text() == minValue) {
-              $(connections[i].canvas).addClass("bestPath");        //Fügt CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
-              connections[i].setPaintStyle({
-                stroke: "red",
-                strokeWidth: 3
-              });
-              i = connections.length - 1;
-              sourceItemContent = endpointElement
-            }
-          }
-        }
+        lastContent=preContent;                                                                                   //Iteriere Richtung Origin Element
       }
     }
   });
