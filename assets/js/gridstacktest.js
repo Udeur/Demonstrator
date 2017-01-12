@@ -23,13 +23,28 @@
     var allGrids = $('.grid-stack');
     var topGrids = $('.grid-stack-1');
     var bottomGrids = $('.grid-stack-5');
-
-    jsPlumb.setContainer("bottomGrid");
-    jsPlumb.registerEndpointTypes({                               //Standard Endpoint Typen
+    var instance = window.jsp = jsPlumb.getInstance({
+      ConnectionOverlays: [
+        [ "Arrow", {
+          location: 1,
+          visible:true,
+          width:11,
+          length:11,
+          id:"ARROW",
+          events:{
+            click:function() { alert("you clicked on the arrow overlay")}
+          }
+        } ],
+      ],
+      PaintStyle: {stroke: "#123456", strokeWidth: 3},
+      Container: "bottomGrid"
+    });
+  //  jsPlumb.setContainer("bottomGrid");
+    instance.registerEndpointTypes({                               //Standard Endpoint Typen
       "source": {                                                 //Quelle
         paintStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
         hoverPaintStyle: {fill: "white", outlineStroke: "#346789", outlineWidth: 1},
-        connectorStyle: {stroke: "#123456", strokeWidth: 3}       //Verbindung
+     //   connectorStyle: {stroke: "#123456", strokeWidth: 3}       //Verbindung
       },
       "target": {                                                 //Ziel
         paintStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
@@ -45,7 +60,7 @@
     paintPath();
 
     window.setTimeout(function(){                                                           //Zeichne alles nach 10 Millisekunden nochmal
-      jsPlumb.repaintEverything()},
+        jsPlumb.repaintEverything()},
         10
     );
 
@@ -70,14 +85,14 @@
           _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
             var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
             if (jsPlumb.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
-              jsPlumb.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
+              instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
                 anchor: [1, 0.5, 1, 0],
                 maxConnections: -1,
                 type: "source",
                 isSource: true,
                 connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
               });
-              jsPlumb.addEndpoint((selectedItemContent), {                                    //Fügt neuen Target Endpoint hinzu
+              instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Target Endpoint hinzu
                 anchor: [0, 0.5, -1, 0],
                 maxConnections: -1,
                 type: "target",
@@ -90,11 +105,11 @@
           console.log("addedToTopGrid");
           _.each(items, function (node) {                                                      //Für jedes hinzugefügte Widget (nur eines im Normalfall)
             var selectedItemContent = node.el.children(":first");                               //Wählt itemContent aus
-             jsPlumb.detachAllConnections(selectedItemContent);                                  //Entfernt alle Connections des itemContents
+            instance.detachAllConnections(selectedItemContent);                                  //Entfernt alle Connections des itemContents
             var selectedEndpointSource = jsPlumb.selectEndpoints({source: $(selectedItemContent)}).get(0);  //Wählt Source Endpoint aus
             var selectedEndpointsTarget = jsPlumb.selectEndpoints({target: $(selectedItemContent)}).get(0);  //Wählt Target Endpoint aus
-            jsPlumb.deleteEndpoint(selectedEndpointSource);                                       //entfernt Source Endpoint
-            jsPlumb.deleteEndpoint(selectedEndpointsTarget);                                      //Entfernt Target Endpoint
+            instance.deleteEndpoint(selectedEndpointSource);                                       //entfernt Source Endpoint
+            instance.deleteEndpoint(selectedEndpointsTarget);                                      //Entfernt Target Endpoint
             selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");      //Entfernt jsPlumb Attribute
             selectedItemContent.removeAttr('id');                                                 //Entfernt jsPlumb id
             $(selectedItemContent[0].childNodes[2]).text("");                                     //Entfernt Distanz
@@ -107,7 +122,7 @@
       var con=info.connection;
       var arr=jsPlumb.select({source:con.sourceId,target:con.targetId});
       if(arr.length>1){
-        jsPlumb.detach(con);                                                                        //Verhindert doppelte Verbindungen. Problem: Hover funktioniert noch nicht direkt wieder
+        instance.detach(con);                                                                        //Verhindert doppelte Verbindungen. Problem: Hover funktioniert noch nicht direkt wieder
       }
       dijkstra();                                                                                   //berechne Distanzen
       paintPath();                                                                                   //Zeichne kürzesten Web
@@ -266,27 +281,27 @@
     }
 
     function addEndpoints() {
-      jsPlumb.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {                     //Source Endpoint Für Origin Element
+      instance.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {                     //Source Endpoint Für Origin Element
         anchor: [1, 0.5, 1, 0],
         maxConnections: -1,                                                                                          //Unendlich Verbindungen möglich
         type: "source",
         isSource: true,
         connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
       });
-      jsPlumb.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {                         //Target Endpoint Für End Element
+      instance.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {                         //Target Endpoint Für End Element
         anchor: [0, 0.5, -1, 0],
         maxConnections: -1,
         type: "target",
         isTarget: true
       });
-      jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Source Endpoint Für alle normalen Widgets
+      instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Source Endpoint Für alle normalen Widgets
         anchor: [1, 0.5, 1, 0],
         maxConnections: -1,
         type: "source",
         isSource: true,
         connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
       });
-      jsPlumb.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Target Endpoint Für alle normalen Widgets
+      instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Target Endpoint Für alle normalen Widgets
         anchor: [0, 0.5, -1, 0],
         maxConnections: -1,
         type: "target",
@@ -295,7 +310,7 @@
     }
 
     function connectEndpoints() {
-      var sourceEndpoint = jsPlumb.selectEndpoints({source: $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')}).get(0);   //Wählt den Source Endpoint von origin aus
+      var sourceEndpoint = instance.selectEndpoints({source: $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')}).get(0);   //Wählt den Source Endpoint von origin aus
       var $items = $('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block)');                                        //Alle normalen Widgets
 
       var firstItems = jQuery.grep($items, checkFirst);                                                                   //Widgets mit x=1
@@ -358,7 +373,7 @@
 
     function connectFirstItems(firstItems,secondItems,thirdItems) {
       $(firstItems).each(function () {
-        var sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
+        var sourceEndpoint = instance.selectEndpoints({source: this.firstChild}).get(0);
         if (secondItems.length > 0) {
           connectEndpointsMiddle(sourceEndpoint, secondItems);
         }
@@ -375,7 +390,7 @@
 
     function connectSecondItems(secondItems,thirdItems) {
       $(secondItems).each(function () {
-        var sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
+        var sourceEndpoint = instance.selectEndpoints({source: this.firstChild}).get(0);
         if (thirdItems.length > 0) {
           connectEndpointsMiddle(sourceEndpoint, thirdItems);
         }
@@ -387,24 +402,24 @@
 
     function connectThirdItems(thirdItems) {
       $(thirdItems).each(function () {
-        var sourceEndpoint = jsPlumb.selectEndpoints({source: this.firstChild}).get(0);
+        var sourceEndpoint = instance.selectEndpoints({source: this.firstChild}).get(0);
         connectEndpointsEnd(sourceEndpoint);
       });
     }
 
     function connectEndpointsMiddle(sourceEndpoint, targetLevel) {
       $(targetLevel).each(function () {
-        jsPlumb.connect({
+        instance.connect({
           source: sourceEndpoint,
-          target: jsPlumb.selectEndpoints({target: this.firstChild}).get(0)
+          target: instance.selectEndpoints({target: this.firstChild}).get(0)
         });
       });
     }
 
     function connectEndpointsEnd(sourceEndpoint) {
-      jsPlumb.connect({
+      instance.connect({
         source: sourceEndpoint,
-        target: jsPlumb.selectEndpoints({target: $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')}).get(0)   //Verbinde mit Target Endpoint des end Elements
+        target: instance.selectEndpoints({target: $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')}).get(0)   //Verbinde mit Target Endpoint des end Elements
       });
       console.log(sourceEndpoint);
     }
