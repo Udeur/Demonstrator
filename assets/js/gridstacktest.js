@@ -1,7 +1,7 @@
 /**
  * Created by Sven on 02.11.2016.
  */
-
+var instance;
 // not extendable? http://stackoverflow.com/questions/18142792/how-to-extend-an-object-inside-an-anonymous-function
 (function () {
   jsPlumb.bind("ready", function () {
@@ -16,14 +16,14 @@
         var grid = $(this).data('gridstack');
         grid.cellHeight(w_height / 6);
       });
-      jsPlumb.repaintEverything();
+      instance.repaintEverything();
     }, false);
 
     var w_height = $(window).height();
     var allGrids = $('.grid-stack');
     var topGrids = $('.grid-stack-1');
     var bottomGrids = $('.grid-stack-5');
-    var instance = window.jsp = jsPlumb.getInstance({
+    instance = window.jsp = jsPlumb.getInstance({
       ConnectionOverlays: [
         [ "Arrow", {
           location: 1,
@@ -36,20 +36,14 @@
           }
         } ],
       ],
-      PaintStyle: {stroke: "#123456", strokeWidth: 3},
-      Container: "bottomGrid"
-    });
-  //  jsPlumb.setContainer("bottomGrid");
-    instance.registerEndpointTypes({                               //Standard Endpoint Typen
-      "source": {                                                 //Quelle
-        paintStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
-        hoverPaintStyle: {fill: "white", outlineStroke: "#346789", outlineWidth: 1},
-     //   connectorStyle: {stroke: "#123456", strokeWidth: 3}       //Verbindung
-      },
-      "target": {                                                 //Ziel
-        paintStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
-        hoverPaintStyle: {fill: "white", outlineStroke: "#346789", outlineWidth: 1}
-      }
+      PaintStyle: {stroke: "#346789", strokeWidth: 2,  joinstyle: "round"},
+      HoverPaintStyle: {stroke: "#123456", strokeWidth:3},
+      Connector: ["Flowchart", {stub: 10, cornerRadius: 5, gap: 3}],
+      Container: "bottomGrid",
+      MaxConnections: -1,
+      Endpoint:[ "Dot", { radius:7 } ],
+      EndpointStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
+      EndpointHoverStyle: {fill: "white", outlineStroke: "#346789", outlineWidth: 1}
     });
 
     initializeGrids();
@@ -60,12 +54,12 @@
     paintPath();
 
     window.setTimeout(function(){                                                           //Zeichne alles nach 10 Millisekunden nochmal
-        jsPlumb.repaintEverything()},
+        instance.repaintEverything()},
         10
     );
 
     allGrids.on('dragstop', function (event, ui) {
-      jsPlumb.repaintEverything();                                                          //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
+      instance.repaintEverything();                                                          //nötig, sonst kein repaint wenn zweimal auf gleiches Feld zurückgedragt
     });
 
     var isGrid;                                                                             //Welches Grid einem Event zu Grunde liegt
@@ -84,18 +78,13 @@
           console.log("addedToBottomGrid");
           _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
             var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
-            if (jsPlumb.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
+            if (instance.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
               instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
                 anchor: [1, 0.5, 1, 0],
-                maxConnections: -1,
-                type: "source",
                 isSource: true,
-                connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
               });
               instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Target Endpoint hinzu
                 anchor: [0, 0.5, -1, 0],
-                maxConnections: -1,
-                type: "target",
                 isTarget: true
               });
             }
@@ -106,8 +95,8 @@
           _.each(items, function (node) {                                                      //Für jedes hinzugefügte Widget (nur eines im Normalfall)
             var selectedItemContent = node.el.children(":first");                               //Wählt itemContent aus
             instance.detachAllConnections(selectedItemContent);                                  //Entfernt alle Connections des itemContents
-            var selectedEndpointSource = jsPlumb.selectEndpoints({source: $(selectedItemContent)}).get(0);  //Wählt Source Endpoint aus
-            var selectedEndpointsTarget = jsPlumb.selectEndpoints({target: $(selectedItemContent)}).get(0);  //Wählt Target Endpoint aus
+            var selectedEndpointSource = instance.selectEndpoints({source: $(selectedItemContent)}).get(0);  //Wählt Source Endpoint aus
+            var selectedEndpointsTarget = instance.selectEndpoints({target: $(selectedItemContent)}).get(0);  //Wählt Target Endpoint aus
             instance.deleteEndpoint(selectedEndpointSource);                                       //entfernt Source Endpoint
             instance.deleteEndpoint(selectedEndpointsTarget);                                      //Entfernt Target Endpoint
             selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");      //Entfernt jsPlumb Attribute
@@ -118,16 +107,16 @@
       }
     });
 
-    jsPlumb.bind("connection", function(info) {                                                     //Wenn Verbindung erstellt wurde
+    instance.bind("connection", function(info) {                                                     //Wenn Verbindung erstellt wurde
       var con=info.connection;
-      var arr=jsPlumb.select({source:con.sourceId,target:con.targetId});
+      var arr=instance.select({source:con.sourceId,target:con.targetId});
       if(arr.length>1){
         instance.detach(con);                                                                        //Verhindert doppelte Verbindungen. Problem: Hover funktioniert noch nicht direkt wieder
       }
       dijkstra();                                                                                   //berechne Distanzen
       paintPath();                                                                                   //Zeichne kürzesten Web
     });
-    jsPlumb.bind("connectionDetached", function(info) {                                             //Wenn Verbindung erstellt wurde
+    instance.bind("connectionDetached", function(info) {                                             //Wenn Verbindung erstellt wurde
       dijkstra();                                                                                   //berechne Distanzen
       paintPath();                                                                                  //Zeichne kürzesten Web
     });
@@ -282,29 +271,19 @@
 
     function addEndpoints() {
       instance.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {                     //Source Endpoint Für Origin Element
-        anchor: [1, 0.5, 1, 0],
-        maxConnections: -1,                                                                                          //Unendlich Verbindungen möglich
-        type: "source",
+        anchor: "Right",
         isSource: true,
-        connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
       });
       instance.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {                         //Target Endpoint Für End Element
-        anchor: [0, 0.5, -1, 0],
-        maxConnections: -1,
-        type: "target",
+        anchor: "Left",
         isTarget: true
       });
       instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Source Endpoint Für alle normalen Widgets
-        anchor: [1, 0.5, 1, 0],
-        maxConnections: -1,
-        type: "source",
+        anchor: "Right",
         isSource: true,
-        connector: ["Flowchart", {stub: 10, cornerRadius: 5}]
       });
       instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Target Endpoint Für alle normalen Widgets
-        anchor: [0, 0.5, -1, 0],
-        maxConnections: -1,
-        type: "target",
+        anchor: "Left",
         isTarget: true
       });
     }
@@ -448,7 +427,7 @@
       while(arrQueue.length>0){                                                                               //Solange es Elemente in Kandidatenliste gibt
         arrQueue[0].hasBeenVisited=true;                                                                      //Markiere das erste als besucht und wähle es aus
         var arrNeighbours=[];                                                                                 //Elemente die mit ausgewähltem verbunden sind
-        var connections = jsPlumb.getConnections({source: arrQueue[0]});                                      //Connections des ausgewählten
+        var connections = instance.getConnections({source: arrQueue[0]});                                      //Connections des ausgewählten
         for (i = 0; i < connections.length; i++) {
           arrNeighbours.push(connections[i].endpoints[1].getElement());
         }
@@ -481,11 +460,15 @@
     }
 
     function resetPaint(){
-      var allConnections = jsPlumb.getConnections();                                                            //Wähle alle Verbindungen aus
+      var allConnections = instance.getConnections();                                                            //Wähle alle Verbindungen aus
       for(var i = 0; i < allConnections.length; i++) {
         allConnections[i].setPaintStyle({                                                                       //Setzte Farbe zurück
+          stroke: "#346789",
+          strokeWidth:2
+        });
+        allConnections[i].setHoverPaintStyle({                                                                       //Setzte Farbe zurück
           stroke: "#123456",
-          strokeWidth: 3
+          strokeWidth:3
         });
         $(allConnections[i].canvas).removeClass("bestPath");                                                    //Setzte besten Pfad zurück
       }
@@ -497,14 +480,18 @@
       var lastContent = $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')[0];                     //Wähle End Element aus
       while(lastContent.predecessor!="none"){                                                                     //Bis das erste Element ausgewählt wurde
         var preContent = lastContent.predecessor;
-        var lastConnections = jsPlumb.getConnections({target: lastContent});
+        var lastConnections = instance.getConnections({target: lastContent});
         for (var i = 0; i < lastConnections.length; i++) {
           var endpointElement = lastConnections[i].endpoints[0].getElement();
           if (endpointElement==preContent) {                                                                        //Wähle Vorgänger aus
             $(lastConnections[i].canvas).addClass("bestPath");                                                     //Füge CSS Klasse hinzu anhand der später in den Vordergrund gehoben werden kann
             lastConnections[i].setPaintStyle({                                                                      //Passe Farbe an
               stroke: "red",
-              strokeWidth: 3
+              strokeWidth:2
+            });
+            lastConnections[i].setHoverPaintStyle({
+              stroke: "red",
+              strokeWidth:3
             });
             i = lastConnections.length - 1;
           }

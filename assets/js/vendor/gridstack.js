@@ -1064,7 +1064,7 @@
 
     var dragOrResize = function(event, ui) {
 
-      jsPlumb.repaintEverything();        //SELBST HINZUGEFÜGT
+      instance.repaintEverything();        //SELBST HINZUGEFÜGT
       var x = Math.round(ui.position.left / cellWidth);
       var y = Math.floor((ui.position.top + cellHeight / 2) / cellHeight);
   //    console.log(x+" "+y);
@@ -1202,7 +1202,7 @@
         o.find('.grid-stack-item').trigger('resizestop');
       }
 
-      jsPlumb.repaintEverything();        //SELBST HINZUGEFÜGT
+      instance.repaintEverything();        //SELBST HINZUGEFÜGT
 
     };
 
