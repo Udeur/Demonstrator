@@ -21,7 +21,8 @@ var instance;
 
     var w_height = $(window).height();
     var allGrids = $('.grid-stack');
-    var topGrids = $('.grid-stack-1');
+    var topGrids = $('.grid-stack-1:not(#containsButton)');
+    var buttonGrid=$('#containsButton.grid-stack-1');
     var bottomGrids = $('.grid-stack-5');
     instance = window.jsp = jsPlumb.getInstance({
       ConnectionOverlays: [
@@ -34,7 +35,7 @@ var instance;
           events:{
             click:function() { alert("you clicked on the arrow overlay")}
           }
-        } ],
+        } ]
       ],
       PaintStyle: {stroke: "#346789", strokeWidth: 2,  joinstyle: "round"},
       HoverPaintStyle: {stroke: "#123456", strokeWidth:3},
@@ -152,6 +153,13 @@ var instance;
         acceptWidgets: '.grid-stack-item',
         minWidth:0
       };
+      buttonGrid.gridstack(_.defaults({                                                                    //Oberes Grid
+        height: 1,
+        width: 1,
+        float: false,
+        cellHeight: w_height / 6 / 2
+
+      }, options));
       topGrids.gridstack(_.defaults({                                                                    //Oberes Grid
         height: 1,
         width: 1,
@@ -168,8 +176,22 @@ var instance;
     }
 
     function fillGrids() {
+      fillButtonGrid();
       fillTopGrids();
       fillBottomGrids();
+    }
+
+    function fillButtonGrid() {
+      console.log("here");
+      buttonGrid.each(function () {
+        console.log(this);
+        var grid = $(this).data('gridstack');
+        console.log(grid);
+            grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" class="pck pck-auto" id="button">' +
+                '<div class="grid-stack-item-content">' +
+                '<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button></div></div>'),
+              0, 0, 1, 1);
+      });
     }
 
     function fillTopGrids() {

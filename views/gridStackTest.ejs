@@ -1,7 +1,7 @@
 <div class="container-fluid" id="gridAll">
   <div class="row no-gutter row-horizon">        <!--  nogutter: Keine Abstände, row-horizon: Scroll-->
    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
+      <div class="grid-stack grid-stack-1" id="containsButton"></div>
    </div>
     <div class="col-xs-1">
       <div class="grid-stack grid-stack-1"></div>
@@ -51,4 +51,42 @@
       </div>
     </div>
   </div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">new widget details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form role="form">
+          <div class="form-group">
+            <label for="duration">duration</label>
+            <input type="text" class="form-control" id="duration" placeholder="Enter duration">
+          </div>
+
+          <div class="form-group">
+            <label for="price"></span> price</label>
+            <input type="text" class="form-control" id="price" placeholder="Enter price">
+          </div>
+        </form>
+        <div>
+          <select class="selectpicker" data-size="8">
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Gota07.svg/120px-Gota07.svg.png">'>Teardrop</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Emblem-club.svg/120px-Emblem-club.svg.png">'>Club</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Emblem-spade.svg/120px-Emblem-spade.svg.png">'>Spade</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Luneta07.svg/120px-Luneta07.svg.png">'>Moon</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Emblem-important-black.svg/120px-Emblem-important-black.svg.png">'>Exclamation</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success btn-block"></span> add Widget</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
