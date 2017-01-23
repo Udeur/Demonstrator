@@ -56,7 +56,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">new widget details</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add new widget details</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -64,27 +64,30 @@
       <div class="modal-body">
         <form role="form">
           <div class="form-group">
-            <label for="duration">duration</label>
-            <input type="text" class="form-control" id="duration" placeholder="Enter duration">
+            <label for="duration">Duration</label>
+            <input type="text" class="form-control" id="duration" placeholder="Enter a duration between 0 and 9">
           </div>
-
           <div class="form-group">
-            <label for="price"></span> price</label>
-            <input type="text" class="form-control" id="price" placeholder="Enter price">
+            <label for="price"></span> Price</label>
+            <input type="text" class="form-control" id="price" placeholder="Enter a price between 0 and 999">
+          </div>
+          <div class="form-group">
+            <label for="comfort"></span> Comfort</label>
+            <input type="text" class="form-control" id="comfort" placeholder="Enter a level for the comfort between 1 and 3">
           </div>
         </form>
         <div>
-          <select class="selectpicker" data-size="8">
-            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Gota07.svg/120px-Gota07.svg.png">'>Teardrop</option>
-            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Emblem-club.svg/120px-Emblem-club.svg.png">'>Club</option>
-            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Emblem-spade.svg/120px-Emblem-spade.svg.png">'>Spade</option>
-            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Luneta07.svg/120px-Luneta07.svg.png">'>Moon</option>
-            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Emblem-important-black.svg/120px-Emblem-important-black.svg.png">'>Exclamation</option>
+          <select name="selImage" class="selectpicker" data-size="8">
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Gota07.svg/120px-Gota07.svg.png">'>"http://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Gota07.svg/120px-Gota07.svg.png"</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Emblem-club.svg/120px-Emblem-club.svg.png">'>"http://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Emblem-club.svg/120px-Emblem-club.svg.png"</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Emblem-spade.svg/120px-Emblem-spade.svg.png">'>"http://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Emblem-spade.svg/120px-Emblem-spade.svg.png"</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Luneta07.svg/120px-Luneta07.svg.png">'>"http://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Luneta07.svg/120px-Luneta07.svg.png"</option>
+            <option data-content='<img src="http://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Emblem-important-black.svg/120px-Emblem-important-black.svg.png">'>"http://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Emblem-important-black.svg/120px-Emblem-important-black.svg.png"</option>
           </select>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-success btn-block"></span> add Widget</button>
+        <button type="submit" class="btn btn-success btn-block" id="submitForm" data-dismiss="modal"></span> Add widget</button>
       </div>
     </div>
   </div>

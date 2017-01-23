@@ -24,6 +24,59 @@ var instance;
     var topGrids = $('.grid-stack-1:not(#containsButton)');
     var buttonGrid=$('#containsButton.grid-stack-1');
     var bottomGrids = $('.grid-stack-5');
+
+    $('body').on('show.bs.modal', function () {
+      $('#largePopup .modal-body').css('overflow-y', 'auto');
+
+      $('#largePopup .modal-body').css('max-height', $(window).height() * 0.7);
+
+      $('.selectpicker').selectpicker('refresh');
+    });
+    $('.selectpicker').selectpicker();
+
+    $("#myModal").on("submit", function(e) {
+     var path = ($('.selectpicker option:selected').text());
+      var duration;
+      var price;
+      var comfort
+      if(isNaN($('#duration')[0].value)||$('#duration')[0].value==""){
+        duration=Math.floor(Math.random() * 10);
+      }
+      else{
+        duration=$('#duration')[0].value;
+      }
+      if(isNaN($('#price')[0].value)||$('#price')[0].value==""){
+        price=Math.floor(Math.random() * 1000);
+      }
+      else{
+        price=$('#price')[0].value;
+      }
+      if(isNaN($('#comfort')[0].value)||$('#comfort')[0].value==""){
+        comfort=Math.floor(Math.random() * 3)+1;
+      }
+      else{
+        comfort=$('#comfort')[0].value;
+      }
+      var added=false;
+      topGrids.each(function () {
+        if(!added) {
+          var grid = $(this).data('gridstack');
+          if (grid.willItFit(0, 0, 1, 1, false)) {
+            grid.addWidget($('<div><div class="grid-stack-item-content" data-duration="'+duration+'" data-price="'+price+'"  data-comfort="'+comfort+'">' +
+              '<img src=' + path + ' />' +
+              '<span class="value">' + duration + '</span>' +
+              '<span class="startTime"></span></div></div>'),
+              0, 0, 1, 1);
+            added = true;
+          }
+        }
+      });
+    });
+
+    $("#submitForm").on('click', function() {
+      $("#myModal").submit();
+    });
+
     instance = window.jsp = jsPlumb.getInstance({
       ConnectionOverlays: [
         [ "Arrow", {
@@ -75,7 +128,8 @@ var instance;
       }
       else {                                                                                 //Wenn es von isGrid abweicht
         console.log("sthChanged");
-        if(isGrid!=bottomGrids.data('gridstack')) {                                         //Wenn isGrid nicht das untere Grid ist --> zu unterem Grid hinzugefügt
+        if(isGrid!=bottomGrids.data('gridstack')&&isGrid!="none") {                                         //Wenn isGrid nicht das untere Grid ist --> zu unterem Grid hinzugefügt
+          console.log(isGrid);
           console.log("addedToBottomGrid");
           _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
             var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
@@ -131,6 +185,7 @@ var instance;
       console.log("removed");
     });
     allGrids.on('added', function (event, items) {                                                    //Zeigt added Events an
+      isGrid="none";
       console.log("added");
     });
     allGrids.on('disable', function (event) {                                                          //Zeigt disabled Events an
@@ -189,7 +244,7 @@ var instance;
         console.log(grid);
             grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" class="pck pck-auto" id="button">' +
                 '<div class="grid-stack-item-content">' +
-                '<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button></div></div>'),
+                '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#myModal">Add</button></div></div>'),
               0, 0, 1, 1);
       });
     }
@@ -210,11 +265,18 @@ var instance;
         var grid = $(this).data('gridstack');
         _.each(itemTop, function (node) {
           if(counter<7){                                                                                   //Füge für die ersten 7 Grids ein Widget hinzu
-          grid.addWidget($('<div><div class="grid-stack-item-content">' +
-              '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
-              '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +
-             '<span class="startTime"></span></div></div>'),
-            0, 0, 1, 1);
+            var duration= Math.floor(Math.random() * 10);
+            var price= + Math.floor(Math.random() * 1000);
+            var comfort= Math.floor(Math.random() * 3) + 1;
+            grid.addWidget($('<div>'+
+                '<div class="grid-stack-item-content"' +
+                'data-duration=' + duration + ' ' +
+                'data-price=' + price + ' ' +
+                'data-comfort=' + comfort +'>' +
+                '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
+                '<span class="value">' + duration + '</span>' +
+                '<span class="startTime"></span></div></div>'),
+              0, 0, 1, 1);
           }
           counter++;
       }, this);
@@ -229,7 +291,9 @@ var instance;
           width: 1,
           height: 1,
           image: "https://appharbor.com/assets/images/stackoverflow-logo.png",
-          value: 0
+          value: 0,
+          price: 0,
+          comfort: 1
         }
       ];
       var itemBottomEnd = [                                                                                   //End Element
@@ -239,7 +303,9 @@ var instance;
           width: 1,
           height: 1,
           image: "https://appharbor.com/assets/images/stackoverflow-logo.png",
-          value: 0
+          value: 0,
+          price: 0,
+          comfort: 0,
         }
       ];
       var itemBottomBlock = [                                                                                  //leere Elemente in erster und letzter Spalte
@@ -257,7 +323,10 @@ var instance;
         var grid = $(this).data('gridstack');
         _.each(itemBottomOrigin, function (node) {                                                               //Fügt Origin Element hinzu
           grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +                       //Nicht beweglich
-              '<div class="grid-stack-item-content">' +
+              '<div class="grid-stack-item-content"' +
+              'data-duration=' + node.value + ' ' +
+              'data-price=' + node.price + ' ' +
+              'data-comfort=' + node.comfort +'>' +
               '<img src=' + node.image + ' />' +
               '<span class="value">' + node.value + '</span>' +
               '<span class="startTime">' + node.value + '</span></div></div>'),
@@ -265,7 +334,10 @@ var instance;
         }, this);
         _.each(itemBottomEnd, function (node) {                                                                   //Fügt End Element hinzu
           grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +                          //Nicht beweglich
-              '<div class="grid-stack-item-content">' +
+              '<div class="grid-stack-item-content"' +
+              'data-duration=' + node.value + ' ' +
+              'data-price=' + node.price + ' ' +
+              'data-comfort=' + node.comfort +'>' +
               '<img src=' + node.image + ' />' +
               '<span class="value">' + node.value + '</span>' +
               '<span class="startTime"></span></div></div>'),
@@ -280,10 +352,16 @@ var instance;
           var x = Math.floor(Math.random() * 3)+1;                                                                  //Wert aus [1,3]
           var y = Math.floor(Math.random() * 5);                                                                    //Wert aus [0,4]
           if (grid.willItFit(x, y, 1, 1, false)) {                                                                  //Nur wenn es an dieser x,y Position hinzugefügt werden kann
+            var duration= Math.floor(Math.random() * 10);
+            var price= + Math.floor(Math.random() * 1000);
+            var comfort= Math.floor(Math.random() * 3) + 1;
             grid.addWidget($('<div>' +
-                '<div class="grid-stack-item-content">' +
+                '<div class="grid-stack-item-content"' +
+                'data-duration=' + duration + ' ' +
+                'data-price=' + price + ' ' +
+                'data-comfort=' + comfort +'>' +
                 '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
-                '<span class="value">' + Math.floor(Math.random() * 10) + '</span>' +                               //Wert aus [0,9]
+                '<span class="value">' + duration + '</span>' +                               //Wert aus [0,9]
                 '<span class="startTime"></span></div></div>'),
               x, y, 1, 1);
           }

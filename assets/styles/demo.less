@@ -35,20 +35,10 @@ body{
   top: 25%;                     //reduziert Größe um ein viertel
   bottom: 25%;                  //reduziert Größe um ein viertel
 }
-// --> Länge: 0.5
-// --> Höhe: 0.5
-// --> Mittelpunkt bei: 0.5
-// --> Linke Grenze bei:
-// --> Rechhte Grenze bei:
 .grid-stack-item{
   display: inline-block;
 }
-.grid-stack-item-content,
-.placeholder-content {
-  border-radius: 15%;
-}
-:not(#block) > .grid-stack-item-content{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
-  background-color: white;
+:not(#block):not(#button) > .grid-stack-item-content{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
   border: 1px solid #346789;
   border-radius: 0.5em;
   text-align: center;
@@ -58,7 +48,10 @@ body{
   opacity: 0.9;
   z-index:7 !important;
 }
-:not(#block) > .grid-stack-item-content:hover{
+:not(#block):not(#button):not(#origin):not(#end) > .grid-stack-item-content {
+  background-color: white;
+}
+:not(#block):not(#button) > .grid-stack-item-content:hover{
   border: 1px solid #123456;
   box-shadow: 2px 2px 19px #444;
   opacity: 0.9;
