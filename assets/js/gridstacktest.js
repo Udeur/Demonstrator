@@ -32,7 +32,14 @@ var instance;
 
       $('.selectpicker').selectpicker('refresh');
     });
-    $('.selectpicker').selectpicker();
+
+    $('.selectpicker').selectpicker({
+      style: 'btn-info',
+      size: 4
+    });
+
+
+    $('[data-toggle="popover"]').popover();
 
     $("#myModal").on("submit", function(e) {
      var path = ($('.selectpicker option:selected').text());
@@ -62,7 +69,11 @@ var instance;
         if(!added) {
           var grid = $(this).data('gridstack');
           if (grid.willItFit(0, 0, 1, 1, false)) {
-            grid.addWidget($('<div><div class="grid-stack-item-content" data-duration="'+duration+'" data-price="'+price+'"  data-comfort="'+comfort+'">' +
+            grid.addWidget($('<div>' +
+                '<div class="grid-stack-item-content" ' +
+                'data-duration="'+duration+'" ' +
+                'data-price="'+price+'" ' +
+                'data-comfort="'+comfort+'"> ' +
               '<img src=' + path + ' />' +
               '<span class="value">' + duration + '</span>' +
               '<span class="startTime"></span></div></div>'),
@@ -82,17 +93,17 @@ var instance;
         [ "Arrow", {
           location: 1,
           visible:true,
-          width:11,
-          length:11,
+          width:8,
+          length:8,
           id:"ARROW",
           events:{
             click:function() { alert("you clicked on the arrow overlay")}
           }
         } ]
       ],
-      PaintStyle: {stroke: "#346789", strokeWidth: 2,  joinstyle: "round"},
+      PaintStyle: {stroke: "#346789", strokeWidth: 1,  joinstyle: "round"},
       HoverPaintStyle: {stroke: "#123456", strokeWidth:3},
-      Connector: ["Flowchart", {stub: 10, cornerRadius: 5, gap: 3}],
+      Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2}],
       Container: "bottomGrid",
       MaxConnections: -1,
       Endpoint:[ "Dot", { radius:7 } ],
@@ -219,14 +230,14 @@ var instance;
         height: 1,
         width: 1,
         float: false,
-        cellHeight: w_height / 6 / 2
+        cellHeight: w_height / 6 / 2,
 
       }, options));
       bottomGrids.gridstack(_.defaults({                                                                  //unteres Grid
         height: 5,
         width: 5,
         float: true,
-        cellHeight: w_height / 6
+        cellHeight: w_height / 6,
       }, options));
     }
 
@@ -244,7 +255,7 @@ var instance;
         console.log(grid);
             grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" class="pck pck-auto" id="button">' +
                 '<div class="grid-stack-item-content">' +
-                '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#myModal">Add</button></div></div>'),
+                '<button type="button" class="btn btn-info btn-block" data-toggle="modal" data-target="#myModal"><b>+ / -</b></button></div></div>'),
               0, 0, 1, 1);
       });
     }
@@ -270,12 +281,12 @@ var instance;
             var comfort= Math.floor(Math.random() * 3) + 1;
             grid.addWidget($('<div>'+
                 '<div class="grid-stack-item-content"' +
-                'data-duration=' + duration + ' ' +
-                'data-price=' + price + ' ' +
-                'data-comfort=' + comfort +'>' +
-                '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
-                '<span class="value">' + duration + '</span>' +
-                '<span class="startTime"></span></div></div>'),
+                'data-duration="' + duration + '" ' +
+                'data-price="' + price + '" ' +
+                'data-comfort="' + comfort +'">' +
+                '<img src=' + randomLink() + ' /></div></div>'),//' +
+          //      '<span class="value">' + duration + '</span>' +
+          ///      '<span class="startTime"></span></div></div>'),
               0, 0, 1, 1);
           }
           counter++;
@@ -290,7 +301,7 @@ var instance;
           y: 2,
           width: 1,
           height: 1,
-          image: "https://appharbor.com/assets/images/stackoverflow-logo.png",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Home_font_awesome.svg/200px-Home_font_awesome.svg.png",
           value: 0,
           price: 0,
           comfort: 1
@@ -302,7 +313,7 @@ var instance;
           y: 2,
           width: 1,
           height: 1,
-          image: "https://appharbor.com/assets/images/stackoverflow-logo.png",
+          image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Home_font_awesome.svg/200px-Home_font_awesome.svg.png",
           value: 0,
           price: 0,
           comfort: 0,
@@ -360,7 +371,7 @@ var instance;
                 'data-duration=' + duration + ' ' +
                 'data-price=' + price + ' ' +
                 'data-comfort=' + comfort +'>' +
-                '<img src=' + "https://appharbor.com/assets/images/stackoverflow-logo.png" + ' />' +
+                '<img src=' + randomLink() + ' />' +
                 '<span class="value">' + duration + '</span>' +                               //Wert aus [0,9]
                 '<span class="startTime"></span></div></div>'),
               x, y, 1, 1);
@@ -601,3 +612,27 @@ var instance;
     }
   });
 })();
+
+function randomLink(){
+  var image;
+  var myrandom=Math.floor(Math.random()*4);
+  var train="https://upload.wikimedia.org/wikipedia/commons/thumb/6/66/25_railtransportation.svg/200px-25_railtransportation.svg.png";
+  var bus="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e6/Bus-logo.svg/200px-Bus-logo.svg.png";
+  var car="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Aiga_carrental_cropped.svg/200px-Aiga_carrental_cropped.svg.png";
+  var plane="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Plane_font_awesome.svg/200px-Plane_font_awesome.svg.png";
+  if (myrandom==0) {
+    image = train;
+  }
+  else if (myrandom==1) {
+    image = bus;
+  }
+  else if (myrandom==2) {
+    image = car;
+  }
+  else if (myrandom==3) {
+    image = plane;
+  }
+  console.log(myrandom);
+  console.log(image);
+  return image;
+}
