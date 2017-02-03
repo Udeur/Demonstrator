@@ -37,9 +37,6 @@ var instance;
 
     $('.selectpicker').selectpicker();
 
-
-    $('[data-toggle="popover"]').popover();
-
     $("#myModal").on("submit", function(e) {
      var imgName = ($('.selectpicker option:selected').text());
       var duration;
@@ -119,6 +116,21 @@ var instance;
     setText();
     dijkstra();
     paintPath();
+    $('.grid-stack-item:not(#block) .grid-stack-item-content').each(function(i, v){
+      var $el = $(v);
+      $el.popover({
+        content: "Duration:&nbsp" +
+                  $el.data('duration') +
+                  "<br /> Price:&nbsp" +
+                  $el.data('price') +
+                  "<br /> Comfort:&nbsp" +
+                  $el.data('comfort'),
+        placement: "auto right",
+    //    trigger: "hover",
+        html: true
+      });
+    });
+    $('[data-toggle="popover"]').popover();
 
     window.setTimeout(function(){                                                           //Zeichne alles nach 10 Millisekunden nochmal
         instance.repaintEverything()},
@@ -138,7 +150,7 @@ var instance;
     });
 
     allGrids.on('change', function (event, items) {
-        if (isGrid == $(event.target).data('gridstack')) {                                     //Überprüfe ob das Grid auf dem Change Event endet das selbe ist wie isGrid
+    if (isGrid == $(event.target).data('gridstack')) {                                     //Überprüfe ob das Grid auf dem Change Event endet das selbe ist wie isGrid
           var contains=false;
           console.log(items);
           if(items!=undefined){
@@ -234,6 +246,8 @@ var instance;
       console.log("enabled");
     });
     allGrids.on('dragstop', function (event, ui) {                                                      //Zeigt dragstop Events an
+      console.log(event.target);
+      $(event.target).popover('hide');
       console.log("dragstop");
     });
 
@@ -331,7 +345,7 @@ var instance;
           image: "/images/home.png",
           duration: 0,
           price: 0,
-          comfort: 0,
+          comfort: 1,
         }
       ];
       var itemBottomBlock = [                                                                                  //leere Elemente in erster und letzter Spalte
@@ -350,6 +364,8 @@ var instance;
         _.each(itemBottomOrigin, function (node) {                                                               //Fügt Origin Element hinzu
           grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +                       //Nicht beweglich
               '<div class="grid-stack-item-content"' +
+        //      'data-toggle="popover"' +
+        //      'data-content="Some content inside the popover"' +
               'data-duration=' + node.duration + ' ' +
               'data-price=' + node.price + ' ' +
               'data-comfort=' + node.comfort +'>' +

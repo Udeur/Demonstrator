@@ -56,10 +56,10 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add a customized new widget</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
+        <h3 class="modal-title">Add a customized new widget</h3>
       </div>
       <div class="modal-body">
         <form role="form">
@@ -68,25 +68,26 @@
             <input type="text" class="form-control" id="duration" placeholder="Enter a duration between 0 and 9">
           </div>
           <div class="form-group">
-            <label for="price"></span> Price</label>
+            <label for="price"> Price</label>
             <input type="text" class="form-control" id="price" placeholder="Enter a price between 0 and 999">
           </div>
           <div class="form-group">
-            <label for="comfort"></span> Comfort</label>
+            <label for="comfort"> Comfort</label>
             <input type="text" class="form-control" id="comfort" placeholder="Enter a level for the comfort between 1 and 3">
           </div>
+          <div class="form-group">
+            <label for="imagePicker"> Type of transportation</label>
+            <select name="selImage" class="selectpicker form-control" id="imagePicker">
+              <option data-icon="fa fa-train">train</option>
+              <option data-icon="fa fa-bus">bus</option>
+              <option data-icon="fa fa-car">car</option>
+              <option data-icon="fa fa-plane">plane</option>
+            </select>
+          </div>
         </form>
-        <div>
-          <select name="selImage" class="selectpicker" data-style="">
-            <option data-icon="fa fa-train">train</option>
-            <option data-icon="fa fa-bus">bus</option>
-            <option data-icon="fa fa-car">car</option>
-            <option data-icon="fa fa-plane">plane</option>
-        </select>
-        </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-success btn-block" id="submitForm" data-dismiss="modal"></span> Add widget</button>
+        <button type="submit" class="btn btn-success btn-block" id="submitForm" data-dismiss="modal"> Add widget</button>
       </div>
     </div>
   </div>
