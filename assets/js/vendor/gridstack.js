@@ -883,7 +883,7 @@
               .enableSelection()
               .removeData('draggable')
               .removeClass('ui-draggable ui-draggable-dragging ui-draggable-disabled')
-              .unbind('drag', onDrag);
+              .unbind('drag', onDrag)
             self.container.append(el);
             self._prepareElementsByNode(el, node);
             self._updateContainerHeight();
