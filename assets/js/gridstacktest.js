@@ -22,7 +22,6 @@ var instance;
     var w_height = $(window).height();
     var allGrids = $('.grid-stack');
     var topGrids = $('.grid-stack-1:not(#containsButton)');
-    var buttonGrid=$('#containsButton.grid-stack-1');
     var bottomGrids = $('.grid-stack-5');
 
     var sumText;
@@ -37,8 +36,15 @@ var instance;
 
     $('.selectpicker').selectpicker();
 
-    $("#myModal").on("submit", function(e) {
-     var imgName = ($('.selectpicker option:selected').text());
+    $("#submitForm").on('click', function() {
+      var imgLink;
+      if(($('#imagePicker option:selected').text())=="choose please"){
+        console.log(true);
+          imgLink=randomLink();
+      }
+      else{
+        imgLink='"/images/'+$('#imagePicker option:selected').text()+'.png"';
+      }
       var duration;
       var price;
       var comfort
@@ -71,9 +77,9 @@ var instance;
                 'data-duration="'+duration+'" ' +
                 'data-price="'+price+'" ' +
                 'data-comfort="'+comfort+'">' +
-              '<img src="/images/'+imgName+'.png"/>' +
-              '<span class="value"></span>' +
-              '<span class="startTime"></span></div></div>'),
+                '<img src=' + imgLink + ' />' +
+                '<span class="value"></span>' +
+                '<span class="startTime"></span></div></div>'),
               0, 0, 1, 1);
             added = true;
             $('[data-toggle="popover"]').each(function(i,v){
@@ -97,8 +103,11 @@ var instance;
       });
     });
 
-    $("#submitForm").on('click', function() {
-      $("#myModal").submit();
+    $("#submitForm2").on('click', function() {
+      sumText='data-'+$('#criteriaPicker option:selected').text();
+      setText();
+      dijkstra();
+      paintPath();
     });
 
     instance = window.jsp = jsPlumb.getInstance({
@@ -114,8 +123,8 @@ var instance;
           }
         } ]
       ],
-      PaintStyle: {stroke: "#346789", strokeWidth: 1,  joinstyle: "round"},
-      HoverPaintStyle: {stroke: "#123456", strokeWidth:3},
+      PaintStyle: {stroke: 'rgba(0,150,130,0.8)', strokeWidth: 1,  joinstyle: "round"},
+      HoverPaintStyle: {stroke: 'rgba(0,150,130,1)', strokeWidth:3},
       Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2}],
       Container: "bottomGrid",
       MaxConnections: -1,
@@ -167,7 +176,6 @@ var instance;
         }
       }
       else{
-        console.log("nobs.popover");
       }
     });
 
@@ -301,13 +309,6 @@ var instance;
         acceptWidgets: '.grid-stack-item',
         minWidth:0
       };
-      buttonGrid.gridstack(_.defaults({                                                                    //Oberes Grid
-        height: 1,
-        width: 1,
-        float: false,
-        cellHeight: w_height / 6 / 2
-
-      }, options));
       topGrids.gridstack(_.defaults({                                                                    //Oberes Grid
         height: 1,
         width: 1,

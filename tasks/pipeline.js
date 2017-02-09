@@ -31,6 +31,7 @@ var jsFilesToInject = [
   // Load jquery before bootstrap
   'js/vendor/jquery-3.1.1.js',
   'js/vendor/jquery-ui.js',
+  'js/vendor/jquery-ui.touch-punch.js',
   'js/vendor/bootstrap.js',
   'js/vendor/lodash.js',
   'js/vendor/gridstack.js',

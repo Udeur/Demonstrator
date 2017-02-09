@@ -780,14 +780,17 @@
       var draggingElement = null;
 
       var onDrag = function(event, ui) {
+        console.log("onDragBegin");
         var el = draggingElement;
         var node = el.data('_gridstack_node');
         var pos = self.getCellFromPixel(ui.offset, true);
         var x = Math.max(0, pos.x);
         var y = Math.max(0, pos.y);
         if (!node._added) {
-          console.log("notadded");
+          console.log("notadded");                                            //SELBST HINZUGEFÜGT
           var nodeCheck = {x: x, y: y, width: 1, height: 1, autoPosition: false}; //SELBST HINZUGEFÜGT
+        //  console.log(self);                                              //HIERMIT PROBLEM ERKENNBAR
+        //  console.log(self.grid);
           if( self.grid.canBePlacedWithRespectToHeight(nodeCheck)) {              //SELBST HINZUGEFÜGT
             node._added = true;
             node.el = el;
@@ -811,7 +814,7 @@
             self._updateContainerHeight();
           }                                                                         //SELBST HINZUGEFÜGT
           else{                                                                     //SELBST HINZUGEFÜGT
-            console.log("wontfit");                                                 //SELBST HINZUGEFÜGT
+    //        console.log("wontfit");                                                 //SELBST HINZUGEFÜGT
           }                                                                         //SELBST HINZUGEFÜGT
         } else {
           console.log("added");
@@ -821,6 +824,7 @@
           self.grid.moveNode(node, x, y);
           self._updateContainerHeight();
         }
+        console.log("onDragEnd");
       };
 
       this.dd
@@ -835,6 +839,7 @@
           }
         })
         .on(self.container, 'dropover', function(event, ui) {
+          console.log("dropover");                //SELBST HINZUGEFÜGT
           var offset = self.container.offset();
           var el = $(ui.draggable);
           var cellWidth = self.cellWidth();
@@ -845,27 +850,28 @@
           var height = origNode ? origNode.height : (Math.ceil(el.outerHeight() / cellHeight));
 
           draggingElement = el;
-
+            console.log("prepared");                      //SELBST HINZUGEFÜGT
           var node = self.grid._prepareNode({width: width, height: height, _added: false, _temporary: true});
           el.data('_gridstack_node', node);
           el.data('_gridstack_node_orig', origNode);
-
-          el.on('drag', onDrag);
+          el.on('drag', onDrag);                        //HIER GIBT ES PROBLEME: WIRD IRGENDWIE ZWEIMAL AUSGEFÜHRT WENN BEWEGUNG ZU SCHNELL ABLÄUFT
         })
         .on(self.container, 'dropout', function(event, ui) {
-          var el = $(ui.draggable);
-          el.unbind('drag', onDrag);
-          var node = el.data('_gridstack_node');
-          node.el = null;
-          self.grid.removeNode(node);
-          self.placeholder.detach();
-          self._updateContainerHeight();
-          el.data('_gridstack_node', el.data('_gridstack_node_orig'));
+          console.log("dropout");                //SELBST HINZUGEFÜGT
+            var el = $(ui.draggable);
+            el.unbind('drag', onDrag);
+            var node = el.data('_gridstack_node');
+            node.el = null;
+            self.grid.removeNode(node);
+            self.placeholder.detach();
+            self._updateContainerHeight();
+            el.data('_gridstack_node', el.data('_gridstack_node_orig'));
         })
         .on(self.container, 'drop', function(event, ui) {             //Hier Methode, wenn Item durch draggen geadded wird
+          console.log("drop");                                         //SELBST HINZUGEFÜGT
+          console.log($(ui.draggable).data('_gridstack_node')._added);
           if($(ui.draggable).data('_gridstack_node')._added) {          //SELBST HINZUGEFÜGT
             self.placeholder.detach();
-            console.log("drop");                                         //SELBST HINZUGEFÜGT
             var node = $(ui.draggable).data('_gridstack_node');
             node._grid = self;
             var el = $(ui.draggable).clone(false);
