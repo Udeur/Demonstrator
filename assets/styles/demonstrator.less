@@ -1,0 +1,164 @@
+body{
+  background-color: rgb(0,150,130);
+}
+
+.container-fluid{
+  height: 100%;
+  width: 100%;
+}
+.row-horizon,
+.grid-stack-5{
+  background-color: white;
+  border:1px solid black;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar {
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  background: white;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
+
+ .row-horizon{
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+   margin-left: 0;
+   margin-right: 0;
+ }
+/*
+.row.no-gutter {
+  margin-left: 0;
+  margin-right: 0;
+}
+*/
+.col-xs-1 .btn{
+  background-color: rgba(0,150,130,0.2);
+  position: absolute;
+  top: 1vh;                      //approximation, somehow works
+  height:6.25vh;
+  width: 6.25vh;
+  margin-left:10px;
+}
+.col-xs-1 .grid-stack .grid-stack-item .grid-stack-item-content,
+.col-xs-1 .grid-stack .grid-stack-item .placeholder-content{
+  width: 6.25vh;                //w_height/6/3*2
+  top: 12.5%;                   //reduces size by half of 2/3
+  bottom: 12.5%;                //reduces size by half of 2/3
+}
+
+.col-xs-12 .grid-stack .grid-stack-item .grid-stack-item-content,
+.col-xs-12 .grid-stack .grid-stack-item .placeholder-content {
+  width: 8.3333333333vh;          // w_height/6/2
+  left: calc(~"(100% - 8.3333333333vh) / 2");  //shifts to the right
+  top: 25%;                     //reduces size by 1/4
+  bottom: 25%;                  //reduces size by 1/4
+}
+
+.grid-stack-item{
+  display: inline-block;
+}
+
+.grid-stack .grid-stack-item .grid-stack-item-content{
+  overflow-x:visible;
+  overflow-y:visible;
+}
+
+:not(#block):not(#button) > .grid-stack-item-content,
+.col-xs-1 .btn{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
+  border: 1px solid rgba(0,150,130,0.8);
+  border-radius: 0.5em;
+  border-radius: 50%;
+  text-align: center;
+  box-shadow: 2px 2px 19px #aaa;
+  font-family: helvetica, sans-serif;
+  cursor: pointer;
+  opacity: 0.9;
+  z-index:7 !important;
+  padding-left:0;
+  padding-right:0;
+}
+
+:not(#block):not(#button):not(#origin):not(#end) > .grid-stack-item-content {
+  background-color: white;
+}
+
+:not(#block):not(#button) > .grid-stack-item-content:hover,
+.col-xs-1 .btn:hover{
+  border: 1px solid rgba(0,150,130,1);
+  box-shadow: 2px 2px 19px #444;
+  opacity: 0.9;
+}
+
+#origin .grid-stack-item-content,
+#end .grid-stack-item-content{
+  background-color: white;
+}
+
+#block .grid-stack-item-content{
+  background-color: transparent;
+  border:none;
+}
+
+.grid-stack-item-content img {
+  max-height: 70%;
+  max-width: 70%;
+  width: auto;
+  height: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.value{
+ position:absolute;
+ bottom:-35%;
+ left:10%;
+}
+
+.startTime{
+  position:absolute;
+  bottom:-35%;
+  right:10%;
+}
+
+.bestPath {
+  z-index:6;
+}
+
+.jtk-endpoint {
+  z-index:8;
+}
+
+.modal {
+  overflow: visible;
+}
+
+.modal-body {
+  overflow-y: visible !important;
+}
+
+#myModal {
+  z-index: 1061; /* A value higher than 1010 that solves the problem */
+}
+
+.btn-block{
+  background-color: rgba(0,150,130,0.8);
+  border-color: rgba(0,150,130,0.85);
+}
+
+.btn-block:hover{
+  background-color: rgba(0,150,130,1);
+  border-color: rgba(0,150,130,1);
+}

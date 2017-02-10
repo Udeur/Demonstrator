@@ -29,14 +29,14 @@ var jsFilesToInject = [
   'js/dependencies/sails.io.js',
 
   // Load jquery before bootstrap
-  'js/vendor/jquery-3.1.1.js',
-  'js/vendor/jquery-ui.js',
-  'js/vendor/jquery-ui.touch-punch.js',
-  'js/vendor/bootstrap.js',
-  'js/vendor/lodash.js',
+  'js/vendor/jquery-3.1.1.min.js',
+  'js/vendor/jquery-ui.min.js',
+  'js/vendor/jquery-ui.touch-punch.min.js',
+  'js/vendor/bootstrap.min.js',
+  'js/vendor/lodash.min.js',
   'js/vendor/gridstack.js',
   'js/vendor/gridstack.jQueryUI.min.js',
-  'js/vendor/jsPlumb-2.2.3.js',
+  'js/vendor/jsPlumb-2.2.8-min.js',
 
   // Dependencies like jQuery, or Angular are brought in here
   'js/dependencies/**/*.js',

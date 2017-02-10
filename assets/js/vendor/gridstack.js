@@ -7,7 +7,7 @@
  */
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
-    define(['jquery', 'lodash'], factory);
+    define(['jquery', 'lodash.min'], factory);
   } else if (typeof exports !== 'undefined') {
     try { jQuery = require('jquery'); } catch (e) {}
     try { _ = require('lodash'); } catch (e) {}

@@ -3,10 +3,51 @@
  */
 var instance;
 // not extendable? http://stackoverflow.com/questions/18142792/how-to-extend-an-object-inside-an-anonymous-function
+
 (function () {
   jsPlumb.bind("ready", function () {
 
-    window.addEventListener("resize", function () {          //Zeichnet die Endpoints und connections neu wenn sich Fenstergröße verändert
+    var w_height = $(window).height();                          //height of the window
+
+    var allGrids = $('.grid-stack');                            //all grids
+    var topGrids = $('.grid-stack-1:not(#containsButton)');     //each top grid
+    var bottomGrid = $('.grid-stack-5');                        //bottom grid
+
+    var criteria ='data-duration';                              //the criteria used to calculate distances and path
+
+    instance = window.jsp = jsPlumb.getInstance({
+      ConnectionOverlays: [
+        [ "Arrow", {
+          location: 1,
+          visible:true,
+          width:8,
+          length:8,
+          id:"ARROW",
+          events:{
+            click:function() { alert("you clicked on the arrow overlay")}
+          }
+        } ]
+      ],
+      PaintStyle: {stroke: 'rgba(0,150,130,0.8)', strokeWidth: 1,  joinstyle: "round"},
+      HoverPaintStyle: {stroke: 'rgba(0,150,130,1)', strokeWidth:3},
+      Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2}],
+      Container: "bottomGrid",
+      MaxConnections: -1,
+      Endpoint:[ "Dot", { radius:7 } ],
+      EndpointStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
+      EndpointHoverStyle: {fill: "white", outlineStroke: "rgba(0,150,130,1)", outlineWidth: 1}
+    });
+
+    initializeGrids();
+    fillGrids();
+    addEndpoints();
+    connectEndpoints();
+    setText();
+    dijkstra();
+    paintPath();
+
+    //repaints endpoints and connections if window size changes
+    window.addEventListener("resize", function () {
       w_height = $(window).height();
       $('.grid-stack-1').each(function () {
         var grid = $(this).data('gridstack');
@@ -18,13 +59,6 @@ var instance;
       });
       instance.repaintEverything();
     }, false);
-
-    var w_height = $(window).height();
-    var allGrids = $('.grid-stack');
-    var topGrids = $('.grid-stack-1:not(#containsButton)');
-    var bottomGrids = $('.grid-stack-5');
-
-    var sumText;
 
     $('body').on('show.bs.modal', function () {
       $('#largePopup .modal-body').css('overflow-y', 'auto');
@@ -40,14 +74,14 @@ var instance;
       var imgLink;
       if(($('#imagePicker option:selected').text())=="choose please"){
         console.log(true);
-          imgLink=randomLink();
+        imgLink=randomLink();
       }
       else{
         imgLink='"/images/'+$('#imagePicker option:selected').text()+'.png"';
       }
       var duration;
       var price;
-      var comfort
+      var comfort;
       if(isNaN($('#duration')[0].value)||$('#duration')[0].value==""){
         duration=Math.floor(Math.random() * 10);
       }
@@ -104,44 +138,12 @@ var instance;
     });
 
     $("#submitForm2").on('click', function() {
-      sumText='data-'+$('#criteriaPicker option:selected').text();
+      criteria='data-'+$('#criteriaPicker option:selected').text();
       setText();
       dijkstra();
       paintPath();
     });
 
-    instance = window.jsp = jsPlumb.getInstance({
-      ConnectionOverlays: [
-        [ "Arrow", {
-          location: 1,
-          visible:true,
-          width:8,
-          length:8,
-          id:"ARROW",
-          events:{
-            click:function() { alert("you clicked on the arrow overlay")}
-          }
-        } ]
-      ],
-      PaintStyle: {stroke: 'rgba(0,150,130,0.8)', strokeWidth: 1,  joinstyle: "round"},
-      HoverPaintStyle: {stroke: 'rgba(0,150,130,1)', strokeWidth:3},
-      Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2}],
-      Container: "bottomGrid",
-      MaxConnections: -1,
-      Endpoint:[ "Dot", { radius:7 } ],
-      EndpointStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
-      EndpointHoverStyle: {fill: "white", outlineStroke: "rgba(0,150,130,1)", outlineWidth: 1}
-    });
-
-    sumText='data-duration';
-
-    initializeGrids();
-    fillGrids();
-    addEndpoints();
-    connectEndpoints();
-    setText();
-    dijkstra();
-    paintPath();
     $('[data-toggle="popover"]').each(function(i,v){
       var $el = $(v);
       $el.popover({
@@ -212,15 +214,15 @@ var instance;
       }
       else {                                                                                 //Wenn es von isGrid abweicht
         console.log("sthChanged");
-        if (isGrid != bottomGrids.data('gridstack') && isGrid != "none" && $(event.target).data('gridstack')== bottomGrids.data('gridstack')) {                                         //Wenn isGrid nicht das untere Grid ist --> zu unterem Grid hinzugefügt
+        if (isGrid != bottomGrid.data('gridstack') && isGrid != "none" && $(event.target).data('gridstack')== bottomGrid.data('gridstack')) {                                         //Wenn isGrid nicht das untere Grid ist --> zu unterem Grid hinzugefügt
           console.log("addedToBottomGrid");
           _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
             var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
-            $(selectedItemContent[0].childNodes[1]).text(selectedItemContent[0].getAttribute(sumText));
+            $(selectedItemContent[0].childNodes[1]).text(selectedItemContent[0].getAttribute(criteria));
             if (instance.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
               instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
                 anchor: [1, 0.5, 1, 0],
-                isSource: true,
+                isSource: true
               });
               instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Target Endpoint hinzu
                 anchor: [0, 0.5, -1, 0],
@@ -313,151 +315,111 @@ var instance;
         height: 1,
         width: 1,
         float: false,
-        cellHeight: w_height / 6 / 2,
+        cellHeight: w_height / 6 / 2
 
       }, options));
-      bottomGrids.gridstack(_.defaults({                                                                  //unteres Grid
+      bottomGrid.gridstack(_.defaults({                                                                  //unteres Grid
         height: 5,
         width: 5,
         float: true,
-        cellHeight: w_height / 6,
+        cellHeight: w_height / 6
       }, options));
     }
 
     function fillGrids() {
       fillTopGrids();
-      fillBottomGrids();
+      fillBottomGrid();
     }
 
 
     function fillTopGrids() {
       var counter = 0;
-      var itemTop = [
-        {
-          x: 0,
-          y: 0,
-          width: 1,
-          height: 1,
-          image: "https://appharbor.com/assets/images/stackoverflow-logo.png",
-          duration: 10
-        }
-      ];
       topGrids.each(function () {                                                                         //Für jedes Grid in Scrollbar
         var grid = $(this).data('gridstack');
-        _.each(itemTop, function (node) {
-          if(counter<7){                                                                                   //Füge für die ersten 7 Grids ein Widget hinzu
-            var duration= Math.floor(Math.random() * 10);
-            var price= + Math.floor(Math.random() * 1000);
-            var comfort= Math.floor(Math.random() * 3) + 1;
-            grid.addWidget($('<div>'+
-                '<div class="grid-stack-item-content"' +
-                'data-toggle="popover" ' +
-                'data-duration="' + duration + '" ' +
-                'data-price="' + price + '" ' +
-                'data-comfort="' + comfort +'">' +
-                '<img src=' + randomLink() + ' />' +
-                '<span class="value"></span>' +
-                '<span class="startTime"></span></div></div>'),
-              0, 0, 1, 1);
-          }
-          counter++;
-      }, this);
+        if(counter<7){                                                                                   //Füge für die ersten 7 Grids ein Widget hinzu
+          var duration= Math.floor(Math.random() * 10);
+          var price= + Math.floor(Math.random() * 1000);
+          var comfort= Math.floor(Math.random() * 3) + 1;
+          grid.addWidget($('<div>'+
+              '<div class="grid-stack-item-content" ' +
+              'data-toggle="popover" ' +
+              'data-duration="' + duration + '" ' +
+              'data-price="' + price + '" ' +
+              'data-comfort="' + comfort +'">' +
+              '<img src=' + randomLink() + ' />' +
+              '<span class="value"></span>' +
+              '<span class="startTime"></span></div></div>'),
+            0, 0, 1, 1);
+        }
+        counter++;
       });
     }
 
-    function fillBottomGrids() {
-      var itemBottomOrigin = [                                                                               //Origin Element
-        {
-          x: 0,
-          y: 2,
-          width: 1,
-          height: 1,
-          image: "/images/home.png",
-          duration: 0,
-          price: 0,
-          comfort: 1
-        }
-      ];
-      var itemBottomEnd = [                                                                                   //End Element
-        {
-          x: 4,
-          y: 2,
-          width: 1,
-          height: 1,
-          image: "/images/home.png",
-          duration: 0,
-          price: 0,
-          comfort: 1,
-        }
-      ];
+    function fillBottomGrid() {
+
       var itemBottomBlock = [                                                                                  //leere Elemente in erster und letzter Spalte
-        {x: 0, y: 0, width: 1, height: 1},
-        {x: 0, y: 1, width: 1, height: 1},
-        {x: 0, y: 3, width: 1, height: 1},
-        {x: 0, y: 4, width: 1, height: 1},
-        {x: 4, y: 0, width: 1, height: 1},
-        {x: 4, y: 1, width: 1, height: 1},
-        {x: 4, y: 3, width: 1, height: 1},
-        {x: 4, y: 4, width: 1, height: 1}
+        {x: 0, y: 0},
+        {x: 0, y: 1},
+        {x: 0, y: 3},
+        {x: 0, y: 4},
+        {x: 4, y: 0},
+        {x: 4, y: 1},
+        {x: 4, y: 3},
+        {x: 4, y: 4}
       ];
 
-      bottomGrids.each(function () {                                                                             //unterer Gridstack wird initialisiert
-        var grid = $(this).data('gridstack');
-        _.each(itemBottomOrigin, function (node) {                                                               //Fügt Origin Element hinzu
-          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +                       //Nicht beweglich
-              '<div class="grid-stack-item-content"' +
+      var grid = $(bottomGrid).data('gridstack');
+        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +                       //Nicht beweglich
+            '<div class="grid-stack-item-content" ' +
+            'data-toggle="popover" ' +
+            'data-duration=' + 0 + ' ' +
+            'data-price=' + 0 + ' ' +
+            'data-comfort=' + 1 +'>' +
+            '<img src="/images/home.png"/>' +
+            '<span class="value">' + 0 + '</span>' +
+            '<span class="startTime">' + 0 + '</span></div></div>'),
+          0, 2, 1, 1);
+        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +                          //Nicht beweglich
+            '<div class="grid-stack-item-content" ' +
+            'data-toggle="popover" ' +
+            'data-duration=' + 0 + ' ' +
+            'data-price=' + 0 + ' ' +
+            'data-comfort=' + 1 +'>' +
+            '<img src="/images/home.png"/>' +
+            '<span class="value">' + 0 + '</span>' +
+            '<span class="startTime"></span></div></div>'),
+          4, 2, 1, 1);
+      _.each(itemBottomBlock, function (node) {                                                                  //Fügt Block Elemente hinzu
+        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block">' +                          //Nicht beweglich
+            '<div class="grid-stack-item-content"/></div>'),
+          node.x, node.y, 1, 1);
+      }, this);
+
+      for (var i = 0; i < 7; i++) {                                                                               //Fügt bis zu 7 zufällige Widgets hinzu
+        var x = Math.floor(Math.random() * 3)+1;                                                                  //Wert aus [1,3]
+        var y = Math.floor(Math.random() * 5);                                                                    //Wert aus [0,4]
+        if (grid.willItFit(x, y, 1, 1, false)) {                                                                  //Nur wenn es an dieser x,y Position hinzugefügt werden kann
+          var duration= Math.floor(Math.random() * 10);
+          var price= + Math.floor(Math.random() * 1000);
+          var comfort= Math.floor(Math.random() * 3) + 1;
+          grid.addWidget($('<div>' +
+              '<div class="grid-stack-item-content" ' +
               'data-toggle="popover" ' +
-              'data-duration=' + node.duration + ' ' +
-              'data-price=' + node.price + ' ' +
-              'data-comfort=' + node.comfort +'>' +
-              '<img src=' + node.image + ' />' +
-              '<span class="value">' + node.duration + '</span>' +
-              '<span class="startTime">' + node.duration + '</span></div></div>'),
-            node.x, node.y, node.width, node.height);
-        }, this);
-        _.each(itemBottomEnd, function (node) {                                                                   //Fügt End Element hinzu
-          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +                          //Nicht beweglich
-              '<div class="grid-stack-item-content"' +
-              'data-toggle="popover" ' +
-              'data-duration=' + node.duration + ' ' +
-              'data-price=' + node.price + ' ' +
-              'data-comfort=' + node.comfort +'>' +
-              '<img src=' + node.image + ' />' +
-              '<span class="value">' + node.duration + '</span>' +
+              'data-duration=' + duration + ' ' +
+              'data-price=' + price + ' ' +
+              'data-comfort=' + comfort +'>' +
+              '<img src=' + randomLink() + ' />' +
+              '<span class="value"></span>' +                               //Wert aus [0,9]
               '<span class="startTime"></span></div></div>'),
-            node.x, node.y, node.width, node.height);
-        }, this);
-        _.each(itemBottomBlock, function (node) {                                                                  //Fügt Block Elemente hinzu
-          grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block">' +                          //Nicht beweglich
-              '<div class="grid-stack-item-content"/></div>'),
-            node.x, node.y, node.width, node.height);
-        }, this);
-        for (var i = 0; i < 7; i++) {                                                                               //Fügt bis zu 7 zufällige Widgets hinzu
-          var x = Math.floor(Math.random() * 3)+1;                                                                  //Wert aus [1,3]
-          var y = Math.floor(Math.random() * 5);                                                                    //Wert aus [0,4]
-          if (grid.willItFit(x, y, 1, 1, false)) {                                                                  //Nur wenn es an dieser x,y Position hinzugefügt werden kann
-            var duration= Math.floor(Math.random() * 10);
-            var price= + Math.floor(Math.random() * 1000);
-            var comfort= Math.floor(Math.random() * 3) + 1;
-            grid.addWidget($('<div>' +
-                '<div class="grid-stack-item-content"' +
-                'data-toggle="popover" ' +
-                'data-duration=' + duration + ' ' +
-                'data-price=' + price + ' ' +
-                'data-comfort=' + comfort +'>' +
-                '<img src=' + randomLink() + ' />' +
-                '<span class="value"></span>' +                               //Wert aus [0,9]
-                '<span class="startTime"></span></div></div>'),
-              x, y, 1, 1);
-          }
+            x, y, 1, 1);
         }
-      });
+      }
     }
 
     function addEndpoints() {
       instance.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {                     //Source Endpoint Für Origin Element
         anchor: "Right",
-        isSource: true,
+        isSource: true
       });
       instance.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {                         //Target Endpoint Für End Element
         anchor: "Left",
@@ -465,7 +427,7 @@ var instance;
       });
       instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Source Endpoint Für alle normalen Widgets
         anchor: "Right",
-        isSource: true,
+        isSource: true
       });
       instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Target Endpoint Für alle normalen Widgets
         anchor: "Left",
@@ -598,7 +560,7 @@ var instance;
 
     function setText(){
       $('.grid-stack-5 .grid-stack-item .grid-stack-item-content').each(function () {                    //Setzte für jedes Element im unteren Grid Werte zurück
-        $(this.childNodes[1]).text(this.getAttribute(sumText));
+        $(this.childNodes[1]).text(this.getAttribute(criteria));
       });
     }
     function dijkstra(){

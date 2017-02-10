@@ -38,8 +38,8 @@ module.exports.routes = {
   'get /bootTest':{
     view: 'bootsTrapTest'
   },
-  'get /gridStackTest':{
-    view: 'gridStackTest'
+  'get /demonstrator':{
+    view: 'demonstrator'
   },
   'get /gridStackTest2':{
     view: 'gridStackTest2'
