@@ -70,6 +70,8 @@ var instance;
 
     $('.selectpicker').selectpicker();
 
+    $.fn.editable.defaults.mode = 'inline';
+
     $("#submitForm").on('click', function() {
       var imgLink;
       if(($('#imagePicker option:selected').text())=="choose please"){
@@ -100,6 +102,7 @@ var instance;
       else{
         comfort=$('#comfort')[0].value;
       }
+
       var added=false;
       topGrids.each(function () {
         if(!added) {
@@ -121,11 +124,11 @@ var instance;
               if(!$el.data("bs.popover")) {
                 $el.popover({
                   content: "Duration:&nbsp" +
-                  $(this).data('duration') +
+                  "<a href=\"#\" class=\"pop_duration\">"+$(this).data('duration')+"</a>" +
                   "<br /> Price:&nbsp" +
-                  $(this).data('price') +
+                  "<a href=\"#\" class=\"pop_price\">"+$(this).data('price')+"</a>" +
                   "<br /> Comfort:&nbsp" +
-                  $(this).data('comfort'),
+                  "<a href=\"#\" class=\"pop_comfort\">"+$(this).data('comfort')+"</a>",
                   placement: "auto right",
                   trigger: "manual",
                   html: true
@@ -148,11 +151,11 @@ var instance;
       var $el = $(v);
       $el.popover({
         content: "Duration:&nbsp" +
-        $(this).data('duration') +
+        "<a href=\"#\" class=\"pop_duration\">"+$(this).data('duration')+"</a>" +
         "<br /> Price:&nbsp" +
-        $(this).data('price') +
+        "<a href=\"#\" class=\"pop_price\">"+$(this).data('price')+"</a>" +
         "<br /> Comfort:&nbsp" +
-        $(this).data('comfort'),
+        "<a href=\"#\" class=\"pop_comfort\">"+$(this).data('comfort')+"</a>",
         placement: "auto right",
         trigger: "manual",
         html: true
@@ -175,9 +178,41 @@ var instance;
         }
         else {
           $(this).popover('show');
+          $('.pop_duration').editable({
+              tpl: "<input type='text' style='width: 100px'>",
+            });
+          $('.pop_price').editable({
+            tpl: "<input type='text' style='width: 100px'>"
+          });
+          $('.pop_comfort').editable({
+            tpl: "<input type='text' style='width: 100px'>"
+          });
+          var changedEntry = false;
+          $('.pop_duration').on('save', function(e, params){
+            if(!isNaN(params.newValue)) {
+              $($($(e.target.parentElement)[0].parentElement)[0])[0].previousSibling.setAttribute("data-duration", params.newValue);
+              setText();
+              dijkstra();
+              paintPath();
+            }
+          });
+          $('.pop_price').on('save', function(e, params){
+            if(!isNaN(params.newValue)) {
+              $($($(e.target.parentElement)[0].parentElement)[0])[0].previousSibling.setAttribute("data-price", params.newValue);
+              setText();
+              dijkstra();
+              paintPath();
+            }
+          });
+          $('.pop_comfort').on('save', function(e, params){
+            if(!isNaN(params.newValue)) {
+              $($($(e.target.parentElement)[0].parentElement)[0])[0].previousSibling.setAttribute("data-comfort", params.newValue);
+              setText();
+              dijkstra();
+              paintPath();
+            }
+          });
         }
-      }
-      else{
       }
     });
 
@@ -251,11 +286,11 @@ var instance;
           if(!$el.data("bs.popover")) {
             $el.popover({
               content: "Duration:&nbsp" +
-              $(this).data('duration') +
+              "<a href=\"#\" class=\"pop_duration\">"+$(this).data('duration')+"</a>" +
               "<br /> Price:&nbsp" +
-              $(this).data('price') +
+              "<a href=\"#\" class=\"pop_price\">"+$(this).data('price')+"</a>" +
               "<br /> Comfort:&nbsp" +
-              $(this).data('comfort'),
+              "<a href=\"#\" class=\"pop_comfort\">"+$(this).data('comfort')+"</a>",
               placement: "auto right",
               trigger: "manual",
               html: true

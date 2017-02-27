@@ -40,7 +40,7 @@ body{
   margin-right: 0;
 }
 */
-.col-xs-1 .btn{
+.col-xs-1 > .btn{
   background-color: rgba(0,150,130,0.2);
   position: absolute;
   top: 1vh;                      //approximation, somehow works
@@ -73,7 +73,7 @@ body{
 }
 
 :not(#block):not(#button) > .grid-stack-item-content,
-.col-xs-1 .btn{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
+.col-xs-1 > .btn{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
   border: 1px solid rgba(0,150,130,0.8);
   border-radius: 0.5em;
   border-radius: 50%;
@@ -92,7 +92,7 @@ body{
 }
 
 :not(#block):not(#button) > .grid-stack-item-content:hover,
-.col-xs-1 .btn:hover{
+.col-xs-1 > .btn:hover{
   border: 1px solid rgba(0,150,130,1);
   box-shadow: 2px 2px 19px #444;
   opacity: 0.9;
