@@ -72,7 +72,7 @@ body{
   overflow-y:visible;
 }
 
-:not(#block):not(#button) > .grid-stack-item-content,
+:not(.block):not(#button) > .grid-stack-item-content,
 .col-xs-1 > .btn{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
   border: 1px solid rgba(0,150,130,0.8);
   border-radius: 0.5em;
@@ -87,23 +87,23 @@ body{
   padding-right:0;
 }
 
-:not(#block):not(#button):not(#origin):not(#end) > .grid-stack-item-content {
+:not(.block):not(#button):not(.origin):not(.end) > .grid-stack-item-content {
   background-color: white;
 }
 
-:not(#block):not(#button) > .grid-stack-item-content:hover,
+:not(.block):not(#button) > .grid-stack-item-content:hover,
 .col-xs-1 > .btn:hover{
   border: 1px solid rgba(0,150,130,1);
   box-shadow: 2px 2px 19px #444;
   opacity: 0.9;
 }
 
-#origin .grid-stack-item-content,
-#end .grid-stack-item-content{
+.origin .grid-stack-item-content,
+.end .grid-stack-item-content{
   background-color: white;
 }
 
-#block .grid-stack-item-content{
+.block .grid-stack-item-content{
   background-color: transparent;
   border:none;
 }
@@ -129,7 +129,7 @@ body{
 
 .startTime{
   position:absolute;
-  bottom:-35%;
+  bottom:-65%;
   right:10%;
 }
 

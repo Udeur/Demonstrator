@@ -14,7 +14,7 @@ var instance;
     var bottomGrid = $('.grid-stack-5');                        //bottom grid
 
     var criteria ='data-duration';                              //the criteria used to calculate distances and path
-
+    var criteriaName = "duration";
     instance = window.jsp = jsPlumb.getInstance({
       ConnectionOverlays: [
         [ "Arrow", {
@@ -42,8 +42,8 @@ var instance;
     fillGrids();
     addEndpoints();
     connectEndpoints();
-    setText();
     dijkstra();
+    setText();
     paintPath();
 
     //repaints endpoints and connections if window size changes
@@ -113,7 +113,8 @@ var instance;
                 'data-toggle="popover" ' +
                 'data-duration="'+duration+'" ' +
                 'data-price="'+price+'" ' +
-                'data-comfort="'+comfort+'">' +
+                'data-comfort="'+comfort+'" ' +
+                'data-total="9999999999" >' +
                 '<img src=' + imgLink + ' />' +
                 '<span class="value"></span>' +
                 '<span class="startTime"></span></div></div>'),
@@ -123,12 +124,15 @@ var instance;
               var $el = $(v);
               if(!$el.data("bs.popover")) {
                 $el.popover({
-                  content: "Duration:&nbsp" +
-                  "<a href=\"#\" class=\"pop_duration\">"+$(this).data('duration')+"</a>" +
-                  "<br /> Price:&nbsp" +
-                  "<a href=\"#\" class=\"pop_price\">"+$(this).data('price')+"</a>" +
-                  "<br /> Comfort:&nbsp" +
-                  "<a href=\"#\" class=\"pop_comfort\">"+$(this).data('comfort')+"</a>",
+                  content: function() {
+                    var message = "Duration:&nbsp" +
+                      "<a href=\"#\" class=\"pop_duration\">" + this.getAttribute('data-duration') + "</a>" +
+                      "<br /> Price:&nbsp" +
+                      "<a href=\"#\" class=\"pop_price\">" + this.getAttribute('data-price') + "</a>" +
+                      "<br /> Comfort:&nbsp" +
+                      "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>";
+                    return message;
+                  },
                   placement: "auto right",
                   trigger: "manual",
                   html: true
@@ -142,24 +146,30 @@ var instance;
 
     $("#submitForm2").on('click', function() {
       criteria='data-'+$('#criteriaPicker option:selected').text();
-      setText();
+      criteriaName=$('#criteriaPicker option:selected').text();
       dijkstra();
+      setText();
       paintPath();
     });
 
     $('[data-toggle="popover"]').each(function(i,v){
       var $el = $(v);
-      $el.popover({
-        content: "Duration:&nbsp" +
-        "<a href=\"#\" class=\"pop_duration\">"+$(this).data('duration')+"</a>" +
-        "<br /> Price:&nbsp" +
-        "<a href=\"#\" class=\"pop_price\">"+$(this).data('price')+"</a>" +
-        "<br /> Comfort:&nbsp" +
-        "<a href=\"#\" class=\"pop_comfort\">"+$(this).data('comfort')+"</a>",
-        placement: "auto right",
-        trigger: "manual",
-        html: true
-      });
+      if(!$el.data("bs.popover")) {
+        $el.popover({
+          content: function() {
+            var message = "Duration:&nbsp" +
+              "<a href=\"#\" class=\"pop_duration\">" + this.getAttribute('data-duration') + "</a>" +
+              "<br /> Price:&nbsp" +
+              "<a href=\"#\" class=\"pop_price\">" + this.getAttribute('data-price') + "</a>" +
+              "<br /> Comfort:&nbsp" +
+              "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>";
+            return message;
+          },
+          placement: "auto right",
+          trigger: "manual",
+          html: true
+        });
+      }
     });
 
     window.setTimeout(function(){                                                           //Zeichne alles nach 10 Millisekunden nochmal
@@ -173,6 +183,10 @@ var instance;
 
     $(document).on('mousedown', '[data-toggle="popover"]', function(){
       if($(this).data('bs.popover')) {
+        var popover = $(this).data('bs.popover');
+        var duration = $(this).data('duration');
+        var price = $(this).data('price');
+        var comfort = $(this).data('comfort');
         if ($(this).data('bs.popover').tip().hasClass('in')) {
           $(this).popover('hide');
         }
@@ -187,29 +201,31 @@ var instance;
           $('.pop_comfort').editable({
             tpl: "<input type='text' style='width: 100px'>"
           });
-          var changedEntry = false;
+          console.log($(this).popover);
+          var test = $(this).popover;
           $('.pop_duration').on('save', function(e, params){
             if(!isNaN(params.newValue)) {
               $($($(e.target.parentElement)[0].parentElement)[0])[0].previousSibling.setAttribute("data-duration", params.newValue);
-              setText();
               dijkstra();
+              setText();
               paintPath();
             }
           });
           $('.pop_price').on('save', function(e, params){
             if(!isNaN(params.newValue)) {
               $($($(e.target.parentElement)[0].parentElement)[0])[0].previousSibling.setAttribute("data-price", params.newValue);
-              setText();
               dijkstra();
+              setText();
               paintPath();
             }
           });
           $('.pop_comfort').on('save', function(e, params){
             if(!isNaN(params.newValue)) {
               $($($(e.target.parentElement)[0].parentElement)[0])[0].previousSibling.setAttribute("data-comfort", params.newValue);
-              setText();
               dijkstra();
+              setText();
               paintPath();
+          //
             }
           });
         }
@@ -226,77 +242,86 @@ var instance;
     });
 
     allGrids.on('change', function (event, items) {
-      if (isGrid == $(event.target).data('gridstack')) {                                     //Überprüfe ob das Grid auf dem Change Event endet das selbe ist wie isGrid
-        var contains=false;
-        if(items!=undefined){
-          for(var i =0;i<items.length;i++) {
-            if (items[i].el.children(":first")[0] == draggedContent[0]) {
-              contains = true;
+
+      if($(event.target)[0].getAttribute("class")=="form-control input-sm"){
+        console.log("value changed");
+      }
+      else{
+        if (isGrid == $(event.target).data('gridstack')) {                                     //Überprüfe ob das Grid auf dem Change Event endet das selbe ist wie isGrid
+          var contains = false;
+          if (items != undefined) {
+            for (var i = 0; i < items.length; i++) {
+              if (items[i].el.children(":first")[0] == draggedContent[0]) {
+                contains = true;
+              }
             }
           }
+          if (contains) {
+            console.log("nothingChanged")
+          }
+          else {
+            instance.detachAllConnections(draggedContent);
+            var sourceEndpoint = instance.selectEndpoints({source: $(draggedContent)}).get(0);
+            var targetEndpoint = instance.selectEndpoints({target: $(draggedContent)}).get(0);
+            instance.deleteEndpoint(sourceEndpoint);
+            instance.deleteEndpoint(targetEndpoint);
+            console.log('WidgetRemoved');
+          }
         }
-        if(contains) {
-          console.log("nothingChanged")
-        }
-        else{
-          instance.detachAllConnections(draggedContent);
-          var sourceEndpoint = instance.selectEndpoints({source: $(draggedContent)}).get(0);
-          var targetEndpoint = instance.selectEndpoints({target: $(draggedContent)}).get(0);
-          instance.deleteEndpoint(sourceEndpoint);
-          instance.deleteEndpoint(targetEndpoint);
-          console.log('WidgetRemoved');
-        }
-      }
-      else {                                                                                 //Wenn es von isGrid abweicht
-        console.log("sthChanged");
-        if (isGrid != bottomGrid.data('gridstack') && isGrid != "none" && $(event.target).data('gridstack')== bottomGrid.data('gridstack')) {                                         //Wenn isGrid nicht das untere Grid ist --> zu unterem Grid hinzugefügt
-          console.log("addedToBottomGrid");
-          _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
-            var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
-            $(selectedItemContent[0].childNodes[1]).text(selectedItemContent[0].getAttribute(criteria));
-            if (instance.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
-              instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
-                anchor: [1, 0.5, 1, 0],
-                isSource: true
-              });
-              instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Target Endpoint hinzu
-                anchor: [0, 0.5, -1, 0],
-                isTarget: true
-              });
-            }
-          });
-        }
-        else {                                                                                //Wenn isGrid das untere Grid ist --> zu oberem Grid hinzugefügt
-          console.log("addedToTopGrid");
-          _.each(items, function (node) {                                                      //Für jedes hinzugefügte Widget (nur eines im Normalfall)
-            var selectedItemContent = node.el.children(":first");                               //Wählt itemContent aus
-            instance.detachAllConnections(selectedItemContent);                                  //Entfernt alle Connections des itemContents
-            var selectedEndpointSource = instance.selectEndpoints({source: $(selectedItemContent)}).get(0);  //Wählt Source Endpoint aus
-            var selectedEndpointsTarget = instance.selectEndpoints({target: $(selectedItemContent)}).get(0);  //Wählt Target Endpoint aus
-            instance.deleteEndpoint(selectedEndpointSource);                                       //entfernt Source Endpoint
-            instance.deleteEndpoint(selectedEndpointsTarget);                                      //Entfernt Target Endpoint
-            selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");      //Entfernt jsPlumb Attribute
-            selectedItemContent.removeAttr('id');                                                 //Entfernt jsPlumb id
-            $(selectedItemContent[0].childNodes[2]).text("");                                     //Entfernt Distanz
-            $(selectedItemContent[0].childNodes[1]).text("");                                     //Entfernt Distanz
-          });
-        }
-        $('[data-toggle="popover"]').each(function(i,v){
-          var $el = $(v);
-          if(!$el.data("bs.popover")) {
-            $el.popover({
-              content: "Duration:&nbsp" +
-              "<a href=\"#\" class=\"pop_duration\">"+$(this).data('duration')+"</a>" +
-              "<br /> Price:&nbsp" +
-              "<a href=\"#\" class=\"pop_price\">"+$(this).data('price')+"</a>" +
-              "<br /> Comfort:&nbsp" +
-              "<a href=\"#\" class=\"pop_comfort\">"+$(this).data('comfort')+"</a>",
-              placement: "auto right",
-              trigger: "manual",
-              html: true
+        else {                                                                                 //Wenn es von isGrid abweicht
+          console.log("sthChanged");
+          if (isGrid != bottomGrid.data('gridstack') && isGrid != "none" && $(event.target).data('gridstack') == bottomGrid.data('gridstack')) {                                         //Wenn isGrid nicht das untere Grid ist --> zu unterem Grid hinzugefügt
+            console.log("addedToBottomGrid");
+            _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
+              var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
+              $(selectedItemContent[0].childNodes[1]).text(selectedItemContent[0].getAttribute(criteria));
+              if (instance.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
+                instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
+                  anchor: [1, 0.5, 1, 0],
+                  isSource: true
+                });
+                instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Target Endpoint hinzu
+                  anchor: [0, 0.5, -1, 0],
+                  isTarget: true
+                });
+              }
             });
           }
-        });
+          else {                                                                                //Wenn isGrid das untere Grid ist --> zu oberem Grid hinzugefügt
+            console.log("addedToTopGrid");
+            _.each(items, function (node) {                                                      //Für jedes hinzugefügte Widget (nur eines im Normalfall)
+              var selectedItemContent = node.el.children(":first");                               //Wählt itemContent aus
+              instance.detachAllConnections(selectedItemContent);                                  //Entfernt alle Connections des itemContents
+              var selectedEndpointSource = instance.selectEndpoints({source: $(selectedItemContent)}).get(0);  //Wählt Source Endpoint aus
+              var selectedEndpointsTarget = instance.selectEndpoints({target: $(selectedItemContent)}).get(0);  //Wählt Target Endpoint aus
+              instance.deleteEndpoint(selectedEndpointSource);                                       //entfernt Source Endpoint
+              instance.deleteEndpoint(selectedEndpointsTarget);                                      //Entfernt Target Endpoint
+              selectedItemContent[0].classList.remove("jtk-endpoint-anchor", "jtk-connected");      //Entfernt jsPlumb Attribute
+              selectedItemContent.removeAttr('id');                                                 //Entfernt jsPlumb id
+              $(selectedItemContent[0].childNodes[2]).text("");                                     //Entfernt Distanz
+              $(selectedItemContent[0].childNodes[1]).text("");                                     //Entfernt Distanz
+            });
+          }
+          $('[data-toggle="popover"]').each(function (i, v) {
+            var $el = $(v);
+            if (!$el.data("bs.popover")) {
+              $el.popover({
+                content: function() {
+                  var message = "Duration:&nbsp" +
+                    "<a href=\"#\" class=\"pop_duration\">" + this.getAttribute('data-duration') + "</a>" +
+                    "<br /> Price:&nbsp" +
+                    "<a href=\"#\" class=\"pop_price\">" + this.getAttribute('data-price') + "</a>" +
+                    "<br /> Comfort:&nbsp" +
+                    "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>";
+                  return message;
+                },
+                placement: "auto right",
+                trigger: "manual",
+                html: true
+              });
+            }
+          });
+        }
       }
     });
 
@@ -307,10 +332,12 @@ var instance;
         instance.detach(con);                                                                        //Verhindert doppelte Verbindungen. Problem: Hover funktioniert noch nicht direkt wieder
       }
       dijkstra();                                                                                   //berechne Distanzen
+      setText();
       paintPath();                                                                                   //Zeichne kürzesten Web
     });
     instance.bind("connectionDetached", function(info) {                                             //Wenn Verbindung erstellt wurde
       dijkstra();                                                                                   //berechne Distanzen
+      setText();
       paintPath();                                                                                  //Zeichne kürzesten Web
     });
     allGrids.on('change', function (event, items) {                                                  //Zeigt Change Events an
@@ -380,7 +407,8 @@ var instance;
               'data-toggle="popover" ' +
               'data-duration="' + duration + '" ' +
               'data-price="' + price + '" ' +
-              'data-comfort="' + comfort +'">' +
+              'data-comfort="' + comfort +'" ' +
+              'data-total="9999999999" >' +
               '<img src=' + randomLink() + ' />' +
               '<span class="value"></span>' +
               '<span class="startTime"></span></div></div>'),
@@ -404,28 +432,30 @@ var instance;
       ];
 
       var grid = $(bottomGrid).data('gridstack');
-        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="origin">' +                       //Nicht beweglich
+        grid.addWidget($('<div class="origin" data-gs-no-move="yes" data-gs-locked="yes">' +                       //Nicht beweglich
             '<div class="grid-stack-item-content" ' +
             'data-toggle="popover" ' +
             'data-duration=' + 0 + ' ' +
             'data-price=' + 0 + ' ' +
-            'data-comfort=' + 1 +'>' +
+            'data-comfort=' + 1 +' ' +
+            'data-total="9999999999" >' +
             '<img src="/images/home.png"/>' +
-            '<span class="value">' + 0 + '</span>' +
-            '<span class="startTime">' + 0 + '</span></div></div>'),
+            '<span class="value"></span>' +
+            '<span class="startTime"></span></div></div>'),
           0, 2, 1, 1);
-        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="end">' +                          //Nicht beweglich
+        grid.addWidget($('<div class="end" data-gs-no-move="yes" data-gs-locked="yes">' +                          //Nicht beweglich
             '<div class="grid-stack-item-content" ' +
             'data-toggle="popover" ' +
             'data-duration=' + 0 + ' ' +
             'data-price=' + 0 + ' ' +
-            'data-comfort=' + 1 +'>' +
+            'data-comfort=' + 1 +' ' +
+            'data-total="9999999999" >' +
             '<img src="/images/home.png"/>' +
-            '<span class="value">' + 0 + '</span>' +
+            '<span class="value"></span>' +
             '<span class="startTime"></span></div></div>'),
           4, 2, 1, 1);
       _.each(itemBottomBlock, function (node) {                                                                  //Fügt Block Elemente hinzu
-        grid.addWidget($('<div data-gs-no-move="yes" data-gs-locked="yes" id="block">' +                          //Nicht beweglich
+        grid.addWidget($('<div class="block"  data-gs-no-move="yes" data-gs-locked="yes">' +                          //Nicht beweglich
             '<div class="grid-stack-item-content"/></div>'),
           node.x, node.y, 1, 1);
       }, this);
@@ -441,8 +471,9 @@ var instance;
               '<div class="grid-stack-item-content" ' +
               'data-toggle="popover" ' +
               'data-duration=' + duration + ' ' +
-              'data-price=' + price + ' ' +
-              'data-comfort=' + comfort +'>' +
+              'data-price="' + price + '" ' +
+              'data-comfort="' + comfort +'" ' +
+              'data-total="9999999999" >' +
               '<img src=' + randomLink() + ' />' +
               '<span class="value"></span>' +                               //Wert aus [0,9]
               '<span class="startTime"></span></div></div>'),
@@ -452,27 +483,27 @@ var instance;
     }
 
     function addEndpoints() {
-      instance.addEndpoint($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content'), {                     //Source Endpoint Für Origin Element
+      instance.addEndpoint($('.grid-stack-5 .origin .grid-stack-item-content'), {                     //Source Endpoint Für Origin Element
         anchor: "Right",
         isSource: true
       });
-      instance.addEndpoint($('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content'), {                         //Target Endpoint Für End Element
+      instance.addEndpoint($('.grid-stack-5 .end .grid-stack-item-content'), {                         //Target Endpoint Für End Element
         anchor: "Left",
         isTarget: true
       });
-      instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Source Endpoint Für alle normalen Widgets
+      instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(.origin, .end, .block) .grid-stack-item-content'), {    //Source Endpoint Für alle normalen Widgets
         anchor: "Right",
         isSource: true
       });
-      instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block) .grid-stack-item-content'), {    //Target Endpoint Für alle normalen Widgets
+      instance.addEndpoint($('.grid-stack-5 .grid-stack-item:not(.origin, .end, .block) .grid-stack-item-content'), {    //Target Endpoint Für alle normalen Widgets
         anchor: "Left",
         isTarget: true
       });
     }
 
     function connectEndpoints() {
-      var sourceEndpoint = instance.selectEndpoints({source: $('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')}).get(0);   //Wählt den Source Endpoint von origin aus
-      var $items = $('.grid-stack-5 .grid-stack-item:not(#origin, #end, #block)');                                        //Alle normalen Widgets
+      var sourceEndpoint = instance.selectEndpoints({source: $('.grid-stack-5 .origin .grid-stack-item-content')}).get(0);   //Wählt den Source Endpoint von origin aus
+      var $items = $('.grid-stack-5 .grid-stack-item:not(.origin, .end, .block)');                                        //Alle normalen Widgets
 
       var firstItems = jQuery.grep($items, checkFirst);                                                                   //Widgets mit x=1
       var secondItems = jQuery.grep($items, checkSecond);                                                                 //Widgets mit x=2
@@ -576,7 +607,7 @@ var instance;
     function connectEndpointsEnd(sourceEndpoint) {
       instance.connect({
         source: sourceEndpoint,
-        target: instance.selectEndpoints({target: $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')}).get(0)   //Verbinde mit Target Endpoint des end Elements
+        target: instance.selectEndpoints({target: $('.grid-stack-5 .end .grid-stack-item-content')}).get(0)   //Verbinde mit Target Endpoint des end Elements
       });
     }
 
@@ -589,42 +620,48 @@ var instance;
         this.isInQueue=false;
         this.hasBeenVisited=false;
         this.predecessor="none";
-        $(this.childNodes[2]).text("");
+        this.setAttribute('data-total',9999999999);
       });
     }
 
     function setText(){
       $('.grid-stack-5 .grid-stack-item .grid-stack-item-content').each(function () {                    //Setzte für jedes Element im unteren Grid Werte zurück
-        $(this.childNodes[1]).text(this.getAttribute(criteria));
+        $(this.childNodes[1]).text(criteriaName + ": " + this.getAttribute(criteria));
+        if(parseInt(this.getAttribute('data-total'))!=9999999999) {
+          $(this.childNodes[2]).text("total: " + this.getAttribute('data-total'));
+        }
+        else{
+          $(this.childNodes[2]).text("");
+        }
       });
     }
     function dijkstra(){
       var i;
       console.log("dijkstra");
-      resetValues();                                                                                       //Setze Werte zurück
-      var arrQueue = [];                                                                                    //Kandidatenliste
-      arrQueue.push($('.grid-stack-5 #origin.grid-stack-item .grid-stack-item-content')[0]);                 //Füge Origin Element zu Kandidatenliste hinzu
-      $(arrQueue[0].childNodes[2]).text($(arrQueue[0].childNodes[1]).text());                                //Seine Gesamtdistanz entspricht seiner Distanz
-      arrQueue[0].predecessor="none";                                                                         //kein Vorgängerknoten
-      while(arrQueue.length>0){                                                                               //Solange es Elemente in Kandidatenliste gibt
-        arrQueue[0].hasBeenVisited=true;                                                                      //Markiere das erste als besucht und wähle es aus
-        var arrNeighbours=[];                                                                                 //Elemente die mit ausgewähltem verbunden sind
-        var connections = instance.getConnections({source: arrQueue[0]});                                      //Connections des ausgewählten
+      resetValues();                                                                                         //Setze Werte zurück
+      var arrQueue = [];                                                                                     //Kandidatenliste
+      arrQueue.push($('.grid-stack-5 .origin .grid-stack-item-content')[0]);                                 //Füge Origin Element zu Kandidatenliste hinzu
+      $(arrQueue[0])[0].setAttribute('data-total',$(arrQueue[0])[0].getAttribute(criteria));                 //Seine Gesamtdistanz entspricht seiner Distanz
+      arrQueue[0].predecessor="none";                                                                        //kein Vorgängerknoten
+      while(arrQueue.length>0){                                                                              //Solange es Elemente in Kandidatenliste gibt
+        arrQueue[0].hasBeenVisited=true;                                                                     //Markiere das erste als besucht und wähle es aus
+        var arrNeighbours=[];                                                                                //Elemente die mit ausgewähltem verbunden sind
+        var connections = instance.getConnections({source: arrQueue[0]});                                    //Connections des ausgewählten
         for (i = 0; i < connections.length; i++) {
           arrNeighbours.push(connections[i].endpoints[1].getElement());
         }
-        arrNeighbours = arrNeighbours.filter( onlyUnique );                                                   //Nur eindeutige Werte (falls doppelte Verbindungen)
+        arrNeighbours = arrNeighbours.filter( onlyUnique );                                                  //Nur eindeutige Werte (falls doppelte Verbindungen)
         for (i = 0; i < arrNeighbours.length; i++) {
           var currentDistance;
-          if($(arrNeighbours[i].childNodes[2]).text()==""){                                                   //Wenn noch keine Gesamtdistanz setze sie auf unendlich
+          if(parseInt($(arrNeighbours[i])[0].getAttribute('data-total'))==9999999999){                                         //Wenn noch keine Gesamtdistanz setze sie auf unendlich
             currentDistance = Number.POSITIVE_INFINITY;
           }
           else{
-            currentDistance=parseInt($(arrNeighbours[i].childNodes[2]).text());                                //jeweilige Gesamtdistanz
+            currentDistance=parseInt($(arrNeighbours[i])[0].getAttribute('data-total'));                      //jeweilige Gesamtdistanz
           }
           if(arrNeighbours[i].isInQueue==true) {                                                                //Wenn sich untersuchter Nachbarknoten auf Kandidatenliste befindet
-            if (parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text()) < currentDistance) {   //Wenn Gesamtdistanz über derzeit untersuchten Knoten kürzer
-              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text())); //aktualisiere Gesamtdistanz
+            if (parseInt(($(arrQueue[0])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria))) < currentDistance) {   //Wenn Gesamtdistanz über derzeit untersuchten Knoten kürzer
+              $(arrNeighbours[i])[0].setAttribute('data-total',(parseInt($(arrQueue[0])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //aktualisiere Gesamtdistanz
               arrNeighbours[i].predecessor=arrQueue[0];                                                         //Setzte derzeit untersuchten Knoten als Vorgänger
             }
           }
@@ -632,7 +669,7 @@ var instance;
             if(arrNeighbours[i].hasBeenVisited!=true){                                                          //Wenn untersuchter Nachbarknoten noch nicht untersucht wurde
               arrQueue.push(arrNeighbours[i]);                                                                  //Füge ihn zu Warteliste hinzu
               arrNeighbours[i].isInQueue=true;
-              $(arrNeighbours[i].childNodes[2]).text(parseInt($(arrQueue[0].childNodes[2]).text()) + parseInt($(arrNeighbours[i].childNodes[1]).text())); //aktualisiere Gesamtdistanz
+              $(arrNeighbours[i])[0].setAttribute('data-total',(parseInt($(arrQueue[0])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //aktualisiere Gesamtdistanz
               arrNeighbours[i].predecessor=arrQueue[0];                                                         //Setzte derzeit untersuchten Knoten als Vorgänger
             }
           }
@@ -659,7 +696,7 @@ var instance;
     function paintPath(){
       console.log("paintPath");
       resetPaint();
-      var lastContent = $('.grid-stack-5 #end.grid-stack-item .grid-stack-item-content')[0];                     //Wähle End Element aus
+      var lastContent = $('.grid-stack-5 .end .grid-stack-item-content')[0];                     //Wähle End Element aus
       while(lastContent.predecessor!="none"){                                                                     //Bis das erste Element ausgewählt wurde
         var preContent = lastContent.predecessor;
         var lastConnections = instance.getConnections({target: lastContent});
