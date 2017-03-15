@@ -274,7 +274,7 @@ var instance;
             console.log("addedToBottomGrid");
             _.each(items, function (node) {                                                     //Für jedes hinzugefügte Widget (nur eines im Normalfall)
               var selectedItemContent = node.el.children(":first");                             //Wählt itemContent aus
-              $(selectedItemContent[0].childNodes[1]).text(selectedItemContent[0].getAttribute(criteria));
+              $(selectedItemContent[0].childNodes[1]).text(criteriaName + ": " +selectedItemContent[0].getAttribute(criteria));
               if (instance.selectEndpoints({element: selectedItemContent}).length == 0) {       //geht in Schlaufe falls keine Endpoints existieren (eigentlich immer, Sicherheitscheck)
                 instance.addEndpoint((selectedItemContent), {                                    //Fügt neuen Source Endpoint hinzu
                   anchor: [1, 0.5, 1, 0],
@@ -617,9 +617,9 @@ var instance;
 
     function resetValues(){
       $('.grid-stack-5 .grid-stack-item .grid-stack-item-content').each(function () {                    //Setzte für jedes Element im unteren Grid Werte zurück
-        this.isInQueue=false;
-        this.hasBeenVisited=false;
         this.predecessor="none";
+        this.hasBeenVisited=false;
+        this.isInQueue=false;
         this.setAttribute('data-total',9999999999);
       });
     }
@@ -635,6 +635,7 @@ var instance;
         }
       });
     }
+
     function dijkstra(){
       var i;
       console.log("dijkstra");
@@ -642,39 +643,47 @@ var instance;
       var arrQueue = [];                                                                                     //Kandidatenliste
       arrQueue.push($('.grid-stack-5 .origin .grid-stack-item-content')[0]);                                 //Füge Origin Element zu Kandidatenliste hinzu
       $(arrQueue[0])[0].setAttribute('data-total',$(arrQueue[0])[0].getAttribute(criteria));                 //Seine Gesamtdistanz entspricht seiner Distanz
-      arrQueue[0].predecessor="none";                                                                        //kein Vorgängerknoten
-      while(arrQueue.length>0){                                                                              //Solange es Elemente in Kandidatenliste gibt
-        arrQueue[0].hasBeenVisited=true;                                                                     //Markiere das erste als besucht und wähle es aus
+      arrQueue[0].isInQueue=true;
+       while(arrQueue.length>0){                                                                              //Solange es Elemente in Kandidatenliste gibt
+        var select=0;
+        if(arrQueue.length>1){
+          for(i=0;i<arrQueue.length;i++){
+            if(parseInt($(arrQueue[i])[0].getAttribute('data-total'))<parseInt($(arrQueue[select])[0].getAttribute('data-total'))){
+              select=i;
+            }
+          }
+        }
+        console.log(arrQueue[select]);
+         console.log(parseInt($(arrQueue[select])[0].getAttribute('data-total')));
+         arrQueue[select].hasBeenVisited=true;
         var arrNeighbours=[];                                                                                //Elemente die mit ausgewähltem verbunden sind
-        var connections = instance.getConnections({source: arrQueue[0]});                                    //Connections des ausgewählten
+        var connections = instance.getConnections({source: arrQueue[select]});                                    //Connections des ausgewählten
         for (i = 0; i < connections.length; i++) {
           arrNeighbours.push(connections[i].endpoints[1].getElement());
         }
         arrNeighbours = arrNeighbours.filter( onlyUnique );                                                  //Nur eindeutige Werte (falls doppelte Verbindungen)
         for (i = 0; i < arrNeighbours.length; i++) {
-          var currentDistance;
-          if(parseInt($(arrNeighbours[i])[0].getAttribute('data-total'))==9999999999){                                         //Wenn noch keine Gesamtdistanz setze sie auf unendlich
-            currentDistance = Number.POSITIVE_INFINITY;
-          }
-          else{
-            currentDistance=parseInt($(arrNeighbours[i])[0].getAttribute('data-total'));                      //jeweilige Gesamtdistanz
-          }
-          if(arrNeighbours[i].isInQueue==true) {                                                                //Wenn sich untersuchter Nachbarknoten auf Kandidatenliste befindet
-            if (parseInt(($(arrQueue[0])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria))) < currentDistance) {   //Wenn Gesamtdistanz über derzeit untersuchten Knoten kürzer
-              $(arrNeighbours[i])[0].setAttribute('data-total',(parseInt($(arrQueue[0])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //aktualisiere Gesamtdistanz
-              arrNeighbours[i].predecessor=arrQueue[0];                                                         //Setzte derzeit untersuchten Knoten als Vorgänger
-            }
-          }
-          else{                                                                                                 //Wenn sich untersuchter Nachbarknoten nicht in Kandidatenliste befindet
-            if(arrNeighbours[i].hasBeenVisited!=true){                                                          //Wenn untersuchter Nachbarknoten noch nicht untersucht wurde
+          if(arrNeighbours[i].hasBeenVisited==false) {
+            var currentDistance;
+            currentDistance = parseInt($(arrNeighbours[i])[0].getAttribute('data-total'));                      //jeweilige Gesamtdistanz
+            if (currentDistance == 9999999999) {                                                                                                 //Wenn sich untersuchter Nachbarknoten nicht in Kandidatenliste befindet
               arrQueue.push(arrNeighbours[i]);                                                                  //Füge ihn zu Warteliste hinzu
-              arrNeighbours[i].isInQueue=true;
-              $(arrNeighbours[i])[0].setAttribute('data-total',(parseInt($(arrQueue[0])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //aktualisiere Gesamtdistanz
-              arrNeighbours[i].predecessor=arrQueue[0];                                                         //Setzte derzeit untersuchten Knoten als Vorgänger
+              arrNeighbours[i].isInQueue = true;
+              $(arrNeighbours[i])[0].setAttribute('data-total', (parseInt($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //aktualisiere Gesamtdistanz
+              arrNeighbours[i].predecessor = arrQueue[select];
+            }
+            else {
+              if (arrNeighbours[i].isInQueue == true) {                                                                //Wenn sich untersuchter Nachbarknoten auf Kandidatenliste befindet
+                if (parseInt(($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria))) < currentDistance) {   //Wenn Gesamtdistanz über derzeit untersuchten Knoten kürzer
+                  $(arrNeighbours[i])[0].setAttribute('data-total', (parseInt($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //aktualisiere Gesamtdistanz
+                  arrNeighbours[i].predecessor = arrQueue[select];
+                }
+              }
             }
           }
         }
-        arrQueue.splice(0,1);                                                                                   //Entferne derzeit untersuchten Knoten aus Warteschlange (erstes Element)
+        arrQueue[select].isInQueue=false;
+        arrQueue.splice(select,1);                                                                                   //Entferne derzeit untersuchten Knoten aus Warteschlange (erstes Element)
       }
     }
 
