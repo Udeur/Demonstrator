@@ -7,6 +7,28 @@ var instance;
 (function () {
   jsPlumb.bind("ready", function () {
 
+    var randomWidgets = false;
+
+    var topGridsWidgets = [
+      {duration: 2, price: 135, comfort: 2, img: "/images/plane.png"},
+      {duration: 8, price: 20, comfort: 4, img: "/images/bus.png"},
+      {duration: 4, price: 80  , comfort: 1, img: "/images/train.png"},
+      {duration: 6, price: 50, comfort: 2, img: "/images/plane.png"},
+      {duration: 10, price: 15, comfort: 4, img: "/images/bus.png"},
+      {duration: 5, price: 60, comfort: 1, img: "/images/train.png"},
+      {duration: 7, price: 35, comfort: 3, img: "/images/car.png"}
+    ];
+
+    var bottomGridWidgets = [
+      {x: 1, y: 2, duration: 1, price: 5, comfort: 4, img: "/images/bus.png"},
+      {x: 2, y: 1, duration: 8, price: 20, comfort: 4, img: "/images/bus.png"},
+      {x: 2, y: 2, duration: 5, price: 35  , comfort: 2, img: "/images/car.png"},
+      {x: 2, y: 3, duration: 3, price: 60, comfort: 1, img: "/images/train.png"},
+      {x: 3, y: 1, duration: 2, price: 10, comfort: 4, img: "/images/bus.png"},
+      {x: 3, y: 2, duration: 1, price: 15, comfort: 3, img: "/images/train.png"},
+      {x: 3, y: 3, duration: 1, price: 50, comfort: 1, img: "/images/car.png"}
+    ];
+
     var w_height = $(window).height();                          //height of the window
 
     var allGrids = $('.grid-stack');                            //all grids
@@ -30,7 +52,8 @@ var instance;
       ],
       PaintStyle: {stroke: 'rgba(0,150,130,0.8)', strokeWidth: 1,  joinstyle: "round"},
       HoverPaintStyle: {stroke: 'rgba(0,150,130,1)', strokeWidth:3},
-      Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2}],
+  //    Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2,midpoint: 0.5}],
+      Connector: ["Straight"],
       Container: "bottomGrid",
       MaxConnections: -1,
       Endpoint:[ "Dot", { radius:7 } ],
@@ -97,7 +120,7 @@ var instance;
         price=$('#price')[0].value;
       }
       if(isNaN($('#comfort')[0].value)||$('#comfort')[0].value==""){
-        comfort=Math.floor(Math.random() * 3)+1;
+        comfort=Math.floor(Math.random() * 5)+1;
       }
       else{
         comfort=$('#comfort')[0].value;
@@ -125,11 +148,11 @@ var instance;
               if(!$el.data("bs.popover")) {
                 $el.popover({
                   content: function() {
-                    var message = "Duration:&nbsp" +
+                    var message = "duration:&nbsp" +
                       "<a href=\"#\" class=\"pop_duration\">" + this.getAttribute('data-duration') + "</a>" +
-                      "<br /> Price:&nbsp" +
+                      "<br /> price:&nbsp" +
                       "<a href=\"#\" class=\"pop_price\">" + this.getAttribute('data-price') + "</a>" +
-                      "<br /> Comfort:&nbsp" +
+                      "<br /> comfort:&nbsp" +
                       "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>";
                     return message;
                   },
@@ -393,30 +416,48 @@ var instance;
       fillBottomGrid();
     }
 
-
     function fillTopGrids() {
-      var counter = 0;
-      topGrids.each(function () {                                                                         //Für jedes Grid in Scrollbar
-        var grid = $(this).data('gridstack');
-        if(counter<7){                                                                                   //Füge für die ersten 7 Grids ein Widget hinzu
-          var duration= Math.floor(Math.random() * 10);
-          var price= + Math.floor(Math.random() * 1000);
-          var comfort= Math.floor(Math.random() * 3) + 1;
-          grid.addWidget($('<div>'+
+      if(!randomWidgets) {
+        _.each(topGridsWidgets, function (node) {
+          var grid = $(topGrids[topGridsWidgets.indexOf(node)]).data('gridstack');
+          grid.addWidget($('<div>' +
               '<div class="grid-stack-item-content" ' +
               'data-toggle="popover" ' +
-              'data-duration="' + duration + '" ' +
-              'data-price="' + price + '" ' +
-              'data-comfort="' + comfort +'" ' +
+              'data-duration="' + node.duration + '" ' +
+              'data-price="' + node.price + '" ' +
+              'data-comfort="' + node.comfort + '" ' +
               'data-total="9999999999" >' +
-              '<img src=' + randomLink() + ' />' +
+              '<img src=' + node.img + ' />' +
               '<span class="value"></span>' +
               '<span class="startTime"></span></div></div>'),
             0, 0, 1, 1);
-        }
-        counter++;
-      });
-    }
+        });
+      }
+      else{
+        var counter = 0;
+        topGrids.each(function () {                                                                         //Für jedes Grid in Scrollbar
+          var grid = $(this).data('gridstack');
+
+          if(counter<7){                                                                                   //Füge für die ersten 7 Grids ein Widget hinzu
+            var duration= Math.floor(Math.random() * 10);
+            var price= + Math.floor(Math.random() * 1000);
+            var comfort= Math.floor(Math.random() * 3) + 1;
+            grid.addWidget($('<div>'+
+                '<div class="grid-stack-item-content" ' +
+                'data-toggle="popover" ' +
+                'data-duration="' + duration + '" ' +
+                'data-price="' + price + '" ' +
+                'data-comfort="' + comfort +'" ' +
+                'data-total="9999999999" >' +
+                '<img src=' + randomLink() + ' />' +
+                '<span class="value"></span>' +
+                '<span class="startTime"></span></div></div>'),
+              0, 0, 1, 1);
+          }
+          counter++;
+        });
+      }
+    };
 
     function fillBottomGrid() {
 
@@ -459,25 +500,41 @@ var instance;
             '<div class="grid-stack-item-content"/></div>'),
           node.x, node.y, 1, 1);
       }, this);
-
-      for (var i = 0; i < 7; i++) {                                                                               //Fügt bis zu 7 zufällige Widgets hinzu
-        var x = Math.floor(Math.random() * 3)+1;                                                                  //Wert aus [1,3]
-        var y = Math.floor(Math.random() * 5);                                                                    //Wert aus [0,4]
-        if (grid.willItFit(x, y, 1, 1, false)) {                                                                  //Nur wenn es an dieser x,y Position hinzugefügt werden kann
-          var duration= Math.floor(Math.random() * 10);
-          var price= + Math.floor(Math.random() * 1000);
-          var comfort= Math.floor(Math.random() * 3) + 1;
+      if(!randomWidgets) {
+        _.each(bottomGridWidgets, function (node) {
           grid.addWidget($('<div>' +
               '<div class="grid-stack-item-content" ' +
               'data-toggle="popover" ' +
-              'data-duration=' + duration + ' ' +
-              'data-price="' + price + '" ' +
-              'data-comfort="' + comfort +'" ' +
+              'data-duration=' + node.duration + ' ' +
+              'data-price="' + node.price + '" ' +
+              'data-comfort="' + node.comfort + '" ' +
               'data-total="9999999999" >' +
-              '<img src=' + randomLink() + ' />' +
-              '<span class="value"></span>' +                               //Wert aus [0,9]
+              '<img src=' + node.img + ' />' +
+              '<span class="value"></span>' +
               '<span class="startTime"></span></div></div>'),
-            x, y, 1, 1);
+            node.x, node.y, 1, 1);
+        });
+      }
+      else {
+        for (var i = 0; i < 7; i++) {                                                                               //Fügt bis zu 7 zufällige Widgets hinzu
+          var x = Math.floor(Math.random() * 3) + 1;                                                                  //Wert aus [1,3]
+          var y = Math.floor(Math.random() * 5);                                                                    //Wert aus [0,4]
+          if (grid.willItFit(x, y, 1, 1, false)) {                                                                  //Nur wenn es an dieser x,y Position hinzugefügt werden kann
+            var duration = Math.floor(Math.random() * 10);
+            var price = +Math.floor(Math.random() * 1000);
+            var comfort = Math.floor(Math.random() * 3) + 1;
+            grid.addWidget($('<div>' +
+                '<div class="grid-stack-item-content" ' +
+                'data-toggle="popover" ' +
+                'data-duration=' + duration + ' ' +
+                'data-price="' + price + '" ' +
+                'data-comfort="' + comfort + '" ' +
+                'data-total="9999999999" >' +
+                '<img src=' + randomLink() + ' />' +
+                '<span class="value"></span>' +                               //Wert aus [0,9]
+                '<span class="startTime"></span></div></div>'),
+              x, y, 1, 1);
+          }
         }
       }
     }
@@ -535,8 +592,10 @@ var instance;
       return node.x == 3;
     }
     function removeOneIfGreater2(items){
-      if (items.length > 2) {                                                                       //Wenn es mehr als zwei Elemente auf der nächsten Stufe gibt verbinde ein zufällig ausgewähltes nicht
-        items.splice((Math.random() * items.length), 1);
+      if(randomWidgets) {
+        if (items.length > 2) {                                                                       //Wenn es mehr als zwei Elemente auf der nächsten Stufe gibt verbinde ein zufällig ausgewähltes nicht
+          items.splice((Math.random() * items.length), 1);
+        }
       }
     }
 
