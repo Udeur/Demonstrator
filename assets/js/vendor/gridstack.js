@@ -498,7 +498,7 @@
   };
 
   GridStackEngine.prototype.getGridHeight = function() {
-    return Math.max(_.reduce(this.nodes, function(memo, n) { return Math.max(memo, n.y + n.height); }, 0),1);   //SELBST MODIFIZIERT: URSPR: _.reduce(this.nodes, function(memo, n) { return Math.max(memo, n.y + n.height); }, 0)
+    return Math.max(_.reduce(this.nodes, function(memo, n) { return Math.max(memo, n.y + n.height); }, 0),1);   //MODIFIED in order to fix bug, original: _.reduce(this.nodes, function(memo, n) { return Math.max(memo, n.y + n.height); }, 0)
   };
 
   GridStackEngine.prototype.beginUpdate = function(node) {
@@ -787,11 +787,9 @@
         var x = Math.max(0, pos.x);
         var y = Math.max(0, pos.y);
         if (!node._added) {
-          console.log("notadded");                                            //SELBST HINZUGEFÜGT
-          var nodeCheck = {x: x, y: y, width: 1, height: 1, autoPosition: false}; //SELBST HINZUGEFÜGT
-        //  console.log(self);                                              //HIERMIT PROBLEM ERKENNBAR
-        //  console.log(self.grid);
-          if( self.grid.canBePlacedWithRespectToHeight(nodeCheck)) {              //SELBST HINZUGEFÜGT
+          console.log("notadded");                                                                                      //MODIFIED
+          var nodeCheck = {x: x, y: y, width: 1, height: 1, autoPosition: false};                                       //MODIFIED in order to allow a check if the new item would fit
+          if( self.grid.canBePlacedWithRespectToHeight(nodeCheck)) {                                                  //MODIFIED
             node._added = true;
             node.el = el;
             node.x = x;
@@ -812,10 +810,7 @@
             node._beforeDragY = node.y;
 
             self._updateContainerHeight();
-          }                                                                         //SELBST HINZUGEFÜGT
-          else{                                                                     //SELBST HINZUGEFÜGT
-    //        console.log("wontfit");                                                 //SELBST HINZUGEFÜGT
-          }                                                                         //SELBST HINZUGEFÜGT
+          }                                                                                                             //MODIFIED
         } else {
           console.log("added");
           if (!self.grid.canMoveNode(node, x, y)) {
@@ -839,7 +834,7 @@
           }
         })
         .on(self.container, 'dropover', function(event, ui) {
-          console.log("dropover");                //SELBST HINZUGEFÜGT
+          console.log("dropover");                                                                                      //MODIFIED
           var offset = self.container.offset();
           var el = $(ui.draggable);
           var cellWidth = self.cellWidth();
@@ -850,14 +845,14 @@
           var height = origNode ? origNode.height : (Math.ceil(el.outerHeight() / cellHeight));
 
           draggingElement = el;
-            console.log("prepared");                      //SELBST HINZUGEFÜGT
+            console.log("prepared");                                                                                    //MODIFIED
           var node = self.grid._prepareNode({width: width, height: height, _added: false, _temporary: true});
           el.data('_gridstack_node', node);
           el.data('_gridstack_node_orig', origNode);
-          el.on('drag', onDrag);                        //HIER GIBT ES PROBLEME: WIRD IRGENDWIE ZWEIMAL AUSGEFÜHRT WENN BEWEGUNG ZU SCHNELL ABLÄUFT
+          el.on('drag', onDrag);                                                                                        //ATTENTION: This somehow leads to an error if widgets are moved too fast
         })
         .on(self.container, 'dropout', function(event, ui) {
-          console.log("dropout");                //SELBST HINZUGEFÜGT
+          console.log("dropout");                                                                                       //MODIFIED
             var el = $(ui.draggable);
             el.unbind('drag', onDrag);
             var node = el.data('_gridstack_node');
@@ -867,10 +862,10 @@
             self._updateContainerHeight();
             el.data('_gridstack_node', el.data('_gridstack_node_orig'));
         })
-        .on(self.container, 'drop', function(event, ui) {             //Hier Methode, wenn Item durch draggen geadded wird
-          console.log("drop");                                         //SELBST HINZUGEFÜGT
+        .on(self.container, 'drop', function(event, ui) {                                                               //Method if a widget is added per drag and drop
+          console.log("drop");                                                                                          //MODIFIED
           console.log($(ui.draggable).data('_gridstack_node')._added);
-          if($(ui.draggable).data('_gridstack_node')._added) {          //SELBST HINZUGEFÜGT
+          if($(ui.draggable).data('_gridstack_node')._added) {                                                           //MODIFIED in order to check if an item is added
             self.placeholder.detach();
             var node = $(ui.draggable).data('_gridstack_node');
             node._grid = self;
@@ -896,7 +891,7 @@
             self._triggerChangeEvent();
 
             self.grid.endUpdate();
-          }                                                                       //SELBST HINZUGEFÜGT
+          }                                                                                                             //MODIFIED
         });
     }
   };
@@ -1070,7 +1065,7 @@
 
     var dragOrResize = function(event, ui) {
 
-      instance.repaintEverything();        //SELBST HINZUGEFÜGT
+      instance.repaintEverything();                                                                                     //MODIFIED in order to repaint connections
       var x = Math.round(ui.position.left / cellWidth);
       var y = Math.floor((ui.position.top + cellHeight / 2) / cellHeight);
   //    console.log(x+" "+y);
@@ -1083,7 +1078,7 @@
       }
 
       if (event.type == 'drag') {
-        if (x < 0 || x >= self.grid.width || y < 0 || y >= self.grid.width){      //SELBST MODIFIZIERT //Original:    if (x < 0 || x >= self.grid.width || y < 0
+        if (x < 0 || x >= self.grid.width || y < 0 || y >= self.grid.width){                                            //MODIFIED in order to fix a bug, original:    if (x < 0 || x >= self.grid.width || y < 0
           if (self.opts.removable === true) {
             self._setupRemovingTimeout(el);
           }
@@ -1208,7 +1203,7 @@
         o.find('.grid-stack-item').trigger('resizestop');
       }
 
-      instance.repaintEverything();        //SELBST HINZUGEFÜGT
+      instance.repaintEverything();                                                                                     //MODIFIED in order to repaint connections
 
     };
 
