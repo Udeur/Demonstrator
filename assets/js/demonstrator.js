@@ -9,25 +9,8 @@ var instance;                                                                   
 
     var randomWidgets = false;                                                                                          //decides if random widgets should be loaded
 
-    var topGridsWidgets = [                                                                                             //the widgets to be added to the grids in the scroll bar on top
-      {duration: 2, price: 135, comfort: 2, img: "/images/plane.png"},
-      {duration: 8, price: 20, comfort: 4, img: "/images/bus.png"},
-      {duration: 4, price: 80  , comfort: 1, img: "/images/train.png"},
-      {duration: 6, price: 50, comfort: 2, img: "/images/plane.png"},
-      {duration: 10, price: 15, comfort: 4, img: "/images/bus.png"},
-      {duration: 5, price: 60, comfort: 1, img: "/images/train.png"},
-      {duration: 7, price: 35, comfort: 3, img: "/images/car.png"}
-    ];
-
-    var bottomGridWidgets = [                                                                                           //the widgets to be added to the grid on the bottom
-      {x: 1, y: 2, duration: 1, price: 5, comfort: 4, img: "/images/bus.png"},
-      {x: 2, y: 1, duration: 8, price: 20, comfort: 4, img: "/images/bus.png"},
-      {x: 2, y: 2, duration: 5, price: 35  , comfort: 2, img: "/images/car.png"},
-      {x: 2, y: 3, duration: 3, price: 60, comfort: 1, img: "/images/train.png"},
-      {x: 3, y: 1, duration: 2, price: 10, comfort: 4, img: "/images/bus.png"},
-      {x: 3, y: 2, duration: 1, price: 15, comfort: 3, img: "/images/train.png"},
-      {x: 3, y: 3, duration: 1, price: 50, comfort: 1, img: "/images/car.png"}
-    ];
+    var topGridsWidgets;                                                                                                //the widgets in the scroll bar
+    var bottomGridWidgets;                                                                                              //the widgets in the grid on the bottom
 
     var w_height = $(window).height();                                                                                  //the height of the window
 
@@ -38,27 +21,8 @@ var instance;                                                                   
     var criteria ='data-duration';
     var criteriaName = "duration";                                                                                      //the criteria used to calculate distances and the shortest path
 
-    //initializes the jsPlumb instance
-    instance = window.jsp = jsPlumb.getInstance({
-      ConnectionOverlays: [
-        [ "Arrow", {
-          location: 1,
-          visible:true,
-          width:8,
-          length:8,
-          id:"ARROW"
-        } ]
-      ],
-      PaintStyle: {stroke: 'rgba(0,150,130,0.8)', strokeWidth: 1,  joinstyle: "round"},
-      HoverPaintStyle: {stroke: 'rgba(0,150,130,1)', strokeWidth:3},
-      Container: "bottomGrid",
-      Connector: "Straight",
-      MaxConnections: -1,
-      Endpoint:[ "Dot", { radius:7 } ],
-      EndpointStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
-      EndpointHoverStyle: {fill: "white", outlineStroke: "rgba(0,150,130,1)", outlineWidth: 1}
-    });
-
+    initializeJsPlumb();
+    loadWidgets();
     initializeGrids();
     fillGrids();
     addEndpoints();
@@ -66,6 +30,9 @@ var instance;                                                                   
     dijkstra();
     setText();
     paintPath();
+
+
+    //bindings, events, modals, popovers
 
     //repaints endpoints and connections if window size changes
     window.addEventListener("resize", function () {
@@ -453,6 +420,56 @@ var instance;                                                                   
     allGrids.on('dragstop', function (event, ui) {
       console.log("dragstop");
     });
+
+
+
+    //initializes the jsPlumb instance
+    function initializeJsPlumb() {
+      instance = window.jsp = jsPlumb.getInstance({
+        ConnectionOverlays: [
+          ["Arrow", {
+            location: 1,
+            visible: true,
+            width: 8,
+            length: 8,
+            id: "ARROW"
+          }]
+        ],
+        PaintStyle: {stroke: 'rgba(0,150,130,0.8)', strokeWidth: 1, joinstyle: "round"},
+        HoverPaintStyle: {stroke: 'rgba(0,150,130,1)', strokeWidth: 3},
+        Container: "bottomGrid",
+        Connector: "Straight",
+        MaxConnections: -1,
+        Endpoint: ["Dot", {radius: 7}],
+        EndpointStyle: {fill: "transparent", outlineStroke: "transparent", outlineWidth: 1},
+        EndpointHoverStyle: {fill: "white", outlineStroke: "rgba(0,150,130,1)", outlineWidth: 1}
+      });
+    }
+
+    //loads widgets from json
+    function loadWidgets() {
+
+      //function to read a json document
+      function loadJSON(callback) {
+        var xobj = new XMLHttpRequest();
+        xobj.overrideMimeType("application/json");
+        xobj.open('GET', '/js/widgets.json', false); // synchronous call, change to true for asynchronous
+        xobj.onreadystatechange = function () {
+          if (xobj.readyState == 4 && xobj.status == "200") {
+            callback(xobj.responseText);
+          }
+        };
+        xobj.send(null);
+      }
+
+      //loads the document and the widgets
+      loadJSON(function (response) {
+        // Parse JSON string into object
+        var actual_JSON = JSON.parse(response);
+        topGridsWidgets = actual_JSON.topWidgets;
+        bottomGridWidgets = actual_JSON.bottomWidgets;
+      });
+    }
 
     //initializes all grids
     function initializeGrids() {
