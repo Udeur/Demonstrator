@@ -1,8 +1,8 @@
 {
   "name": "demonstrator",
   "private": true,
-  "version": "0.0.0",
-  "description": "a Sails application",
+  "version": "0.0.1",
+  "description": "a demonstrator application",
   "keywords": [],
   "dependencies": {
     "ejs": "2.3.4",
@@ -33,6 +33,6 @@
     "type": "git",
     "url": "git://github.com/anonymous node/sails user/demonstrator.git"
   },
-  "author": "anonymous node/sails user",
+  "author": "Sven Marquardt",
   "license": ""
 }
