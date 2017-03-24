@@ -34,12 +34,6 @@ body{
    margin-left: 0;
    margin-right: 0;
  }
-/*
-.row.no-gutter {
-  margin-left: 0;
-  margin-right: 0;
-}
-*/
 .col-xs-1 > .btn{
   background-color: rgba(0,150,130,0.2);
   position: absolute;
@@ -57,7 +51,7 @@ body{
 
 .col-xs-12 .grid-stack .grid-stack-item .grid-stack-item-content,
 .col-xs-12 .grid-stack .grid-stack-item .placeholder-content {
-  width: 8.3333333333vh;          // w_height/6/2
+  width: 8.3333333333vh;        // w_height/6/2
   left: calc(~"(100% - 8.3333333333vh) / 2");  //shifts to the right
   top: 25%;                     //reduces size by 1/4
   bottom: 25%;                  //reduces size by 1/4
@@ -73,7 +67,7 @@ body{
 }
 
 :not(.block):not(#button) > .grid-stack-item-content,
-.col-xs-1 > .btn{     //https://jsplumbtoolkit.com/community/demo/dynamicAnchors/app.css
+.col-xs-1 > .btn{
   border: 1px solid rgba(0,150,130,0.8);
   border-radius: 0.5em;
   border-radius: 50%;
@@ -124,7 +118,6 @@ body{
 .value{
  position:absolute;
   top: -40%;
-//  right: -20%;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
@@ -155,7 +148,7 @@ body{
 }
 
 #myModal {
-  z-index: 1061; /* A value higher than 1010 that solves the problem */
+  z-index: 1061; // A value higher than 1010
 }
 
 .btn-block{

@@ -1,5 +1,6 @@
 /**
- * Created by Sven on 02.11.2016.
+ *@author Sven Marquardt
+ *@version 03/24/2017
  */
 
 var instance;                                                                                                           //the jsPlumb instance
