@@ -19,8 +19,7 @@ var instance;                                                                   
     var topGrids = $('.grid-stack-1:not(#containsButton)');                                                             //the grids in the scroll bar without the grid containing the button
     var bottomGrid = $('.grid-stack-5');                                                                                //the grid on the bottom
 
-    var criteria ='data-duration';
-    var criteriaName = "duration";                                                                                      //the criteria used to calculate distances and the shortest path
+    var criteriaName = "duration";                                                                                      //the selected criteria used to calculate distances and the shortest path
 
     initializeJsPlumb();
     loadWidgets();
@@ -64,7 +63,7 @@ var instance;                                                                   
     $("#submitWidget").on('click', function() {
       var imgLink;                                                                                                      //the image of the new widget
       //checks if an image was selected, else chooses a random image
-      if(($('#imagePicker option:selected').text())=="choose please"){
+      if(($('#imagePicker option:selected').text())=="choose here"){
         imgLink=randomLink();
       }
       else{
@@ -143,7 +142,6 @@ var instance;                                                                   
 
     //the functionality of the modal to change the criteria
     $("#submitCriteria").on('click', function() {
-      criteria='data-'+$('#criteriaPicker option:selected').text();
       criteriaName=$('#criteriaPicker option:selected').text();
       dijkstra();
       setText();
@@ -324,7 +322,7 @@ var instance;                                                                   
             //adds new endpoints to the widget which had been added - should be only one widget
             _.each(items, function (node) {
               var selectedItemContent = node.el.children(":first");                                                     //the content of the widget which has been added
-              $(selectedItemContent[0].childNodes[1]).text(criteriaName + ": " +selectedItemContent[0].getAttribute(criteria));
+              $(selectedItemContent[0].childNodes[1]).text(criteriaName + ": " +selectedItemContent[0].getAttribute('data-'+criteriaName));
               //safety check, should not be needed: only if the widget has no endpoints
               if (instance.selectEndpoints({element: selectedItemContent}).length == 0) {
                 //adds new source endpoint
@@ -826,7 +824,7 @@ var instance;                                                                   
       //for each widget in the bottom grid
       $('.grid-stack-5 .grid-stack-item .grid-stack-item-content').each(function () {
         //sets the text for the selected value
-        $(this.childNodes[1]).text(criteriaName + ": " + this.getAttribute(criteria));
+        $(this.childNodes[1]).text(criteriaName + ": " + this.getAttribute('data-'+criteriaName));
         //if widget is contained in the path
         if(parseInt(this.getAttribute('data-total'))!=9999999999) {
           //sets the text for the total value
@@ -844,7 +842,7 @@ var instance;                                                                   
       resetValues();
       var arrQueue = [];                                                                                                //list with widgets to be examined
       arrQueue.push($('.grid-stack-5 .origin .grid-stack-item-content')[0]);                                            //adds origin widget to list
-      $(arrQueue[0])[0].setAttribute('data-total',$(arrQueue[0])[0].getAttribute(criteria));                            //its total value equals its value
+      $(arrQueue[0])[0].setAttribute('data-total',$(arrQueue[0])[0].getAttribute('data-'+criteriaName));                            //its total value equals its value
       arrQueue[0].isInQueue=true;
       //iterate as long as there are elements in the list
        while(arrQueue.length>0){
@@ -874,7 +872,7 @@ var instance;                                                                   
             if (currentDistance == 9999999999) {                                                                        //add it to the list
               arrQueue.push(arrNeighbours[i]);
               arrNeighbours[i].isInQueue = true;
-              $(arrNeighbours[i])[0].setAttribute('data-total', (parseInt($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //update its total distance
+              $(arrNeighbours[i])[0].setAttribute('data-total', (parseInt($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute('data-'+criteriaName)))); //update its total distance
               arrNeighbours[i].predecessor = arrQueue[select];
             }
             //else it is in the list already
@@ -882,8 +880,8 @@ var instance;                                                                   
               //savety check, should be always true
               if (arrNeighbours[i].isInQueue == true) {
                 //checks if total value is shorter with path of selected widget
-                if (parseInt(($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria))) < currentDistance) {
-                  $(arrNeighbours[i])[0].setAttribute('data-total', (parseInt($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute(criteria)))); //update its total distance
+                if (parseInt(($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute('data-'+criteriaName))) < currentDistance) {
+                  $(arrNeighbours[i])[0].setAttribute('data-total', (parseInt($(arrQueue[select])[0].getAttribute('data-total')) + parseInt($(arrNeighbours[i])[0].getAttribute('data-'+criteriaName)))); //update its total distance
                   arrNeighbours[i].predecessor = arrQueue[select];
                 }
               }
