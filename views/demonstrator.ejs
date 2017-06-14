@@ -136,3 +136,58 @@
 </div>
 
 
+<!-- bottom modal -->
+
+<div class="container-fluid" role = "form">      <!-- the scrollbar -classes: nogutter: no gaps, row-horizon: enables scroll-->
+  <div class="row no-gutter row-horizon">       <!-- grid containing different options for adapting grid -->
+    <div class="page-header text-center">
+      <h2>Settings</h2>
+    </div>
+    <div class="col-xs-4">
+      <div class ="header text-center">
+        <h4 class ="title">Add an additional widget</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-block" id="#submitWidget" data-dismiss="modal" data-toggle="modal" data-target="#myModal" > Add widget</button>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="header text-center">
+        <h4 class ="title">Change connection styles</h4>
+      </div>
+      <div class ="modal-footer">
+        <div type="submit" id="ConnectorSubmit">
+          <form role="form">
+            <div class ="form-group">
+              <select class="selectpicker show-tick" id="PickConnection">
+                <option>straight</option>
+                <option>flowchart</option>
+                <option>curvy</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="header text-center">
+        <h4 class ="title">Change calculation criteria</h4>
+      </div>
+      <div class="modal-footer">
+        <div id="Criteriasubmit">
+          <form role="form">
+            <div class="form-group">
+              <select class ="selectpicker show-tick" id="SelectCriteria">
+                <option>duration</option>
+                <option>price</option>
+                <option>comfort</option>
+                <option>C02 emissions</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

@@ -185,6 +185,52 @@ var instance;                                                                   
       }
     });
 
+//the functionality of the bottom modal to change the criteria
+    $("#Criteriasubmit").on('click', function() {
+      criteriaName=$('#SelectCriteria option:selected').text();
+      dijkstra();
+      setText();
+      paintPath();
+    });
+
+    //the functionality of the bottom modal to change the connector style
+    $("#ConnectorSubmit").on('click', function() {
+      //checks if the option "straight" has been selected and sets connectors accordingly
+      if ($('#PickConnection option:selected').text() === 'straight') {
+        //updates existing connectors
+        instance.select().each(function (connection) {
+          connection.setConnector(["Straight"], false)
+        });
+        //sets default values for new connectors
+        instance.importDefaults({
+          Connector: "Straight"
+        });
+      }
+      //checks if the option "flowchart" has been selected and sets connectors accordingly
+      if ($('#PickConnection option:selected').text() === 'flowchart') {
+        //updates existing connectors
+        instance.select().each(function (connection) {
+          connection.setConnector(["Flowchart", {stub: 10, cornerRadius: 4, gap: 2, midpoint: 0.5}], false)
+        });
+        //sets default values for new connectors
+        instance.importDefaults({
+          Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2, midpoint: 0.5}]
+        });
+      }
+      //checks if the option "curvy" has been selected and sets connectors accordingly
+      if ($('#PickConnection option:selected').text() === 'curvy') {
+        //updates existing connectors
+        instance.select().each(function (connection) {
+          connection.setConnector(["StateMachine"], false)
+        });
+        //sets default values for new connectors
+        instance.importDefaults({
+          Connector: "StateMachine"
+        });
+      }
+    });
+
+
     //fills the content of all popovers
     $('[data-toggle="popover"]').each(function(i,v){
       var $el = $(v);
