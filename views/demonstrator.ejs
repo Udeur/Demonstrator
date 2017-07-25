@@ -1,9 +1,9 @@
-<div class="container-fluid" id="gridAll">
-  <div class="row no-gutter row-horizon">        <!-- the scrollbar - classes:  nogutter: no gaps, row-horizon: enables scroll-->
+<div class="row" id="gridAll">
+  <div class="col-md-12">
     <div class="col-xs-1">                        <!--  grid containing the button for modals-->
-      <button type="button" class="btn" data-toggle="modal" data-target="#myModal"><b>+ / -</b></button>
+      <button type="button" class="btn" data-toggle="modal" data-target="#myModal"><b>Add</b></button>
     </div>
-    <div class="col-xs-1">                        <!--  15 grids containing possible widgets-->
+    <div class="col-xs-1">                        <!--  11 grids containing possible widgets-->
       <div class="grid-stack grid-stack-1"></div>
     </div>
     <div class="col-xs-1">
@@ -36,18 +36,8 @@
     <div class="col-xs-1">
       <div class="grid-stack grid-stack-1"></div>
     </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
+  </div>
+
 
   </div>
   <div class="row">                                             <!--  the bottom grid  -->
@@ -58,6 +48,7 @@
     </div>
   </div>
 
+<!-- dropdown menu -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <!--  the modal appearing after pressing the button -->
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -71,23 +62,64 @@
         <form role="form">
           <div class="form-group">
             <label for="duration">Select duration:</label>
-            <input type="text" class="form-control" id="duration" placeholder="enter a duration between 0 and 9">
+            <div id="DurationInfo" class="fa fa-info-circle"></div><div id="DurationText" style="display: none">Select a duration level between  0 and 9 with 0 as the fastest and 9 as the slowest transportation time possible</div>
+            <select type="number" class="selectpicker form-control" id="duration" placeholder="Select a duration between 0 and 9">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+            </select>
           </div>
           <div class="form-group">
             <label for="price">Select price:</label>
+            <div id="PriceInfo" class ="fa fa-info-circle"></div><div id="PriceText" style="display: none"> Select a price level between 0 and 250 with 0 as the lowest price and 250 as the highest price possible</div>
             <input type="text" class="form-control" id="price" placeholder="enter a price between 0 and 250">
+          </div>
+          <div class = "form-group">
+            <label for ="pollution">Select CO2 Emissions:</label>
+            <div id="PollutionInfo" class="fa fa-info-circle"></div><div id="PollutionText" style="display: none"> Select a pollution level between 0 and 10 with 0 as the fewest and 10 as the highest emission level possible</div>
+            <select type="number" class="selectpicker form-control" id="pollution" placeholder="Select the C02 emisssion level of the chosen transport">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+            </select>
           </div>
           <div class="form-group">
             <label for="comfort">Select comfort level:</label>
-            <input type="text" class="form-control" id="comfort" placeholder="enter a level for the comfort between 1 and 5">
+            <div id="ComfortInfo" class="fa fa-info-circle"></div><div id="ComfortText" style="display: none">Select a comfort level between 0 and 5 with 0 as the highest and 5 as the lowest comfort level possible</div>
+            <select type="text" class="selectpicker form-control" id="comfort" placeholder="enter a level for the comfort between 1 and 5">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
           </div>
           <div class="form-group">
-            <label for="imagePicker"> Select type of transportation:</label>
-            <select class="selectpicker form-control" title="choose here" id="imagePicker">
+            <label for="ImagePicker"> Select type of transportation:</label>
+            <div id="TransportationInfo" class="fa fa-info-circle"></div><div id="TransportationText" style="display: none">Select the vehicle used for transportation </div>
+            <select class="PickerSelect form-control show-tick" title="choose here" id="ImagePicker">
               <option data-icon="fa fa-train">train</option>
               <option data-icon="fa fa-bus">bus</option>
               <option data-icon="fa fa-car">car</option>
+              <option data-icon ="fa fa-plug">Ecar</option>
               <option data-icon="fa fa-plane">plane</option>
+              <option data-icon ="fa fa-bicycle">bike</option>
+              <option data-icon ="fa fa-plug">ebike</option>
             </select>
           </div>
         </form>
@@ -95,99 +127,24 @@
       <div class="modal-footer">
         <button type="submit" class="btn btn-block" id="submitWidget" data-dismiss="modal"> Add widget</button>
       </div>
-      <div class="modal-header">                                  <!--  change criteria  -->
-        <h4 class="modal-title">Change the criteria for calculation of values</h4>
-      </div>
-      <div class="modal-body">
-        <form role="form">
-          <div class="form-group">
-            <label for="criteria">Select criteria:</label>
-            <select class="selectpicker form-control" id="criteriaPicker">
-              <option>duration</option>
-              <option>price</option>
-              <option>comfort</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-block" id="submitCriteria" data-dismiss="modal"> Change criteria</button>
-      </div>
-      <div class="modal-header">                                            <!--  change connector style  -->
-        <h4 class="modal-title">Change connector style of the paths</h4>
-      </div>
-      <div class="modal-body">
-        <form role="form">
-          <div class="form-group">
-            <label for="connector">Select connector style:</label>
-            <select class="selectpicker form-control" id="connectorPicker">
-              <option>straight</option>
-              <option>flowchart</option>
-              <option>curvy</option>
-            </select>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer" id="lastFooter">
-        <button type="submit" class="btn btn-block" id="submitConnector" data-dismiss="modal"> Change connector style</button>
-      </div>
     </div>
   </div>
 </div>
 
 
 <!-- bottom modal -->
-
-<div class="container-fluid" role = "form">      <!-- the scrollbar -classes: nogutter: no gaps, row-horizon: enables scroll-->
-  <div class="row no-gutter row-horizon">       <!-- grid containing different options for adapting grid -->
-    <div class="page-header text-center">
-      <h2>Settings</h2>
+<div class="row">
+  <div class="col-md-12">
+    <div class="col-md-6 btn-group button1">
+      <button class="col-md-4 btn btn-primary" id="StraightButton">&rarr;</button>
+      <button class="col-md-4 btn btn-primary" id="FlowButton">&#x21B1;</button>
+      <button class="col-md-4 btn btn-primary" id="CurvyButton">&#x219D;</button>
     </div>
-    <div class="col-xs-4">
-      <div class ="header text-center">
-        <h4 class ="title">Add an additional widget</h4>
-      </div>
-      <div class="modal-footer">
-        <button type="submit" class="btn btn-block" id="#submitWidget" data-dismiss="modal" data-toggle="modal" data-target="#myModal" > Add widget</button>
-      </div>
-    </div>
-    <div class="col-xs-4">
-      <div class="header text-center">
-        <h4 class ="title">Change connection styles</h4>
-      </div>
-      <div class ="modal-footer">
-        <div type="submit" id="ConnectorSubmit">
-          <form role="form">
-            <div class ="form-group">
-              <select class="selectpicker show-tick" id="PickConnection">
-                <option>straight</option>
-                <option>flowchart</option>
-                <option>curvy</option>
-              </select>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-    <div class="col-xs-4">
-      <div class="header text-center">
-        <h4 class ="title">Change calculation criteria</h4>
-      </div>
-      <div class="modal-footer">
-        <div id="Criteriasubmit">
-          <form role="form">
-            <div class="form-group">
-              <select class ="selectpicker show-tick" id="SelectCriteria">
-                <option>duration</option>
-                <option>price</option>
-                <option>comfort</option>
-                <option>C02 emissions</option>
-              </select>
-            </div>
-          </form>
-        </div>
-      </div>
+    <div class="col-md-6 btn-group button2">
+      <button class="col-md-3 btn btn-primary" id="PriceCriteria">price</button>
+      <button class="col-md-3 btn btn-primary" id="DurationCriteria">duration</button>
+      <button class="col-md-3 btn btn-primary" id="ComfortCriteria">comfort</button>
+      <button class="col-md-3 btn btn-primary" id="PollutionCriteria">pollution </button>
     </div>
   </div>
-</div>
 </div>

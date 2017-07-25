@@ -1,47 +1,44 @@
+//backround of the app
 body{
-  background-color: rgb(0,150,130);
+  background-color: white;
 }
 
 .container-fluid{
   height: 100%;
   width: 100%;
 }
+
+.row{
+  padding-right: 0px;
+  padding-left: 0px;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .row-horizon,
 .grid-stack-5{
   background-color: white;
   border:1px solid black;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
-::-webkit-scrollbar {
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
-  background: white;
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
-}
-
+//margin-top & margin-bottom both 1vh deleted
  .row-horizon{
-  margin-top: 1vh;
-  margin-bottom: 1vh;
+   margin-top: 1vh;
+   margin-bottom: 1vh;
    margin-left: 0;
    margin-right: 0;
  }
+
 .col-xs-1 > .btn{
   background-color: rgba(0,150,130,0.2);
   position: absolute;
   top: 1vh;                      //approximation, somehow works
   height:6.25vh;
   width: 6.25vh;
-  margin-left:10px;
+  //margin-left:10px;
 }
+
 .col-xs-1 .grid-stack .grid-stack-item .grid-stack-item-content,
 .col-xs-1 .grid-stack .grid-stack-item .placeholder-content{
   width: 6.25vh;                //w_height/6/3*2
@@ -49,12 +46,32 @@ body{
   bottom: 12.5%;                //reduces size by half of 2/3
 }
 
+.col-xs-3 .grid-stack .grid-stack-item .grid-stack-item-content,
+ .col-xs-3 .grid-stack .grid-stack-item .placeholder-content{
+   width: 6.25vh;
+   top: 20%;
+   bottom: 20%;
+   margin-left:5px;
+ }
+
+.col-xs-2 .grid-stack .grid-stack-item .grid-stack-item-content,
+.col-xs-2 .grid-stack .grid-stack-item .placeholder-content{
+
+  width: 6.25vh;
+  top: 15%;
+  bottom: 15%;
+  text-align: left;
+  left: calc(~"(100% - 8.3333333333vh) / 2");  //shifts to the right
+}
+
+
+//changes affect the shape of the tokens
 .col-xs-12 .grid-stack .grid-stack-item .grid-stack-item-content,
 .col-xs-12 .grid-stack .grid-stack-item .placeholder-content {
-  width: 8.3333333333vh;        // w_height/6/2
-  left: calc(~"(100% - 8.3333333333vh) / 2");  //shifts to the right
-  top: 25%;                     //reduces size by 1/4
-  bottom: 25%;                  //reduces size by 1/4
+  width: 8.3333333333vh;                          // w_height/6/2
+  left: calc(~"(100% - 8.3333333333vh) / 2");     //shifts to the right
+  top: 25%;                                       //reduces size by 1/4
+  bottom: 25%;                                    //reduces size by 1/4
 }
 
 .grid-stack-item{
@@ -68,26 +85,55 @@ body{
 
 :not(.block):not(#button) > .grid-stack-item-content,
 .col-xs-1 > .btn{
-  border: 1px solid rgba(0,150,130,0.8);
+
   border-radius: 0.5em;
   border-radius: 50%;
   text-align: center;
   box-shadow: 1px 1px 15px #aaa;
-  font-family: helvetica, sans-serif;
+  font-family: helvetica, serif;
   cursor: pointer;
-  opacity: 0.9;
+  opacity: 1;
   z-index:7 !important;
   padding-left:0;
   padding-right:0;
 }
 
+//edits e.g. the color of the middle and deployable widgets
 :not(.block):not(#button):not(.origin):not(.end) > .grid-stack-item-content {
   background-color: white;
 }
 
+
+
+.button {
+  border: 5px;
+}
+
+.activeButton{
+  background-color:blue!important;
+}
+
+.button1 > button{
+  display: inline-block;
+  background-color: rgba(120,120,120,0.8);
+  border-color: black;
+  padding-right: 0px;
+}
+
+.button2 > button{
+  display: inline-block;
+  background-color: rgba(0,150,130,0.8);
+  border-color: black;
+  padding-left: 0px;
+
+}
+
+
+
+
 :not(.block):not(#button) > .grid-stack-item-content:hover,
 .col-xs-1 > .btn:hover{
-  border: 1px solid rgba(0,150,130,1);
+  border: 1px solid black;
   box-shadow: 2px 2px 15px #444;
   opacity: 0.9;
 }
@@ -103,8 +149,8 @@ body{
 }
 
 .grid-stack-item-content img {
-  max-height: 70%;
-  max-width: 70%;
+  max-height: 60%;
+  max-width: 60%;
   width: auto;
   height: auto;
   position: absolute;
@@ -156,6 +202,7 @@ body{
   border-color: rgba(0,150,130,0.85);
   color: white;
   font-weight: bold;
+
 }
 
 .btn-block:hover{
@@ -164,6 +211,8 @@ body{
   color: white;
   font-weight: bold;
 }
+
+
 
 .modal-header{
   border-bottom: 0px;
@@ -193,15 +242,15 @@ a:focus, a:hover {
   color: rgba(0,150,130,1);
   font-weight: bold;
 }
-.btn-primary {
-  color: #fff;
-  background-color: rgba(0,150,130,0.8);
-  border-color: rgba(0,150,130,1);
-}
-.btn-primary:hover {
-  background-color: rgba(0,150,130,1);
-  border-color: rgba(0,150,130,1);
-}
+//.btn-primary {
+//  color: #fff;
+//  background-color: rgba(0,150,130,0.8);
+//  border-color: rgba(0,150,130,1);
+//}
+//.btn-primary:hover {
+//  background-color: rgba(0,150,130,1);
+//  border-color: rgba(0,150,130,1);
+//}
 .form-control:focus {
   border-color: rgba(0,150,130,1);
   outline: 0;

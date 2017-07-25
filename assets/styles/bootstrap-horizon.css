@@ -7,7 +7,7 @@
 .row-horizon > [class*="col-lg"], .row-horizon > [class*="col-md"], .row-horizon > [class*="col-sm"], .row-horizon > [class*="col-xs"] {
   float: none;
   display: inline-block;
-  white-space: normal;
+  white-space: nowrap;
   vertical-align: top;
 }
 .row-horizon > .col-xs-12 {
@@ -44,7 +44,7 @@
   width: 15%;
 }
 .row-horizon > .col-xs-1 {
-  width: 7.5%;
+  width: 6.5%;
 }
 @media (min-width: 768px) {
   .row-horizon > .col-sm-12 {

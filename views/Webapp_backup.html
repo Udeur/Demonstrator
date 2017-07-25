@@ -1,0 +1,291 @@
+<div class="container-fluid" id="gridAll">
+  <div class="row no-gutter row-horizon">        <!-- the scrollbar - classes:  nogutter: no gaps, row-horizon: enables scroll-->
+    <div class="col-xs-1">                        <!--  grid containing the button for modals-->
+      <button type="button" class="btn" data-toggle="modal" data-target="#myModal"><b>Add</b></button>
+    </div>
+    <div class="col-xs-1">                        <!--  15 grids containing possible widgets-->
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+    <div class="col-xs-1">
+      <div class="grid-stack grid-stack-1"></div>
+    </div>
+
+  </div>
+  <div class="row">                                             <!--  the bottom grid  -->
+    <div class="col-xs-12">
+      <div class="grid-stack grid-stack-5" id="bottomGrid">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <!--  the modal appearing after pressing the button -->
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">                               <!--  add a new widget  -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Add a customized new widget</h4>
+      </div>
+      <div class="modal-body">
+        <form role="form">
+          <div class="form-group">
+            <label for="duration">Select duration:</label>
+            <select type="number" class="selectpicker form-control" id="duration" placeholder="Select a duration between 0 and 9">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="price">Select price:</label>
+            <input type="text" class="form-control" id="price" placeholder="enter a price between 0 and 250">
+          </div>
+          <div class = "form-group">
+            <label for ="pollution">Select CO2 Emissions:</label>
+            <select type="number" class="selectpicker form-control" id="pollution" placeholder="Select the C02 emisssion level of the chosen transport">
+              <option>0</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+              <option>6</option>
+              <option>7</option>
+              <option>8</option>
+              <option>9</option>
+              <option>10</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="comfort">Select comfort level:</label>
+            <select type="text" class="form-control" id="comfort" placeholder="enter a level for the comfort between 1 and 5">
+              <option>1</option>
+              <option>2</option>
+              <option>3</option>
+              <option>4</option>
+              <option>5</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="Pickerimage"> Select type of transportation:</label>
+            <select class="PickerSelect form-control show-tick" title="choose here" id="Pickerimage">
+              <option data-icon="fa fa-train">train</option>
+              <option data-icon="fa fa-bus">bus</option>
+              <option data-icon="fa fa-car">car</option>
+              <option data-icon ="fa fa-plug">electric car</option>
+              <option data-icon="fa fa-plane">plane</option>
+              <option data-icon ="fa fa-bicycle">bike</option>
+              <option data-icon ="fa fa-plug">electric bike</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-block" id="submitWidget" data-dismiss="modal"> Add widget</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- bottom modal -->
+
+<div class="container-fluid" role = "form">      <!-- the scrollbar -classes: nogutter: no gaps, row-horizon: enables scroll-->
+  <div class="row no-gutter row-horizon">       <!-- grid containing different options for adapting grid -->
+    <div class="page-header text-center">
+      <h2>Settings</h2>
+    </div>
+    <div class="col-xs-4">
+      <div class ="header text-center">
+        <h4 class ="title">Add an additional widget</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-block" id="#submitWidget" data-dismiss="modal" data-toggle="modal" data-target="#myModal" > Add widget</button>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="header text-center">
+        <h4 class ="title">Change connection styles</h4>
+      </div>
+      <div class ="modal-footer">
+        <div type="submit" id="ConnectorSubmit">
+          <form role="form">
+            <div class ="form-group">
+              <select class="selectpicker show-tick" id="PickConnection">
+                <option>straight</option>
+                <option>flowchart</option>
+                <option>curvy</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-4">
+      <div class="header text-center">
+        <h4 class ="title">Change calculation criteria</h4>
+      </div>
+      <div class="modal-footer">
+        <div id="Criteriasubmit">
+          <form role="form">
+            <div class="form-group">
+              <select class ="selectpicker show-tick" id="SelectCriteria">
+                <option>duration</option>
+                <option>price</option>
+                <option>comfort</option>
+                <option>C02 emissions</option>
+              </select>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!--- webapp advanced -->
+
+div class="container-fluid" role ="form">
+<div class ="row no-gutter row-horizon">
+  <div class="col-xs-4">
+    <div class ="header text-center">
+      <h4 class ="title">Add an additional widget</h4>
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-block" id="#submitWidget" data-dismiss="modal" data-toggle="modal" data-target="#myModal" > Add widget</button>
+    </div>
+  </div>
+  <div class="col-xs-4">
+    <div class="header text-center">
+      <h4 class ="title">Change connection styles</h4>
+    </div>
+    <div class ="modal-footer" id="StraightButton">
+      <button type="submit" class="btn btn-block" id="#StraightButton">&rarr;</button>
+    </div>
+    <div class ="modal-footer" id="FlowButton">
+      <button type="submit" class="btn btn-block" id="#FlowButton">&#x21B1;</button>
+    </div>
+    <div class ="modal-footer" id="CurvyButton">
+      <button type="submit" class="btn btn-block" id="#CurvyButton">&#x219D;</button>
+    </div>
+  </div>
+  <div class="col-xs-4">
+    <div class="header text-center">
+      <h4 class ="title">Change calculation criteria</h4>
+    </div>
+    <div class="modal-footer" id = "PriceCriteria">
+      <button type="submit" class="btn btn-block" id="#PriceCriteria">price</button>
+    </div>
+    <div class="modal-footer" id="DurationCriteria">
+      <button type="submit" class="btn btn-block" id="#DurationCriteria">duration</button>
+    </div>
+    <div class="modal-footer"  id="ComfortCriteria">
+      <button type="submit" class="btn btn-block" id="#ComfortCriteria">comfort </button>
+    </div>
+    <div class="modal-footer" id="PollutionCriteria">
+      <button type="submit" class="btn btn-block" id="#PollutionCriteria">pollution </button>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+<div class="container-fluid" role ="form">
+  <div class ="row no-gutter row-horizon"><div class="row">
+    <div class="col-xs-3">
+      <div class="header text-center">
+        <h5 class ="title">Change connection styles</h5>
+      </div>
+    </div>
+    <div class="col-xs-3">
+      <div  id="StraightButton">
+        <button type="submit" class="btn btn-block" id="#StraightButton">&rarr;</button>
+      </div>
+    </div>
+    <div class="col-xs-3">
+      <div  id="FlowButton">
+        <button type="submit" class="btn btn-block" id="#FlowButton">&#x21B1;</button>
+      </div>
+    </div>
+    <div class="col-xs-3">
+      <div  id="CurvyButton">
+        <button type="submit" class="btn btn-block" id="#CurvyButton">&#x219D;</button>
+      </div>
+    </div>
+  </div>
+    <div class="row">
+      <div class="col-xs-3">
+        <div  id = "PriceCriteria">
+          <button type="submit" class="btn btn-block" id="#PriceCriteria">price</button>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div  id="DurationCriteria">
+          <button type="submit" class="btn btn-block" id="#DurationCriteria">duration</button>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div  id="ComfortCriteria">
+          <button type="submit" class="btn btn-block" id="#ComfortCriteria">comfort </button>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div id="PollutionCriteria">
+          <button type="submit" class="btn btn-block" id="#PollutionCriteria">pollution </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

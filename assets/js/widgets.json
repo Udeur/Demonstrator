@@ -4,42 +4,70 @@
       "duration": 2,
       "price": 135,
       "comfort": 2,
+      "pollution":10,
       "img": "/images/plane.png"
+    },
+    {
+      "duration": 6,
+      "price": 5,
+      "comfort": 0,
+      "pollution":0,
+      "img": "/images/bike.png"
+    },
+    {
+      "duration": 6,
+      "price": 5,
+      "comfort": 0,
+      "pollution":0,
+      "img": "/images/ebike.PNG"
+    },
+    {
+      "duration":8 ,
+      "price": 40,
+      "comfort": 3,
+      "pollution":2,
+      "img": "/images/Ecar.png"
     },
     {
       "duration": 8,
       "price": 20,
       "comfort": 4,
+      "pollution":3,
       "img": "/images/bus.png"
     },
     {
       "duration": 4,
       "price": 80,
       "comfort": 1,
+      "pollution":1,
       "img": "/images/train.png"
     },
     {
       "duration": 6,
       "price": 50,
       "comfort": 2,
+      "pollution":10,
       "img": "/images/plane.png"
     },
     {
       "duration": 9,
       "price": 15,
       "comfort": 4,
+      "pollution":3,
       "img": "/images/bus.png"
     },
     {
       "duration": 5,
       "price": 60,
       "comfort": 1,
+      "pollution":1,
       "img": "/images/train.png"
     },
     {
       "duration": 7,
       "price": 35,
       "comfort": 3,
+      "pollution":5,
       "img": "/images/car.png"
     }
   ],
@@ -50,6 +78,7 @@
       "duration": 1,
       "price": 5,
       "comfort": 4,
+      "pollution":3,
       "img": "/images/bus.png"
     },
     {
@@ -58,6 +87,7 @@
       "duration": 8,
       "price": 20,
       "comfort": 4,
+      "pollution":3,
       "img": "/images/bus.png"
     },
     {
@@ -66,14 +96,20 @@
       "duration": 4,
       "price": 35,
       "comfort": 3,
+      "pollution":5,
       "img": "/images/car.png"
     },
+
+
+
+
     {
       "x": 2,
       "y": 3,
       "duration": 5,
       "price": 60,
       "comfort": 1,
+      "pollution":1,
       "img": "/images/train.png"
     },
     {
@@ -82,6 +118,7 @@
       "duration": 2,
       "price": 10,
       "comfort": 4,
+      "pollution":3,
       "img": "/images/bus.png"
     },
     {
@@ -90,6 +127,7 @@
       "duration": 1,
       "price": 50,
       "comfort": 1,
+      "pollution":5,
       "img": "/images/car.png"
     }
   ]

@@ -54,79 +54,93 @@ var instance;                                                                   
 
       $('#largePopup .modal-body').css('max-height', $(window).height() * 0.7);
 
-      $('.selectpicker').selectpicker('refresh');
+      $('.PickerSelect').selectpicker('refresh');
     });
 
     $.fn.editable.defaults.mode = 'inline';
 
     //the functionality of the modal to add a widget
-    $("#submitWidget").on('click', function() {
+    $("#submitWidget").on('click', function () {
       var imgLink;                                                                                                      //the image of the new widget
       //checks if an image was selected, else chooses a random image
-      if(($('#imagePicker option:selected').text())=="choose here"){
-        imgLink=randomLink();
+      if (($('#ImagePicker option:selected').text()) == "choose here") {
+        imgLink = randomLink();
       }
-      else{
-        imgLink='"/images/'+$('#imagePicker option:selected').text()+'.png"';
+      else {
+        imgLink = '"/images/' + $('#ImagePicker option:selected').text() + '.png"';
       }
       var duration;                                                                                                     //the duration value of the new widget
       var price;                                                                                                        //the price value of the new widget
-      var comfort;                                                                                                      //the comfort value of the new widget
+      var comfort;
+      var pollution;
+      //the comfort value of the new widget
       //checks if a valid duration value was enderd, else chooses a random value
-      if(isNaN($('#duration')[0].value)||$('#duration')[0].value==""){
-        duration=Math.floor(Math.random() * 10);      //between 0 and 9
+      if (isNaN($('#duration')[0].value) || $('#duration')[0].value == "") {
+        duration = Math.floor(Math.random() * 10);      //between 0 and 9
       }
-      else{
-        duration=$('#duration')[0].value;
+      else {
+        duration = $('#duration')[0].value;
       }
       //checks if a valid price value was enderd, else chooses a random value
-      if(isNaN($('#price')[0].value)||$('#price')[0].value==""){
-        price=Math.floor(Math.random() * 251);       //between 0 and 250
+      if (isNaN($('#price')[0].value) || $('#price')[0].value == "") {
+        price = Math.floor(Math.random() * 251);       //between 0 and 250
       }
-      else{
-        price=$('#price')[0].value;
+      else {
+        price = $('#price')[0].value;
       }
       //checks if a valid comfort value was enderd, else chooses a random value
-      if(isNaN($('#comfort')[0].value)||$('#comfort')[0].value==""){
-        comfort=Math.floor(Math.random() * 5)+1;      //between 1 and 5
+      if (isNaN($('#comfort')[0].value) || $('#comfort')[0].value == "") {
+        comfort = Math.floor(Math.random() * 5) + 1;      //between 1 and 5
       }
-      else{
-        comfort=$('#comfort')[0].value;
+      else {
+        comfort = $('#comfort')[0].value;
+      }
+      //checks is a valid CO2 Level is entered
+      if (isNaN($('#pollution')[0].value) || $('#pollution')[0].value == "") {
+        pollution = Math.floor(Math.random() * 11);      //between 0 and 10
+
+      }
+      else {
+        pollution = $('#pollution')[0].value;
       }
 
-      var added=false;                                                                                                  //indicating if the new widget has been added already
+
+      var added = false;                                                                                                  //indicating if the new widget has been added already
 
       //adds the new widget to the first empty grid in the scroll bar
       topGrids.each(function () {
         //checks if the widget has been added already
-        if(!added) {
+        if (!added) {
           var grid = $(this).data('gridstack');
           //adds the widget
           if (grid.willItFit(0, 0, 1, 1, false)) {
             grid.addWidget($('<div>' +
                 '<div class="grid-stack-item-content" ' +
                 'data-toggle="popover" ' +
-                'data-duration="'+duration+'" ' +
-                'data-price="'+price+'" ' +
-                'data-comfort="'+comfort+'" ' +
-                'data-total="9999999999" >' +
+                'data-duration="' + duration + '" ' +
+                'data-price="' + price + '" ' +
+                'data-comfort="' + comfort + '" ' +
+                'data-pollution="' + pollution + '" ' +
+                'data-total= "9999999999" >' +
                 '<img src=' + imgLink + ' />' +
                 '<span class="value"></span>' +
                 '<span class="startTime"></span></div></div>'),
               0, 0, 1, 1);
             added = true;
             //adds the popover for that widget
-            $('[data-toggle="popover"]').each(function(i,v){
+            $('[data-toggle="popover"]').each(function (i, v) {
               var $el = $(v);
-              if(!$el.data("bs.popover")) {
+              if (!$el.data("bs.popover")) {
                 $el.popover({
-                  content: function() {
+                  content: function () {
                     var message = "duration:&nbsp" +
                       "<a href=\"#\" class=\"pop_duration\">" + this.getAttribute('data-duration') + "</a>" +
                       "<br /> price:&nbsp" +
                       "<a href=\"#\" class=\"pop_price\">" + this.getAttribute('data-price') + "</a>" +
                       "<br /> comfort:&nbsp" +
-                      "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>";
+                      "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>" +
+                      "<br/> CO2:&nbsp" +
+                      "<a href=\"#\" class=\"pop_pollution\">" + this.getAttribute('data-pollution') + "</a>";
                     return message;
                   },
                   placement: "auto right",
@@ -141,15 +155,15 @@ var instance;                                                                   
     });
 
     //the functionality of the modal to change the criteria
-    $("#submitCriteria").on('click', function() {
-      criteriaName=$('#criteriaPicker option:selected').text();
+    $("#submitCriteria").on('click', function () {
+      criteriaName = $('#criteriaPicker option:selected').text();
       dijkstra();
       setText();
       paintPath();
     });
 
     //the functionality of the modal to change the connector style
-    $("#submitConnector").on('click', function() {
+    $("#submitConnector").on('click', function () {
       //checks if the option "straight" has been selected and sets connectors accordingly
       if ($('#connectorPicker option:selected').text() === 'straight') {
         //updates existing connectors
@@ -185,51 +199,111 @@ var instance;                                                                   
       }
     });
 
-//the functionality of the bottom modal to change the criteria
-    $("#Criteriasubmit").on('click', function() {
-      criteriaName=$('#SelectCriteria option:selected').text();
+    //Display further information if hover over i-circle icon
+
+    $("#PriceInfo").mouseover(function () {
+      $("#PriceText").toggle()
+    });
+
+    $("#DurationInfo").mouseover(function () {
+      $("#DurationText").toggle()
+    });
+
+
+    $("#ComfortInfo").mouseover(function () {
+      $("#ComfortText").toggle()
+    });
+
+    $("#TransportationInfo").mouseover(function () {
+      $("#TransportationText").toggle()
+    });
+
+    $("#PollutionInfo").mouseover(function () {
+      $("#PollutionText").toggle()
+    });
+
+
+    //Update Model if button is pressed
+    //Change Criteria to price if button price is pressed
+    $("#PriceCriteria").on('click', function(){
+      $("div.button2").find(".activeButton").removeClass("activeButton");
+      $(this).addClass("activeButton");
+      criteriaName = 'price';
+        dijkstra();
+      setText();
+      paintPath();
+    });
+
+    //Change Criteria to comfort if comfort is pressed
+    $("#ComfortCriteria").on('click', function(){
+      $("div.button2").find(".activeButton").removeClass("activeButton");
+      $(this).addClass("activeButton");
+      criteriaName = 'comfort';
       dijkstra();
       setText();
       paintPath();
     });
 
-    //the functionality of the bottom modal to change the connector style
-    $("#ConnectorSubmit").on('click', function() {
-      //checks if the option "straight" has been selected and sets connectors accordingly
-      if ($('#PickConnection option:selected').text() === 'straight') {
-        //updates existing connectors
-        instance.select().each(function (connection) {
-          connection.setConnector(["Straight"], false)
-        });
-        //sets default values for new connectors
-        instance.importDefaults({
-          Connector: "Straight"
-        });
-      }
-      //checks if the option "flowchart" has been selected and sets connectors accordingly
-      if ($('#PickConnection option:selected').text() === 'flowchart') {
-        //updates existing connectors
-        instance.select().each(function (connection) {
-          connection.setConnector(["Flowchart", {stub: 10, cornerRadius: 4, gap: 2, midpoint: 0.5}], false)
-        });
-        //sets default values for new connectors
-        instance.importDefaults({
-          Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2, midpoint: 0.5}]
-        });
-      }
-      //checks if the option "curvy" has been selected and sets connectors accordingly
-      if ($('#PickConnection option:selected').text() === 'curvy') {
-        //updates existing connectors
-        instance.select().each(function (connection) {
-          connection.setConnector(["StateMachine"], false)
-        });
-        //sets default values for new connectors
-        instance.importDefaults({
-          Connector: "StateMachine"
-        });
-      }
+    //Change Criteria to duration if duration is pressed
+    $("#DurationCriteria").on('click', function(){
+      $("div.button2").find(".activeButton").removeClass("activeButton");
+      $(this).addClass("activeButton");
+      criteriaName = 'duration';
+      dijkstra();
+      setText();
+      paintPath();
     });
 
+    //Change Criteria to pollution if pollution is pressed
+    $("#PollutionCriteria").on('click', function(){
+      $("div.button2").find(".activeButton").removeClass("activeButton");
+      $(this).addClass("activeButton");
+      criteriaName = 'pollution';
+      dijkstra();
+      setText();
+      paintPath();
+    });
+
+    //Changes the connection style to straight
+     $("#StraightButton").click( function () {
+       $("div.button1").find(".activeButton").removeClass("activeButton");
+       $(this).addClass("activeButton");
+      instance.select().each(function (connection) {
+        connection.setConnector(["Straight"], false)
+      });
+      //Sets default values for new connectors
+      instance.importDefaults({
+        Connector: "Straight"
+      })
+    });
+
+     //Changes the connection style to flowchart
+    $("#FlowButton").click(function () {
+      $("div.button1").find(".activeButton").removeClass("activeButton");
+      $(this).addClass("activeButton");
+      instance.select().each(function (connection) {
+        connection.setConnector(["Flowchart", {stub: 10, cornerRadius: 4, gap: 2, midpoint: 0.5}], false)
+      });
+      //Sets default values for new connectors
+      instance.importDefaults({
+        Connector: ["Flowchart", {stub: 10, cornerRadius: 4, gap: 2, midpoint: 0.5}]
+      })
+    });
+
+    //Changes the connection style to curvy
+    $("#CurvyButton").on("click", function () {
+      $("div.button1").find(".activeButton").removeClass("activeButton");
+      $(this).addClass("activeButton");
+      instance.select().each(function (connection) {
+        connection.setConnector(["StateMachine"], false)
+      });
+      //Sets default values for new connectors
+      instance.importDefaults({
+        Connector: "StateMachine"
+      })
+    });
+
+   // end of modal which indicates update if button is pressed
 
     //fills the content of all popovers
     $('[data-toggle="popover"]').each(function(i,v){
@@ -242,7 +316,10 @@ var instance;                                                                   
               "<br /> Price:&nbsp" +
               "<a href=\"#\" class=\"pop_price\">" + this.getAttribute('data-price') + "</a>" +
               "<br /> Comfort:&nbsp" +
-              "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>";
+              "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>" +
+              "<br/> CO2:&nbsp" +
+              "<a href=\"#\" class=\"pop_pollution\">" + this.getAttribute('data-pollution') + "</a>";
+
             return message;
           },
           placement: "auto right",
@@ -269,6 +346,7 @@ var instance;                                                                   
         var duration = $(this).data('duration');                                                                        //the duration value of the selected item
         var price = $(this).data('price');                                                                              //the price value of the selected item
         var comfort = $(this).data('comfort');                                                                          //the comfort value of the selected item
+        var pollution =$(this).data("pollution");                                                                       //the produced pollution of the selected item
         //closes popover on each second click
         if ($(this).data('bs.popover').tip().hasClass('in')) {
           $(this).popover('hide');
@@ -283,6 +361,9 @@ var instance;                                                                   
             tpl: "<input type='text' style='width: 100px'>"
           });
           $('.pop_comfort').editable({
+            tpl: "<input type='text' style='width: 100px'>"
+          });
+          $(".pop_pollution").editable({
             tpl: "<input type='text' style='width: 100px'>"
           });
           //functionality of the editable field for the duration value
@@ -312,6 +393,17 @@ var instance;                                                                   
               paintPath();
             }
           });
+
+          // functionality of the editable field for the CO2 value
+          $(".pop_pollution").on("save", function (e, params) {
+            if(!isNaN(params.newValue)) {
+              $($($(e.target.parentElement)[0].parentElement)[0])[0].previousSibling.setAttribute("data-pollution", params.newValue);
+              dijkstra();
+              setText();
+              paintPath();
+            }
+
+          })
         }
       }
     });
@@ -410,7 +502,9 @@ var instance;                                                                   
                     "<br /> Price:&nbsp" +
                     "<a href=\"#\" class=\"pop_price\">" + this.getAttribute('data-price') + "</a>" +
                     "<br /> Comfort:&nbsp" +
-                    "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>";
+                    "<a href=\"#\" class=\"pop_comfort\">" + this.getAttribute('data-comfort') + "</a>" +
+                    "<br/> CO2:&nbsp" +
+                    "<a href=\"#\" class=\"pop_pollution\">" + this.getAttribute('data-pollution') + "</a>";
                   return message;
                 },
                 placement: "auto right",
@@ -562,6 +656,7 @@ var instance;                                                                   
               'data-duration="' + node.duration + '" ' +
               'data-price="' + node.price + '" ' +
               'data-comfort="' + node.comfort + '" ' +
+              'data-pollution="' +node.pollution +'"'+
               'data-total="9999999999" >' +
               '<img src=' + node.img + ' />' +
               '<span class="value"></span>' +
@@ -581,12 +676,14 @@ var instance;                                                                   
             var duration= Math.floor(Math.random() * 10);       //between 0 and 9                                       //the duration value of the new widget
             var price= + Math.floor(Math.random() * 251);       //between 0 and 250                                     //the price value of the new widget
             var comfort= Math.floor(Math.random() * 5) + 1;     //between 1 and 5                                       //the comfort value of the new widget
+            var pollution=Math.floor(Math.random()*11);         //between 0 and 10                                      //the pollution value of the new widget
             grid.addWidget($('<div>'+
                 '<div class="grid-stack-item-content" ' +
                 'data-toggle="popover" ' +
                 'data-duration="' + duration + '" ' +
                 'data-price="' + price + '" ' +
                 'data-comfort="' + comfort +'" ' +
+                'data-pollution="' + pollution +'"'+
                 'data-total="9999999999" >' +
                 '<img src=' + randomLink() + ' />' +
                 '<span class="value"></span>' +
@@ -620,7 +717,8 @@ var instance;                                                                   
             'data-duration=' + 0 + ' ' +
             'data-price=' + 0 + ' ' +
             'data-comfort=' + 1 +' ' +
-            'data-total="9999999999" >' +
+            'data-pollution=' + 0 + ' ' +
+            'data-total="9999999999">'  +
             '<img src="/images/home.png"/>' +
             '<span class="value"></span>' +
             '<span class="startTime"></span></div></div>'),
@@ -632,6 +730,7 @@ var instance;                                                                   
             'data-duration=' + 0 + ' ' +
             'data-price=' + 0 + ' ' +
             'data-comfort=' + 1 +' ' +
+            'data-pollution=' + 0 +' ' +
             'data-total="9999999999" >' +
             '<img src="/images/home.png"/>' +
             '<span class="value"></span>' +
@@ -651,8 +750,9 @@ var instance;                                                                   
               '<div class="grid-stack-item-content" ' +
               'data-toggle="popover" ' +
               'data-duration=' + node.duration + ' ' +
-              'data-price="' + node.price + '" ' +
-              'data-comfort="' + node.comfort + '" ' +
+              'data-price=' + node.price + ' ' +
+              'data-comfort=' + node.comfort + ' ' +
+              'data-pollution=' + node.pollution + ' '+
               'data-total="9999999999" >' +
               '<img src=' + node.img + ' />' +
               '<span class="value"></span>' +
@@ -677,6 +777,7 @@ var instance;                                                                   
                 'data-duration=' + duration + ' ' +
                 'data-price="' + price + '" ' +
                 'data-comfort="' + comfort + '" ' +
+                'data-pollution="' + pollution +'" '+
                 'data-total="9999999999" >' +
                 '<img src=' + randomLink() + ' />' +
                 '<span class="value"></span>' +
@@ -988,13 +1089,18 @@ var instance;                                                                   
 })();
 
 //generates a random link
+
 function randomLink(){
   var image;
-  var myrandom=Math.floor(Math.random()*4);
+  var myrandom=Math.floor(Math.random()*8);
   var train="/images/train.png";
   var bus="/images/bus.png";
   var car="/images/car.png";
   var plane="/images/plane.png";
+  var bike="/images/bike.PNG";
+  var ebike="/images/ebike.PNG";
+  var Ecar="/images/Ecar.png";
+
   if (myrandom==0) {
     image = train;
   }
@@ -1006,6 +1112,15 @@ function randomLink(){
   }
   else if (myrandom==3) {
     image = plane;
+  }
+  else if (myrandom==4){
+    image = bike;
+  }
+  else if (myrandom==5){
+    image = ebike;
+  }
+  else if (myrandom==6){
+    image = Ecar;
   }
   return image;
 }
