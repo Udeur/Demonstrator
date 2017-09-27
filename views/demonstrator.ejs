@@ -1,50 +1,57 @@
-<div class="row" id="gridAll">
-  <div class="col-md-12">
-    <div class="col-xs-1">                        <!--  grid containing the button for modals-->
-      <button type="button" class="btn" data-toggle="modal" data-target="#myModal"><b>Add</b></button>
-    </div>
-    <div class="col-xs-1">                        <!--  11 grids containing possible widgets-->
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-    <div class="col-xs-1">
-      <div class="grid-stack grid-stack-1"></div>
-    </div>
-  </div>
+<!-- stylesheets -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,300italic,500,400italic,700,700italic' rel='stylesheet' type='text/css'>
 
 
-  </div>
-  <div class="row">                                             <!--  the bottom grid  -->
-    <div class="col-xs-12">
+<div>
+ <div class="mdl-grid" id="gridAll">
+   <div class="mdl-cell mdl-cell--1-col">                        <!--  grid containing the button for modals-->
+     <button class="mdl-button mdl-button--icon mdl-button--4-col" data-toggle="modal" data-target="#myModal">
+       <i class="material-icons">add</i>
+     </button>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">                        <!--  11 grids containing possible widgets-->
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+   <div class="mdl-cell mdl-cell--1-col">
+     <div class="grid-stack grid-stack-1"></div>
+   </div>
+ </div>
+
+
+
+
+  </div>                                             <!--  the bottom grid  -->
+    <div class="mdl-cell--12-col-tablet">
       <div class="grid-stack grid-stack-5" id="bottomGrid">
         </div>
-      </div>
     </div>
   </div>
 
@@ -133,6 +140,44 @@
 
 
 <!-- bottom modal -->
+<div class="mdl-grid">
+  <div class=mdl-cell mdl-cell--4-col>
+    <div class="mdl-button-group">
+      <button class="mdl-button mdl-button--icon mdl-button--2-col"id="StraightButton">
+        <i class="material-icons">arrow_forward</i>
+      </button>
+      <button class="mdl-button mdl-button--icon mdl-button--2-col"id="FlowButton">
+        <i class="material-icons">subdirectory_arrow_right</i>
+      </button>
+      <button class="mdl-button mdl-button--icon mdl-button--2-col"id="CurvyButton">
+        <i class="material-icons">show_chart</i>
+      </button>
+    </div>
+  </div>
+  <div class="mdl-cell--8-col">
+    <div class="mdl-button-group">
+      <button class="mdl-button mdl-button--icon mdl-button--2-col" id="PriceCriteria">
+        <i class="material-icons">euro_symbol</i>
+      </button>
+      <button class="mdl-button mdl-button--icon mdl-button--2-col" id="DurationCriteria">
+        <i class="material-icons">access_time</i>
+      </button>
+      <button class="mdl-button mdl-button--icon mdl-button--2-col" id="ComfortCriteria">
+        <i class="material-icons">airline_seat_individual_suite</i>
+      </button>
+      <button class="mdl-button mdl-button--icon mdl-button--2-col" id="PollutionCriteria">
+        <i class="material-icons">local_florist</i>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+
+
+</div>
+
+<!--
 <div class="row">
   <div class="col-md-12">
     <div class="col-md-6 btn-group button1">
@@ -148,3 +193,4 @@
     </div>
   </div>
 </div>
+-->

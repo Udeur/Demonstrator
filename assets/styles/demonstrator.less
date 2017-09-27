@@ -18,7 +18,6 @@ body{
 .row-horizon,
 .grid-stack-5{
   background-color: white;
-  border:1px solid black;
   border-radius: 2px;
 }
 
@@ -29,6 +28,22 @@ body{
    margin-left: 0;
    margin-right: 0;
  }
+
+ .mdl-cell--1-col > .btn{
+   background-color: rgba(0,150,130,0.2);
+   position: absolute;
+   top: 1vh;                      //approximation, somehow works
+   height:6.25vh;
+   width: 6.25vh;
+   //margin-left:10px;
+ }
+
+.mdl-cell--1-col .grid-stack .grid-stack-item .grid-stack-item-content,
+.mdl-cell--1-col .grid-stack .grid-stack-item .placeholder-content{
+  width: 6.25vh;                //w_height/6/3*2
+  top: 12.5%;                   //reduces size by half of 2/3
+  bottom: 12.5%;                //reduces size by half of 2/3
+}
 
 .col-xs-1 > .btn{
   background-color: rgba(0,150,130,0.2);
@@ -73,6 +88,16 @@ body{
   top: 25%;                                       //reduces size by 1/4
   bottom: 25%;                                    //reduces size by 1/4
 }
+
+//changes affect the shape of the tokens
+.mdl-cell--12-col-tablet .grid-stack .grid-stack-item .grid-stack-item-content,
+.mdl-cell--12-col-tablet .grid-stack .grid-stack-item .placeholder-content {
+  width: 8.3333333333vh;                          // w_height/6/2
+  left: calc(~"(100% - 8.3333333333vh) / 2");     //shifts to the right
+  top: 25%;                                       //reduces size by 1/4
+  bottom: 25%;                                    //reduces size by 1/4
+}
+
 
 .grid-stack-item{
   display: inline-block;
