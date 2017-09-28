@@ -45,6 +45,21 @@ body{
   bottom: 12.5%;                //reduces size by half of 2/3
 }
 
+.mdl-button{
+  min-height: 32px;
+
+  width: 6.25vh;                //w_height/6/3*2
+  top: 12.5%;                   //reduces size by half of 2/3
+  bottom: 12.5%;                //reduces size by half of 2/3
+  margin: 0px;
+}
+
+.mdl-cell--1-col{
+  width: 6.25vh;                //w_height/6/3*2
+  top: 12.5%;                   //reduces size by half of 2/3
+  bottom: 12.5%;                //reduces size by half of 2/3
+}
+
 .col-xs-1 > .btn{
   background-color: rgba(0,150,130,0.2);
   position: absolute;
@@ -109,7 +124,7 @@ body{
 }
 
 :not(.block):not(#button) > .grid-stack-item-content,
-.col-xs-1 > .btn{
+.col-xs-1 > .btn {
 
   border-radius: 0.5em;
   border-radius: 50%;
@@ -118,17 +133,31 @@ body{
   font-family: helvetica, serif;
   cursor: pointer;
   opacity: 1;
-  z-index:7 !important;
-  padding-left:0;
-  padding-right:0;
+  z-index: 7 !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+
+  :not(.block):not(#button) > .mdl-button,
+  .mdl-button > .btn{
+
+    border-radius: 0.5em;
+    border-radius: 50%;
+    text-align: center;
+    box-shadow: 1px 1px 15px #aaa;
+    font-family: helvetica, serif;
+    cursor: pointer;
+    opacity: 1;
+    z-index:7 !important;
+    padding-left:0;
+    padding-right:0;
 }
 
 //edits e.g. the color of the middle and deployable widgets
 :not(.block):not(#button):not(.origin):not(.end) > .grid-stack-item-content {
   background-color: white;
 }
-
-
 
 .button {
   border: 5px;
@@ -138,14 +167,14 @@ body{
   background-color:blue!important;
 }
 
-.button1 > button{
+.button1 > .mdl-button{
   display: inline-block;
   background-color: rgba(120,120,120,0.8);
   border-color: black;
   padding-right: 0px;
 }
 
-.button2 > button{
+.button2 > .mdl-button{
   display: inline-block;
   background-color: rgba(0,150,130,0.8);
   border-color: black;
