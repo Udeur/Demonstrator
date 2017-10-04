@@ -1,4 +1,4 @@
-//backround of the app
+//background of the app
 body{
   background-color: white;
 }
@@ -163,26 +163,23 @@ body{
   border: 5px;
 }
 
-.activeButton{
+.activeButton > .mdl-button-group{
   background-color:blue!important;
 }
 
-.button1 > .mdl-button{
+.button1 > .mdl-button-group{
   display: inline-block;
   background-color: rgba(120,120,120,0.8);
   border-color: black;
   padding-right: 0px;
 }
 
-.button2 > .mdl-button{
+.button2 > .mdl-button-group{
   display: inline-block;
   background-color: rgba(0,150,130,0.8);
   border-color: black;
   padding-left: 0px;
-
 }
-
-
 
 
 :not(.block):not(#button) > .grid-stack-item-content:hover,
@@ -256,7 +253,6 @@ body{
   border-color: rgba(0,150,130,0.85);
   color: white;
   font-weight: bold;
-
 }
 
 .btn-block:hover{
@@ -267,7 +263,6 @@ body{
 }
 
 
-
 .modal-header{
   border-bottom: 0px;
   padding-bottom: 0px;
@@ -276,10 +271,12 @@ body{
 .modal-body{
   padding-bottom: 0px;
 }
+
 .modal-footer{
   border-top: 0px;
   padding-top: 0px;
 }
+
 .modal-footer:not(#lastFooter){
   border-bottom: 1px solid #e5e5e5;
 }
@@ -296,6 +293,7 @@ a:focus, a:hover {
   color: rgba(0,150,130,1);
   font-weight: bold;
 }
+
 //.btn-primary {
 //  color: #fff;
 //  background-color: rgba(0,150,130,0.8);
@@ -305,6 +303,7 @@ a:focus, a:hover {
 //  background-color: rgba(0,150,130,1);
 //  border-color: rgba(0,150,130,1);
 //}
+
 .form-control:focus {
   border-color: rgba(0,150,130,1);
   outline: 0;
