@@ -1,12 +1,14 @@
 //background of the app
 body{
   background-color: white;
+  padding: 0px;
 }
 
 .container-fluid{
   height: 100%;
   width: 100%;
 }
+
 
 .row{
   padding-right: 0px;
@@ -15,10 +17,9 @@ body{
   margin-right: 0;
 }
 
-.row-horizon,
-.grid-stack-5{
+.row-horizon > .grid-stack-5{
   background-color: white;
-  border-radius: 2px;
+  height: 600px;
 }
 
 //margin-top & margin-bottom both 1vh deleted
@@ -29,35 +30,56 @@ body{
    margin-right: 0;
  }
 
+ @media (min-width: 840px){
+   div.mdl-grid{
+     padding:0px;
+     margin: 0px;
+   }
+ }
+
  .mdl-cell--1-col > .btn{
    background-color: rgba(0,150,130,0.2);
    position: absolute;
    top: 1vh;                      //approximation, somehow works
    height:6.25vh;
    width: 6.25vh;
-   //margin-left:10px;
  }
 
 .mdl-cell--1-col .grid-stack .grid-stack-item .grid-stack-item-content,
 .mdl-cell--1-col .grid-stack .grid-stack-item .placeholder-content{
-  width: 6.25vh;                //w_height/6/3*2
-  top: 12.5%;                   //reduces size by half of 2/3
-  bottom: 12.5%;                //reduces size by half of 2/3
+  width: 7.2927vh;               //w_height/6/3*2
+  top: 5%;                   //reduces size
+  bottom: 5%;                //reduces size
 }
 
-.mdl-button{
-  min-height: 32px;
 
-  width: 6.25vh;                //w_height/6/3*2
-  top: 12.5%;                   //reduces size by half of 2/3
-  bottom: 12.5%;                //reduces size by half of 2/3
-  margin: 0px;
+.mdl-cell--4-col > .btn{
+  background-color: rgba(0,150,130,0.2);
+  position: absolute;
+  top: 1vh;                      //approximation, somehow works
+  height:6.25vh;
+  width: 6.25vh;
 }
 
-.mdl-cell--1-col{
+.mdl-cell--4-col .grid-stack .grid-stack-item .grid-stack-item-content,
+.mdl-cell--4-col .grid-stack .grid-stack-item .placeholder-content{
+  width: 7.2927vh;               //w_height/6/3*2
+  top: 5%;                   //reduces size
+  bottom: 5%;                //reduces size
+}
+
+
+.mdl-cell--4-col .mdl-button-group .mdl-button--accent.mdl-button--accent.mdl-button--raised ,
+.mdl-cell--4-col .mdl-button--accent.mdl-button--accent.mdl-button--fab {
+  background-color: #2d870d;
+}
+
+.mdl-cell > .mdl-cell--1-col{
   width: 6.25vh;                //w_height/6/3*2
   top: 12.5%;                   //reduces size by half of 2/3
   bottom: 12.5%;                //reduces size by half of 2/3
+  padding: 0;
+  margin: 0;
 }
 
 .col-xs-1 > .btn{
@@ -105,14 +127,18 @@ body{
 }
 
 //changes affect the shape of the tokens
-.mdl-cell--12-col-tablet .grid-stack .grid-stack-item .grid-stack-item-content,
-.mdl-cell--12-col-tablet .grid-stack .grid-stack-item .placeholder-content {
+.mdl-cell--8-col-tablet .grid-stack .grid-stack-item .grid-stack-item-content,
+.mdl-cell--8-col-tablet .grid-stack .grid-stack-item .placeholder-content {
   width: 8.3333333333vh;                          // w_height/6/2
   left: calc(~"(100% - 8.3333333333vh) / 2");     //shifts to the right
-  top: 25%;                                       //reduces size by 1/4
-  bottom: 25%;                                    //reduces size by 1/4
+  top: 30%;                                       //reduces size by 1/4
+  bottom: 30%;                                    //reduces size by 1/4
+
 }
 
+#bottomGrid{
+  height:620px;
+}
 
 .grid-stack-item{
   display: inline-block;
@@ -125,7 +151,6 @@ body{
 
 :not(.block):not(#button) > .grid-stack-item-content,
 .col-xs-1 > .btn {
-
   border-radius: 0.5em;
   border-radius: 50%;
   text-align: center;
@@ -141,7 +166,6 @@ body{
 
   :not(.block):not(#button) > .mdl-button,
   .mdl-button > .btn{
-
     border-radius: 0.5em;
     border-radius: 50%;
     text-align: center;
@@ -171,14 +195,14 @@ body{
   display: inline-block;
   background-color: rgba(120,120,120,0.8);
   border-color: black;
-  padding-right: 0px;
+  padding-right: 5px;
 }
 
 .button2 > .mdl-button-group{
   display: inline-block;
   background-color: rgba(0,150,130,0.8);
   border-color: black;
-  padding-left: 0px;
+  padding-left: 5px;
 }
 
 
@@ -263,7 +287,7 @@ body{
 }
 
 
-.modal-header{
+/*.modal-header{
   border-bottom: 0px;
   padding-bottom: 0px;
 }
@@ -276,6 +300,8 @@ body{
   border-top: 0px;
   padding-top: 0px;
 }
+
+*/
 
 .modal-footer:not(#lastFooter){
   border-bottom: 1px solid #e5e5e5;
@@ -294,15 +320,16 @@ a:focus, a:hover {
   font-weight: bold;
 }
 
-//.btn-primary {
-//  color: #fff;
-//  background-color: rgba(0,150,130,0.8);
-//  border-color: rgba(0,150,130,1);
-//}
-//.btn-primary:hover {
-//  background-color: rgba(0,150,130,1);
-//  border-color: rgba(0,150,130,1);
-//}
+/*.btn-primary {
+  color: #fff;
+  background-color: rgba(0,150,130,0.8);
+  border-color: rgba(0,150,130,1);
+}
+.btn-primary:hover {
+   background-color: rgba(0,150,130,1);
+  border-color: rgba(0,150,130,1);
+}
+*/
 
 .form-control:focus {
   border-color: rgba(0,150,130,1);

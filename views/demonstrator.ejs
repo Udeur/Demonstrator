@@ -7,7 +7,7 @@
     <!--  grid containing the button for modals-->
    <div class="mdl-cell mdl-cell--1-col">
      <button class="mdl-button mdl-button-icon mdl-js-button mdl-button--fab mdl-js-ripple-effect" data-toggle="modal" data-target="#myModal">
-       <i class="material-icons">add</i>
+       <i class="material-icons">mode_edit</i>
      </button>
    </div>
    <div class="mdl-cell mdl-cell--1-col">                        <!--  11 grids containing possible widgets-->
@@ -41,16 +41,19 @@
      <div class="grid-stack grid-stack-1"></div>
    </div>
    <div class="mdl-cell mdl-cell--1-col">
-     <div class="grid-stack grid-stack-1"></div>
+     <button class="mdl-button mdl-button-icon mdl-js-button mdl-button--fab mdl-js-ripple-effect" data-toggle="modal" data-target="#InfoModal">
+       <i class="material-icons">info_outline</i>
+     </button>
    </div>
  </div>
 
-  </div>                                             <!--  the bottom grid  -->
-    <div class="mdl-cell--12-col-tablet">
+                                            <!--  the bottom grid  -->
+    <div class="mdl-cell--8-col-tablet">
       <div class="grid-stack grid-stack-5" id="bottomGrid">
         </div>
     </div>
-  </div>
+</div>
+
 
 <!-- dropdown menu -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <!--  the modal appearing after pressing the button -->
@@ -136,36 +139,70 @@
 </div>
 
 
-<!-- bottom modal -->
-<div class="mdl-grid">
-  <div class= "mdl-cell--4-col">
-    <div class="mdl-button-group">
-      <button class="mdl-button mdl-button--icon mdl-button--2-col mdl-button--fab mdl-js-ripple-effect"id="StraightButton">
-        <i class="material-icons">arrow_forward</i>
-      </button>
-      <button class="mdl-button mdl-button--icon mdl-button--2-col mdl-button--fab mdl-js-ripple-effect"id="FlowButton">
-        <i class="material-icons">subdirectory_arrow_right</i>
-      </button>
-      <button class="mdl-button mdl-button--icon mdl-button--2-col mdl-button--fab mdl-js-ripple-effect"id="CurvyButton">
-        <i class="material-icons">show_chart</i>
-      </button>
-    </div>
-  </div>
-  <div class="mdl-cell--8-col">
-    <div class="mdl-button-group">
-      <button class="mdl-button mdl-button--icon  mdl-button--fab mdl-js-ripple-effect" id="PriceCriteria">
-        <i class="material-icons">euro_symbol</i>
-      </button>
-      <button class="mdl-button mdl-button--icon  mdl-button--fab mdl-js-ripple-effect" id="DurationCriteria">
-        <i class="material-icons">access_time</i>
-      </button>
-      <button class="mdl-button mdl-button--icon mdl-button--fab mdl-js-ripple-effect" id="ComfortCriteria">
-        <i class="material-icons">airline_seat_individual_suite</i>
-      </button>
-      <button class="mdl-button mdl-button--icon mdl-button--fab mdl-js-ripple-effect" id="PollutionCriteria">
-        <i class="material-icons">local_florist</i>
-      </button>
+<!-- information menu -->
+<div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"> <!--  the modal appearing after pressing the button -->
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">                               <!--  add a new widget  -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Information</h4>
+      </div>
+      <div class="modal-body">
+        <div class="mdl-grid">
+          <div class= "mdl-cell--4-col"><i class="material-icons">arrow_forward</i> </div>
+          <div class="mdl-cell--6-col">Selects arrows as connectors</div>
+          <div class= "mdl-cell--4-col"><i class="material-icons">subdirectory_arrow_right</i> </div>
+          <div class="mdl-cell--6-col">Selects rectangular connectors</div>
+          <div class= "mdl-cell--4-col"><i class="material-icons">show_chart</i> </div>
+          <div class="mdl-cell--6-col">Selects cury connectors</div>
+          <div class= "mdl-cell--4-col"><i class="material-icons">euro_symbol</i> </div>
+          <div class="mdl-cell--6-col">Calculates the cheapest connection</div>
+          <div class= "mdl-cell--4-col"><i class="material-icons">access_time</i> </div>
+          <div class="mdl-cell--6-col">Calculates the fastest connection</div>
+          <div class= "mdl-cell--4-col"><i class="material-icons">airline_seat_individual_suite</i> </div>
+          <div class="mdl-cell--6-col">Calculates the most comfortable connection</div>
+          <div class= "mdl-cell--4-col"><i class="material-icons">local_florist</i> </div>
+          <div class="mdl-cell--6-col">Calculates the connection with the lowest C02 emissions</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
+
+<!-- bottom modal -->
+<div class="mdl-grid">
+  <div class="mdl-cell--4-col">
+  </div>
+  <div class="mdl-cell--4-col">
+  <div class="mdl-button-group">
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--icon" id="StraightButton">
+      <i class="material-icons">arrow_forward</i>
+    </button>
+   <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--icon" id="FlowButton">
+    <i class="material-icons">subdirectory_arrow_right</i>
+   </button>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--icon" id="CurvyButton">
+      <i class="material-icons">show_chart</i>
+    </button>
+  </div>
+  </div>
+  <div class="mdl-cell--4-col">
+  <div class="mdl-button-group">
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--icon" id="PriceCriteria">
+      <i class="material-icons">euro_symbol</i>
+    </button>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--icon" id="DurationCriteria">
+      <i class="material-icons">access_time</i>
+    </button>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--icon" id="ComfortCriteria">
+      <i class="material-icons">airline_seat_individual_suite</i>
+    </button>
+    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-button--icon" id="PollutionCriteria">
+      <i class="material-icons">local_florist</i>
+    </button>
+  </div>
+  </div>
+</div>
